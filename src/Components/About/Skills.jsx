@@ -45,10 +45,10 @@ const Skills = ({ isTabActive }) => {
             <div className="about__onecontent">
               <h2>My Skills</h2>
               <p>
-                Neque porro quisquam est, qui dolorem ipsum quia dolor sit
-                consectetur, aliquam quaerats voluptatem. Ut enim ad minima
-                veniam, exercitationem laboriosam, nisi ut aliquid ex ea autem
-                velit esse quam nihil
+                Work with someone who blends design, marketing, 
+                and technology to turn ideas into measurable growth.
+                I bring clarity, creativity, and strategy to every project
+                focused on real results.
               </p>
               <div className="about__contactwrap">
                 <div className="row g-4">

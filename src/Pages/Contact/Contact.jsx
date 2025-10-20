@@ -39,7 +39,7 @@ const Contact = () => {
                 </div>
                 <div className="contact__item">
                   <span className="he1">Address</span>
-                  <span className="address">Victoria Street London</span>
+                  <span className="address">San Diego, Carabobo, Venezuela</span>
                 </div>
               </div>
             </div>

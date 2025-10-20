@@ -22,12 +22,12 @@ const contactInfo = [
   {
     id: 2,
     system: "Phone",
-    contact: "+(2) 871 382 023",
+    contact: "+(58) 414 041 9317",
   },
   {
     id: 3,
     system: "Phone",
-    contact: "Victoria Street London,",
+    contact: "San Diego, Carabobo, Venezuela",
   },
   {
     id: 4,
@@ -72,10 +72,10 @@ const AboutMe = ({ isTabActive }) => {
                 data-aos="fade-up"
                 data-aos-duration="500"
               >
-                Neque porro quisquam est, qui dolorem ipsum quia dolor sit
-                consectetur, aliquam quaerats voluptatem. Ut enim ad minima
-                veniam, exercitationem laboriosam, nisi ut aliquid ex ea autem
-                velit esse quam nihil
+                Work with someone who blends design, marketing, 
+                and technology to turn ideas into measurable growth.
+                I bring clarity, creativity, and strategy to every project
+                focused on real results.
               </p>
               <div className="about__contactwrap">
                 <div className="row g-4">
