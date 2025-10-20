@@ -112,7 +112,7 @@ p {
   cursor: pointer;
   display: block;
   border-radius: 50px;
-  background-color: #fff;
+  background-color: #1e2a47;
   box-shadow: inset 0 0 0 2px #a1abb6;
   z-index: 10000;
   opacity: 0;
@@ -988,14 +988,14 @@ p {
 .ashover {
   color: #414141 !important;
   &:hover {
-    color: #fff !important;
+    color: #1e2a47 !important;
   }
 }
 .aw {
   color: #818181 !important;
 }
 .tw {
-  color: #fff !important;
+  color: #1e2a47 !important;
 }
 .bborder {
   border-bottom: 1px solid var(--border);
