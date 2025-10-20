@@ -101,7 +101,7 @@ const Banner = () => {
           <Link to={""}>
             <img src={dial} alt="img" />
           </Link>
-          <Link to={""}>(+02)-574-328-301</Link>
+          <Link to={""}>(+58)-414-041-9317</Link>
         </div>
         <div className="right__infoscroll">
           <Link className="scroll">
@@ -138,7 +138,6 @@ const Banner = () => {
       {lightboxOpen && (
         <VideoPlay
           setLightboxOpen={setLightboxOpen}
-          url="https://www.youtube.com/embed/tgbNymZ7vqY"
         />
       )}
     </section>
