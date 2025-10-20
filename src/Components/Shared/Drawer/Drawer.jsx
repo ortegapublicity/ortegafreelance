@@ -35,7 +35,7 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
           <div className="sub__contac-item">
             <div className="content">
               <span className="address d-block"> email </span>
-              <Link className="textp"> matias999@.com </Link>
+              <Link className="textp"> raul@ortegafreelance.com </Link>
             </div>
           </div>
           <div className="sub__contac-item">

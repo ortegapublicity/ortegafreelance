@@ -17,7 +17,7 @@ const contactInfo = [
   {
     id: 1,
     system: "Email",
-    contact: "Matias999@Gmail.Com",
+    contact: "raul@ortegafreelance.com",
   },
   {
     id: 2,

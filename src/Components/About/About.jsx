@@ -56,9 +56,9 @@ const About = () => {
               data-aos-duration="1000"
             />
             <p className="descrp" data-aos="fade-up" data-aos-duration="1500">
-              I'm David Matias, I'm a Brand & Webflow Designer, Currently
-              residing in the lush Victoria Street London, Matias operates
-              globally and is ready to take on any design challenge.
+              I'm Raul Ortega, a Creative Technologist & Digital Brand Designer.
+              I build data-driven digital experiences that merge design, strategy,
+              and technology, helping businesses grow online with clarity and confidence.
             </p>
           </div>
           <div className="singletab">

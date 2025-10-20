@@ -84,7 +84,7 @@ const BlogDetails = () => {
                       suscipit laboriosam,
                     </p>
                     <h3 className="white mb-30">
-                      Matias is the only theme you will ever need
+                      Raul Ortega - Creative Technologist & Digital Brand Designer
                     </h3>
                     <div className="thumb mb-30">
                       <img src={blogDetailsb2} alt="img" />

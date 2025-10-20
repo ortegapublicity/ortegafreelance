@@ -9,7 +9,7 @@
   position: relative;
   background: var(--base);
   overflow: hidden;
-  @include bodyfont;
+  @include ctafont;
   border-radius: 5px;
   transition: all 0.5s;
   color: var(--subtitle);
