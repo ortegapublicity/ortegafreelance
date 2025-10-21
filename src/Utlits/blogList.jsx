@@ -9,9 +9,9 @@ export const blogsList = [
     image: blog1,
     date: "October 21, 2025",
     heading: " Brand design that helps the company grow",
-    para: `There are many variations of passages of Lorem Ipsum
-      available, but the majority have suffered alteration in
-      some form, by injected humour, or randomised words`,
+    para: `From my perspective, branding is not just about visuals
+      it’s about defining who you are and why you exist.
+      It starts with uncovering the real mission behind your business`,
   },
   {
     id: 2,

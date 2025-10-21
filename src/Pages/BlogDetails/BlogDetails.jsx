@@ -43,62 +43,56 @@ const BlogDetails = () => {
                         Comments: 0
                       </span>
                       <p className="fz-16 pra ttext__one">
-                        There are many variations of passages of Lorem Ipsum
-                        available, but the majority have suffered alteration in
-                        some form, by injected humour, or randomised words which
-                        don't look even slightly believable. If you are going to
-                        use a Lorem Ipsum, you need to be sure there isn't
-                        anything embarrassing hidden in the middle of text. All
-                        the Lorem Ipsum the Internet tend to repeat predefined
-                        chunks as necessary,
+                        From my perspective, branding is not just about visuals, 
+                        it’s about defining who you are and why you exist. 
+                        It starts with uncovering the real mission behind your 
+                        business: your philosophy, your story, and the emotion 
+                        that drives your work. When that clarity is translated 
+                        into a consistent identity, your brand stops being 
+                        decoration and becomes direction.
                       </p>
                       <p className="fz-16 pra">
-                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-                        aut odit aut fugit, sed quia consequuntur magni neque
-                        porro quisquam est, qui dolorem ipsum quia dolor sit
-                        amet, adipisci velit, sed quia non numquam eius modi
-                        tempora incidunts ut labore et dolore magnam aliquam
-                        quaerat voluptatem. Ut enim ad minima veniam, quis
-                        nostrum exercitationem the corporis suscipit laboriosam,
-                        nisi ut aliquid
+                        Authenticity is what makes a brand truly valuable.
+                        Today’s audiences, and even the algorithms, recognize 
+                        sincerity. They reward it with engagement, trust, and 
+                        loyalty. When your design and message speak from the 
+                        same truth, everything else aligns naturally.
                       </p>
                     </div>
                     <div className="quite__box mb-30">
                       <img src={straightQuotes} alt="img" />
                       <p>
-                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-                        aut odit aut fugit, sed quia consequuntur magni dolores
-                        eos qui ratione voluptatem sequi nesciunt. Neque porro
-                        quisquam est, adipisci velit, sed quia non numquam
+                        Your brand is what other people say about you when
+                        you’re not in the room.
                       </p>
-                      <Link to="">David Kingston</Link>
+                      <Link to="">Jeff Bezos</Link>
                     </div>
                     <p className="fz-16 pra ttext__one mb__cus60">
-                      Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-                      aut odit aut fugit, sed quia consequuntur magni dolores
-                      eos qui ratione voluptatem sequi nesciunt. Neque porro
-                      quisquam est, qui dolorem ipsum quia dolor sit amet,
-                      consectetur, adipisci velit, sed quia non numquam eius
-                      modi tempora incidunt ut labore et dolore magnam aliquam
-                      minima veniam, quis nostrum exercitationem ullam corporis
-                      suscipit laboriosam,
+                      Good branding is like the umami of business, subtle but 
+                      unforgettable. It’s the perfect balance between what you 
+                      show and what you stand for. Every ad, video, and web 
+                      experience should be part of the same recipe, one that 
+                      reflects the heart of your company and the value you bring 
+                      to others. That’s how marketing stops feeling forced and 
+                      starts feeling human.
                     </p>
                     <h3 className="white mb-30">
-                      Raul Ortega - Creative Technologist & Digital Brand Designer
+                      Branding made for NF Autoparts Corporations, LLC.
                     </h3>
                     <div className="thumb mb-30">
                       <img src={blogDetailsb2} alt="img" />
                     </div>
                     <p className="fz-16 pra ttext__one mb-30">
-                      On the other hand, we denounce with righteous indignation
-                      and dislike men who are so beguiled and demoralized by the
-                      charms of pleasure of the moment, so blinded by desire,
-                      that they cannot foresee the pain and trouble that are
-                      bound to ensue; and equal blame belongs to those who fail
-                      in their duty through weakness of will, which is the same
-                      as from these cases are perfectly simple and easy to
-                      distinguish. In a free hour,
+                      When design, motion, ads, and strategy work together, 
+                      growth stops being an accident and becomes a process. 
+                      It’s not just about aesthetics or metrics; it’s about 
+                      building a digital presence that sells with purpose. 
+                      The brands that understand this are the ones that last, 
+                      because they grow from within.
                     </p>
+                    <h3 className="white mb-30">
+                      Key Takeaways:
+                    </h3>
                     <div
                       className="text__box mb-30"
                       data-aos="fade-up"
@@ -106,24 +100,24 @@ const BlogDetails = () => {
                     >
                       <ul className="challenge__list">
                         <li>
-                          Duis aute irure dolor in reprehenderit in voluptate
-                          velit esse cillum dolore eu fugiat nulla pariatur.
+                          Authentic branding builds trust before conversion.
                         </li>
                         <li>
-                          Nor again is there anyone who loves or pursues or
-                          desires to obtain pain of itself, because it is pain,
+                          A clear digital identity enhances ad performance and ROI.
                         </li>
                         <li>
-                          On the other hand, we denounce with righteous
-                          indignation and dislike
+                          Consistency across design, content, and tone creates recognition.
+                        </li>
+                        <li>
+                          Strategy without authenticity is noise; authenticity without strategy is silence.
                         </li>
                       </ul>
                     </div>
                     <p className="fz-16 pra ttext__one mb-30">
-                      Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-                      aut odit aut fugit, sed quia consequuntur magni dolores
-                      eos qui ratione voluptatem sequi nesciunt. Neque porro
-                      quisquam est, qui dolorem
+                      Want to take your brand to the next level? 
+                      Explore more insights on my blog or book a 
+                      session with me to start building a brand 
+                      that truly sells.
                     </p>
                   </div>
                   <div className="post__in cmn__bg mb__cus60">
