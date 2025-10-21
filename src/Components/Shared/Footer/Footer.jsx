@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const socalList = [
   {
     id: 1,
-    platfrom: "Facebook",
+    platfrom: "LinkedIn",
     icon: <ArrowRight />,
   },
   {
@@ -15,12 +15,12 @@ const socalList = [
   },
   {
     id: 3,
-    platfrom: "Dribble",
+    platfrom: "Behance",
     icon: <ArrowRight />,
   },
   {
     id: 4,
-    platfrom: "Webflow",
+    platfrom: "Vimeo",
     icon: <ArrowRight />,
   },
 ];
@@ -65,7 +65,7 @@ const Footer = () => {
         <div className="container">
           <div className="copyright">
             <p className="white">
-              Copyright © 2023 {" "}
+              Copyright © 2025 {" "}
               <Link to={"/"} className="base">
                 Raul Ortega.
               </Link>{" "}

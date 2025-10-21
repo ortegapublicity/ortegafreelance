@@ -44,7 +44,7 @@ const Partner = () => {
           data-aos="fade-down"
           data-aos-duration="1000"
         >
-          More than 100+ companies trusted us worldwide
+          More than 20 companies have trusted me worldwide.
         </h4>
         <div className="swiper sponsor__wrap">
           <Swiper

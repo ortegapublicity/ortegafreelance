@@ -39,7 +39,7 @@ const BlogDetails = () => {
                       data-aos-duration="1400"
                     >
                       <span className="text__de">
-                        By: admin / Lifestyle / Posted on September 19, 2023 /
+                        By: admin / Lifestyle / Posted on September 19, 2025 /
                         Comments: 0
                       </span>
                       <p className="fz-16 pra ttext__one">

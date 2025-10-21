@@ -201,7 +201,7 @@
           width: 250px;
           z-index: 999;
           transition: all 0.3s;
-          background: var(--white);
+          background: var(--cmenu);
           box-shadow: rgba(0, 0, 0, 0.15) 0px -1px 34px 0px;
           justify-content: center;
           opacity: 0;
@@ -331,7 +331,7 @@
     transition: all 0.4s !important;
     transform-origin: top;
     max-height: calc(100vh - 130px);
-    background: var(--subtitle);
+    background: var(--cmenu);
     overflow-y: auto;
     &:not(.active) {
       position: fixed;

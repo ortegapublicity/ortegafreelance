@@ -20,10 +20,9 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
           <img src={logo} alt="img" />
         </Link>
         <p>
-          Neque porro quisquam est, qui dolorem ipsum quia dolor sit
-          consectetur, aliquam quaerats voluptatem. Ut enim ad minima veniam,
-          exercitationem laboriosam, nisi ut aliquid ex ea autem velit esse quam
-          nihil
+        I'm Raul Ortega, a Creative Technologist & Digital Brand Designer.
+        I build data-driven digital experiences that merge design, strategy,
+        and technology, helping businesses grow online with clarity and confidence.
         </p>
         <div className="sub__contact-left d-grid">
           <div className="sub__contac-item">

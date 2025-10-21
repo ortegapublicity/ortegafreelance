@@ -7,7 +7,7 @@ export const blogsList = [
   {
     id: 1,
     image: blog1,
-    date: "October 19, 2023",
+    date: "October 21, 2025",
     heading: " Brand design that helps the company grow",
     para: `There are many variations of passages of Lorem Ipsum
       available, but the majority have suffered alteration in
@@ -16,8 +16,8 @@ export const blogsList = [
   {
     id: 2,
     image: blog2,
-    date: "October 19, 2023",
-    heading: "   Fresh design ideas & inspiration for 2023",
+    date: "October 21, 2025",
+    heading: "   Fresh design ideas & inspiration for 2025",
     para: `There are many variations of passages of Lorem Ipsum
       available, but the majority have suffered alteration in
       some form, by injected humour, or randomised words`,
@@ -25,8 +25,8 @@ export const blogsList = [
   {
     id: 3,
     image: blog3,
-    date: "October 19, 2023",
-    heading: "   Fresh design ideas & inspiration for 2023",
+    date: "October 21, 2025",
+    heading: "   The Power of Purpose-Driven Design: The Formula to Scale Your Ad Results from 3x to 6x",
     para: `There are many variations of passages of Lorem Ipsum
       available, but the majority have suffered alteration in
       some form, by injected humour, or randomised words`,
@@ -34,7 +34,7 @@ export const blogsList = [
   {
     id: 4,
     image: blog4,
-    date: "October 19, 2023",
+    date: "October 19, 2025",
     heading: "   Brand design that helps the company grow",
     para: `There are many variations of passages of Lorem Ipsum
       available, but the majority have suffered alteration in

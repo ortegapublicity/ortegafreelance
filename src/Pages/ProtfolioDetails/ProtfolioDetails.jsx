@@ -47,7 +47,7 @@ const ProtfolioDetails = () => {
                   </div>
                   <div className="items">
                     <h5>Date</h5>
-                    <p>Sept 19, 2023</p>
+                    <p>Sept 19, 2025</p>
                   </div>
                 </div>
                 <div className="prot__left">

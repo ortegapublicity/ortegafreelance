@@ -33,7 +33,7 @@ const Blogs = () => {
                 >
                   <span className="box">
                     <i className="bi bi-arrow-up-right"></i>
-                    <span className="textmore"> Click More Work </span>
+                    <span className="textmore"> Click For More Works </span>
                   </span>
                 </Link>
               </div>

@@ -32,19 +32,19 @@ const recentList = [
   {
     id: 1,
     image: bsmall1,
-    date: "October 19, 2023",
+    date: "October 19, 2025",
     title: "The Main Thing For The Designer",
   },
   {
     id: 2,
     image: bsmall2,
-    date: "October 19, 2023",
+    date: "October 19, 2025",
     title: "he services provide for design",
   },
   {
     id: 3,
     image: bsmall3,
-    date: "October 19, 2023",
+    date: "October 19, 2025",
     title: "The Main Thing For The Designer",
   },
 ];

@@ -1,7 +1,7 @@
 .ser__components {
   .accordion-item {
     border-radius: 8px;
-    background-color: rgb(23, 23, 23);
+    background-color: rgb(111, 111, 111);
     border: none;
     border-radius: 10px;
     &:not(:last-child) {
@@ -11,7 +11,7 @@
       .accordion-button {
         border-radius: 8px;
         box-shadow: none;
-        background-color: rgb(23, 23, 23);
+        background-color: rgb(142, 124, 245);
         font-size: 20px;
         line-height: 150%;
         font-weight: 400;
@@ -41,7 +41,7 @@
     padding: 10px 16px 14px;
     padding: 0 30px 30px;
     p {
-      color: #999999;
+      color: #1e2a47;
       font-size: 18px;
       font-style: normal;
       font-weight: 400;

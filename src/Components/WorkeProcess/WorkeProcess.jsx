@@ -6,7 +6,7 @@ const processList = [
   {
     id: 1,
     title: "Concept",
-    info: "Nemo enim ipsam voluptatem voluptas sit aspernatur aut odit aut fugit",
+    info: "I analyze your goals, audience, and market to set measurable objectives, like achieving a strong ROI within the first six months. This stage builds the foundation for a digital brand strategy tailored toyour business growth.",
     list: [
       "Reviewing any existing branding",
       "Target audience and competitors research",
@@ -16,21 +16,21 @@ const processList = [
   {
     id: 2,
     title: "Design",
-    info: "Nemo enim ipsam voluptatem voluptas sit aspernatur aut odit aut fugit",
+    info: "Here I define the creative direction using agile workflows, wireframes, and the right design tools — building a cohesive presence that connects your website, social media, and brand identity.",
     list: [
-      "Developing wireframes and mockup",
-      "Choosing typography, color palettes,",
-      "Refining the design",
+      "Defining the creative direction",
+      "Building wireframes & prototypes",
+      "Choosing the right tools & methods",
     ],
   },
   {
     id: 3,
-    title: "Webflow",
-    info: "Nemo enim ipsam voluptatem voluptas sit aspernatur aut odit aut fugit",
+    title: "Go Live",
+    info: "This phase activates your online presence across all platforms — from your website to social media and paid campaigns. Every element works together to attract, engage, and convert your ideal audience.",
     list: [
-      "Testing the website thoroughly launch",
-      "Choosing typography, color palettes,",
-      "Refining the design",
+      "Activating digital channels",
+      "Implementing ad strategies",
+      "Designing dynamic content",
     ],
   },
 ];

@@ -8,7 +8,7 @@ const planData = [
   {
     id: 1,
     planName: "Basic Plan",
-    price: "$35",
+    price: "$350",
     time: "per month",
     fetcher: [
       " Web Development",

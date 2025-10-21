@@ -78,10 +78,10 @@
   }
   .quote {
     position: absolute;
-    top: 99px;
-    left: 291px;
+    top: 45px;
+    left: 850px;
     @include breakpoint(max-xl) {
-      left: 240px;
+      left: 550px;
     }
     @include breakpoint(max-lg) {
       display: none;

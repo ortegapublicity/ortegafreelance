@@ -18,35 +18,35 @@ import { Pagination, Autoplay } from "swiper/modules";
 const reviewList = [
   {
     id: 1,
-    name: "Shawn Beltran",
-    position: "Business Owner",
-    review: `There are many variations of passages of Lorem Ipsum
-    available, by injected humour, or randomised words which
-    don't look even slightly believable. If you are going to
-    use a passage of Lorem Ipsum, you need to be hidden in
-    middle of text. All the Lorem Ipsum generators`,
+    name: "Javier Tojo",
+    position: "JaviToyz",
+    review: `I’ve had the pleasure of working with Raul. He is
+     someone who I will always remember fondly. He is an amazing
+     Professional in his field. He helped me In my Personal
+     Creative Project in the Toy industry with his Design and
+     Digital Marketing skillsets. He positively influenced my
+     trajectory and helped me build My Portfolio and Online
+     Presence in this challenging field.`,
     stars: [<StarFill className="ratting fz-20" />],
   },
   {
     id: 2,
-    name: "John Methcel",
-    position: "Business Owner",
-    review: `There are many variations of passages of Lorem Ipsum
-    available, by injected humour, or randomised words which
-    don't look even slightly believable. If you are going to
-    use a passage of Lorem Ipsum, you need to be hidden in
-    middle of text. All the Lorem Ipsum generators`,
+    name: "Danilo Rey",
+    position: "Rey Antigüedades",
+    review: `We are extremely satisfied with the service provided
+    by Raul Ortega. Outstanding results delivered in record time.`,
     stars: [<StarFill className="ratting fz-20" />],
   },
   {
     id: 3,
-    name: "Nethon Jr",
-    position: "Business Owner",
-    review: `There are many variations of passages of Lorem Ipsum
-    available, by injected humour, or randomised words which
-    don't look even slightly believable. If you are going to
-    use a passage of Lorem Ipsum, you need to be hidden in
-    middle of text. All the Lorem Ipsum generators`,
+    name: "Yanire Braña",
+    position: "MET COMMUNITY",
+    review: `Raúl is an excellent professional and an outstanding
+    human being. Highly skilled, efficient, and dedicated. It has
+    been a pleasure to have his support in the editing of multimedia
+    materials across several large-scale projects. I look forward to
+    continuing our collaboration in the future.
+`,
     stars: [<StarFill className="ratting fz-20" />],
   },
 ];
