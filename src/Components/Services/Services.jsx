@@ -7,31 +7,31 @@ const serviceList = [
     id: "01",
     heading: "Illustration Design",
     subHeading: "Designer",
-    para: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. sunt in culpa qui officia deserunt mollit",
+    para: "Transform ideas into striking visuals that connect emotionally and strengthen your brand’s identity.",
   },
   {
     id: "02",
     heading: "Business Branding",
     subHeading: "Branding",
-    para: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. sunt in culpa qui officia deserunt mollit",
+    para: "Build a brand that sells: from strategy and logo design to a consistent digital presence across all platforms.",
   },
   {
     id: "03",
     heading: "Web UI/UX Design",
     subHeading: "UI/UX Design",
-    para: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. sunt in culpa qui officia deserunt mollit",
+    para: "Designing user-focused, responsive websites that look great and drive real business performance.",
   },
   {
     id: "04",
-    heading: "Application Design",
-    subHeading: " Web Design",
-    para: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. sunt in culpa qui officia deserunt mollit",
+    heading: "Paid Media",
+    subHeading: "Media Buyer",
+    para: "Maximize ROI with targeted Meta and Google Ads campaigns that turn traffic into measurable results.",
   },
   {
     id: "05",
-    heading: " Digital Marketing",
-    subHeading: "SEO Analytics",
-    para: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. sunt in culpa qui officia deserunt mollit",
+    heading: "Video Editing",
+    subHeading: "Audiovisuals",
+    para: "Create high-impact videos that tell your story, capture attention, and enhance your brand’s credibility.",
   },
 ];
 const Services = ({ isHeading }) => {
@@ -44,7 +44,7 @@ const Services = ({ isHeading }) => {
         {isHeading && (
           <Title
             mainTitle="My Special Service For Your Business Development"
-            sortTitle="Services That i Provide"
+            sortTitle="What I Do"
           />
         )}
 

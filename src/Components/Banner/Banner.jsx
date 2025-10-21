@@ -80,7 +80,7 @@ const Banner = () => {
                     <PlayFill />
                   </i>
                 </div>
-                <span className="proces">Work Process</span>
+                <span className="proces">Recent Results</span>
               </div>
             </div>
           </div>

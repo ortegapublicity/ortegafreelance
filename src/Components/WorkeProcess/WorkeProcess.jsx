@@ -39,7 +39,7 @@ const WorkeProcess = () => {
     <section className="process__section pt-120 pb-120">
       <div className="container">
         <Title
-          mainTitle="Your Dream Website In Just Few Steps"
+          mainTitle="Boost Your Brand Online in a Few Steps."
           sortTitle="Working Process"
         />
         <div className="row g-4">

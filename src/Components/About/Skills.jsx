@@ -8,25 +8,25 @@ import boot from "../../assets/img/about/boot.png";
 const skillsList = [
   {
     id: 1,
-    skill: "Figma",
+    skill: "Notion",
     percentage: "90%",
     image: figma,
   },
   {
     id: 2,
-    skill: "Wordpress",
-    percentage: "95%",
+    skill: "Wordpress + HTML",
+    percentage: "85%",
     image: word,
   },
   {
     id: 3,
-    skill: "Figma",
-    percentage: "85%",
+    skill: "Adobe Suite",
+    percentage: "90%",
     image: html,
   },
   {
     id: 4,
-    skill: "Bootstrap",
+    skill: "Google/Meta ADS",
     percentage: "97%",
     image: boot,
   },
@@ -45,10 +45,11 @@ const Skills = ({ isTabActive }) => {
             <div className="about__onecontent">
               <h2>My Skills</h2>
               <p>
-                Work with someone who blends design, marketing, 
-                and technology to turn ideas into measurable growth.
-                I bring clarity, creativity, and strategy to every project
-                focused on real results.
+              With expertise in Adobe After Effects, Premiere,
+               Photoshop, Illustrator, and Express, plus tools
+               like CapCut, Canva, Notion, Trello, Asana, WordPress,
+               and Google & Meta Ads. I have everything needed to
+               create and scale digital brands that sell.
               </p>
               <div className="about__contactwrap">
                 <div className="row g-4">

@@ -29,7 +29,7 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
           <div className="sub__contac-item">
             <div className="content">
               <span className="address d-block"> address </span>
-              <span className="textp"> Victoria Street London, </span>
+              <span className="textp"> San Diego, Carabobo, Venezuela </span>
             </div>
           </div>
           <div className="sub__contac-item">

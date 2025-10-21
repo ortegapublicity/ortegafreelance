@@ -15,31 +15,31 @@ const Education = ({isTabActive}) => {
             <div className="about__onecontent">
               <h2>My Education</h2>
               <p>
-                Work with someone who blends design, marketing, 
-                and technology to turn ideas into measurable growth.
-                I bring clarity, creativity, and strategy to every project
-                focused on real results.
+                Bachelor’s in Media and Communication. Certified in 
+                Cinematic Production & Creative Design, 
+                combining storytelling, branding, and digital innovation, 
+                ready to bring your ideas to life with creative solutions.
               </p>
               <div className="exprience__box mt-30">
                 <div className="exri__item">
-                  <span className="fz-18 fw-500 base">2011-2013</span>
+                  <span className="fz-18 fw-500 base">2009</span>
                   <div className="expri__cont">
-                    <h4 className="mb-15 text-white">Programming Course</h4>
-                    <p className="fz-18 pra d-block">New York University</p>
+                    <h4 className="mb-15 text-black">Cinematic Production</h4>
+                    <p className="fz-18 pra d-block">metacarpo Producciones</p>
                   </div>
                 </div>
                 <div className="exri__item">
-                  <span className="fz-18 fw-500 base">2013-2016</span>
+                  <span className="fz-18 fw-500 base">2013</span>
                   <div className="expri__cont">
-                    <h4 className="mb-15 text-white">University of Design</h4>
-                    <p className="fz-18 pra d-block">Kingston, United States</p>
+                    <h4 className="mb-15 text-black">Creative Design</h4>
+                    <p className="fz-18 pra d-block">Brothers Escuela de Creativos</p>
                   </div>
                 </div>
                 <div className="exri__item">
-                  <span className="fz-18 fw-500 base">2016-2018</span>
+                  <span className="fz-18 fw-500 base">2009-2014</span>
                   <div className="expri__cont">
-                    <h4 className="mb-15 text-white">Web Design Course</h4>
-                    <p className="fz-18 pra d-block">New York University</p>
+                    <h4 className="mb-15 text-black">B.A. in Media and Comm.</h4>
+                    <p className="fz-18 pra d-block">Universidad Arturo Michelena</p>
                   </div>
                 </div>
               </div>
