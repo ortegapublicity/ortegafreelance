@@ -10,22 +10,22 @@ export const projectList = [
     {
       id: 1,
       image: pro1,
-      heading: "Product Design",
+      heading: "Digital  Presence",
       subHeading: "Brand Identity & Motion Design",
       category:["branding_app", "website", "all"]
     },
     {
       id: 2,
       image: pro3,
-      heading: "Product Design",
-      subHeading: "Design & Branding Mokeup",
+      heading: "Digital Presence",
+      subHeading: "WEB & Growth Marketing",
       category:["los_app", "landing_page", "all"]
     },
     {
       id: 3,
       image: pro5,
-      heading: "UI/UX Design",
-      subHeading: "Mobile Application Development",
+      heading: "Digital Design",
+      subHeading: "Digital Transformation",
       category:["website", "branding_app", "all"],
     },
     {
