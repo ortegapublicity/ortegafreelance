@@ -14,7 +14,7 @@ const skillsList = [
   },
   {
     id: 2,
-    skill: "Wordpress + HTML",
+    skill: "Full Stack",
     percentage: "85%",
     image: word,
   },
@@ -26,7 +26,7 @@ const skillsList = [
   },
   {
     id: 4,
-    skill: "Google/Meta ADS",
+    skill: "Paid Media",
     percentage: "97%",
     image: boot,
   },
