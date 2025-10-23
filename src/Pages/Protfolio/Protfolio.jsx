@@ -15,18 +15,18 @@ const categoryList = [
   },
   {
     id: 2,
-    categoryName: "Branding-app",
-    value: "branding_app",
+    categoryName: "Branding",
+    value: "branding",
   },
   {
     id: 3,
-    categoryName: "Los-App",
-    value: "los_app",
+    categoryName: "Digital Marketing",
+    value: "Digital_Marketing",
   },
   {
     id: 4,
-    categoryName: "Landing Page",
-    value: "landing_page",
+    categoryName: "Adobe Suite",
+    value: "Adobe_Suite",
   },
   {
     id: 5,

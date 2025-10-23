@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
 import detailbg from "../../assets/img/protfolio/prot-detailsbig.png";
-import detailbg1 from "../../assets/img/protfolio/prot-detials2.png";
+import detailbg1 from "../../assets/img/protfolio/prot-detials1.png";
 import detailbg2 from "../../assets/img/protfolio/prot-detials2.png";
 import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
 import Lightbox from "../../Components/Shared/LightBox/LightBox";
@@ -26,7 +26,7 @@ const ProtfolioDetails = () => {
     <>
 
       <PageHeader
-        heading={"Brand Identity & Motion Design"}
+        heading={"Building a Creative Freedom Path"}
         page="Brand Identity & Motion Design"
       />
       <section className="protfolio__details pb-120">
@@ -43,21 +43,21 @@ const ProtfolioDetails = () => {
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Clients</h5>
-                    <p>Nicolas Marko</p>
+                    <p>Javier Tojo</p>
                   </div>
                   <div className="items">
                     <h5>Date</h5>
-                    <p>Sept 19, 2025</p>
+                    <p>July 12, 2023</p>
                   </div>
                 </div>
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Category</h5>
-                    <p>Branding Design</p>
+                    <p>Digital Presence</p>
                   </div>
                   <div className="items">
                     <h5>Location</h5>
-                    <p>24 Fifth st.,Los Angeles, USA</p>
+                    <p>Montevideo, Uruguay</p>
                   </div>
                 </div>
               </div>
@@ -79,25 +79,21 @@ const ProtfolioDetails = () => {
               data-aos-duration="1400"
             >
               <p className="fz-16 pra ttext__one">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text. All the Lorem Ipsum generators on
-                the Internet tend to repeat predefined chunks as necessary,
-                making this the first true generator on the Internet. It uses a
-                dictionary of over combined with a handful of model sentence
-                structures, to generate Lorem Ipsum which looks reasonable.
+                When I started working with Javier Tojo, the goal was more than 
+                creating a digital presence; it was building a system that allowed 
+                him to live from his art, work remotely, and attract clients from 
+                the U.S. and beyond. We designed and developed www.javitoyz.com on 
+                WordPress, integrating e-commerce functionality and usability tailored 
+                to his artistic style. Each section was crafted to highlight his 
+                personal brand and the professional value behind his visual work.
               </p>
               <p className="fz-16 pra">
-                Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-                aut fugit, sed quia consequuntur magni dolores eos qui ratione
-                voluptatem sequi nesciunt. Neque quisquam est, qui dolorem ipsum
-                quia dolor sit amet, consectetur, adipisci velit, sed quia non
-                numquam eius modi tempora incidunt ut labore et dolore magnam
-                aliquam voluptatem. Ut enim ad minima veniam, quis nostrum
-                exercitationem ullam corporis suscipit laboriosam,
+                Along with the website, I produced a video presentation showcasing his 
+                collaboration with Hot Buttered Elves, edited to align with his brand 
+                identity and storytelling. We built Meta Ads campaigns targeting potential 
+                clients in Los Angeles and added LinkedIn Ads to reach agencies and creative 
+                directors. Complementing this, I managed his Meta profiles and digital assets, 
+                ensuring brand consistency across every platform.
               </p>
             </div>
             <div
@@ -105,30 +101,35 @@ const ProtfolioDetails = () => {
               data-aos="fade-up"
               data-aos-duration="1600"
             >
-              <h3 className="text__boxhead">Challenge</h3>
+              <h3 className="text__boxhead">As David Ogilvy once said, “If it doesn’t sell, it isn’t creative.”</h3>
               <p className="fz-16 pra ttext__one">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text. All the Lorem Ipsum generators on
-                the Internet tend to repeat predefined chunks as necessary,
-                making this the first true generator on the Internet.
+                Every asset we developed, from visuals to campaigns, was designed to drive 
+                opportunity. Within a few months, Javier landed multiple high-value projects 
+                that generated over $10,000 in revenue, achieving his goal of moving from 
+                Uruguay to Bali and working remotely while surfing in the mornings and 
+                designing by the sea in the afternoons.
               </p>
+              <p className="fz-16 pra">
+                Every asset we developed, from visuals to campaigns, was designed to drive 
+                opportunity. Within a few months, Javier landed multiple high-value projects 
+                that generated over $10,000 in revenue, achieving his goal of moving from 
+                Uruguay to Bali and working remotely while surfing in the mornings and 
+                designing by the sea in the afternoons. This project became a clear example of 
+                how structured creativity, aligned with data-driven strategy, transforms not 
+                just a brand but a lifestyle. The blend of e-commerce design, ad strategy, 
+                and branding clarity turned his passion into a sustainable business model 
+                with freedom at its core.
+              </p>
+              <h3 className="text__boxhead">Key Takeaways</h3>
               <ul className="challenge__list">
                 <li>
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse
-                  cillum dolore eu fugiat nulla pariatur.
+                  A cohesive digital ecosystem multiplies results.
                 </li>
                 <li>
-                  Nor again is there anyone who loves or pursues or desires to
-                  obtain pain of itself, because it is pain, but because
-                  occasionally
+                  Paid campaigns amplify creative visibility when aligned with purpose.
                 </li>
                 <li>
-                  On the other hand, we denounce with righteous indignation and
-                  dislike
+                  Branding consistency builds emotional and professional credibility.
                 </li>
               </ul>
             </div>
@@ -137,21 +138,10 @@ const ProtfolioDetails = () => {
               data-aos="fade-up"
               data-aos-duration="1800"
             >
-              <h3 className="text__boxhead">Solution & Result</h3>
               <p className="fz-16 pra">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text. All the Lorem Ipsum generators on
-                the Internet tend to repeat predefined chunks as necessary,
-                making this the first true generator on the Internet. It uses a
-                dictionary of over Latin words, combined with a handful of model
-                sentence structures, to generate Lorem Ipsum which looks
-                reasonable. The generated Lorem Ipsum is therefore always free
-                from repetition, injected humour, or non-characteristic words
-                etc.
+                If you’d like to learn more about how I approach digital transformation for 
+                creative professionals, explore more insights on my projects or book a video 
+                call to discuss your next project and how we can scale it together.
               </p>
             </div>
             <div

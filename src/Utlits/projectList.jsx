@@ -10,44 +10,44 @@ export const projectList = [
     {
       id: 1,
       image: pro1,
-      heading: "Digital  Presence",
-      subHeading: "Brand Identity & Motion Design",
-      category:["branding_app", "website", "all"]
+      heading: "Javitoyz",
+      subHeading: "Building a Creative Freedom Path",
+      category:["branding", "website", "all"]
     },
     {
       id: 2,
       image: pro3,
-      heading: "Digital Presence",
-      subHeading: "WEB & Growth Marketing",
-      category:["los_app", "landing_page", "all"]
+      heading: "Todxs Podemos Ser",
+      subHeading: "From Digital Presence to Real Impact",
+      category:["Digital_Marketing", "website", "all"]
     },
     {
       id: 3,
       image: pro5,
-      heading: "Digital Design",
-      subHeading: "Digital Transformation",
-      category:["website", "branding_app", "all"],
+      heading: "Lights English Academy",
+      subHeading: "Motion Video presentation",
+      category:["Adobe_Suite", "all"],
     },
     {
       id: 4,
       image: pro2,
-      heading: "UI/UX Design",
-      subHeading: "Mobile Application Development",
-      category:["los_app", "landing_page", "all"]
+      heading: "NF Autoparts",
+      subHeading: "Driving Local Growth Through Digital Vision",
+      category:["Digital_Marketing", "Branding", "all"]
     },
     {
       id: 5,
       image: pro4,
-      heading: "UI/UX Design",
-      subHeading: "Mobile Application Development",
-      category:["branding_app", "website", "all"]
+      heading: "Brandtop",
+      subHeading: "Digital Presence With Clear Message",
+      category:["branding", "Adobe_Suite", "all"]
     },
     {
       id: 6,
       image: pro6,
-      heading: "UI/UX Design",
-      subHeading: "Mobile Application Development",
-      category:["landing_page", "website", "all"]
+      heading: "Rey Antigüedades",
+      subHeading: "Turning Data Into Virality",
+      category:["branding", "Digital_Marketing", "all"]
     },
   ];
 
