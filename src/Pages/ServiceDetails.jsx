@@ -12,32 +12,23 @@ const accordionList = [
   {
     id: "cmnid4",
     heading: "Simple process for workflow?",
-    para: ` All the Lorem Ipsum generators on the Internet tend
-    to repeat predefined chunks as necessary, making
-    this the first true generator on the Internet. It
-    uses a dictionary of over words, combined with a
-    handful of model structures, to generate Lorem Ipsum
-    which looks reasonable.`,
+    para: `We start with a discovery session, develop 
+    mood boards and brand archetypes, then move into 
+    design and rollout.`,
   },
   {
     id: "cmnid5",
     heading: "Unique brand identity and strategy",
-    para: ` All the Lorem Ipsum generators on the Internet tend
-    to repeat predefined chunks as necessary, making
-    this the first true generator on the Internet. It
-    uses a dictionary of over words, combined with a
-    handful of model structures, to generate Lorem Ipsum
-    which looks reasonable.`,
+    para: ` Your brand is built with clarity and 
+    psychological insight (not trends) ensuring 
+    longevity and memorability.`,
   },
   {
     id: "cmnid6",
-    heading: "Tailor-made digital products",
-    para: ` All the Lorem Ipsum generators on the Internet tend
-    to repeat predefined chunks as necessary, making
-    this the first true generator on the Internet. It
-    uses a dictionary of over words, combined with a
-    handful of model structures, to generate Lorem Ipsum
-    which looks reasonable.`,
+    heading: "Do you handle rebranding?",
+    para: `Absolutely. I help existing companies 
+    realign their image and communication with 
+    current market demands. `,
   },
 ];
 const ServiceDetails = () => {
@@ -63,19 +54,17 @@ const ServiceDetails = () => {
                     About Business Branding Service
                   </h3>
                   <p className="fz-16 pra ttext__one">
-                    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
-                    odit aut fugit, sed quia consequuntur magni voluptatem sequi
-                    nesciunt. Neque porro quisquam est, qui dolorem ipsum quia
-                    dolor sit amet, consectetur, adipisci velit, numquam eius
-                    modi tempora incidunt ut labore et dolore magnam aliquam
+                    Branding is the foundation of every successful business.
+                    I help companies craft brands that sell, building strong 
+                    visual systems supported by strategy, storytelling, and 
+                    design consistency. From defining your mission to designing 
+                    your logo and brand guidelines, my process shapes an 
+                    identity that speaks with authenticity and drives conversion.
                   </p>
                   <p className="fz-16 pra">
-                    Quis nostrum exercitationem ullam corporis suscipit
-                    laboriosam, nisi ut aliquid ex ea commodi reprehenderit qui
-                    in ea voluptate velit esse quam nihil molestiae consequatur,
-                    vel illum qui dolorem fugiat quo voluptas nulla the Lorem
-                    Ipsum generators on the Internet tend to repeat predefined
-                    chunks
+                    Each brand strategy I create connects emotion with data
+                    combining intuition with measurable goals to make your 
+                    brand both memorable 
                   </p>
                 </div>
                 <div
@@ -87,24 +76,20 @@ const ServiceDetails = () => {
                     Specialization & Working Process
                   </h3>
                   <p className="fz-16 pra">
-                    There are many variations of passages of Lorem Ipsum
-                    available, but the majority have suffered alteration in some
-                    form, by injected humour, or randomised words which don't
-                    look even slightly believable. If you are going to use a you
-                    need to be sure there isn't anything embarrassing hidden in
-                    the middle of text. All the generators on the Internet tend
-                    to repeat predefined chunks as necessary, Making this the
-                    first true generator on the Internet. It uses a dictionary
-                    of over combined with a handful of structures, to generate
-                    Lorem Ipsum which looks reasonable. The generated Lorem
-                    Ipsum is therefore always free from injected humour, or
-                    non-characteristic words etc.
+                    My branding approach blends creative 
+                    strategy with business insight. I use 
+                    market research, audience analysis, 
+                    and competitive positioning to establish 
+                    a strong foundation. Once your tone and 
+                    purpose are defined, I develop logo systems, 
+                    color palettes, and typography that translate 
+                    your story into visuals that convert.
                   </p>
                 </div>
                 <div className="paythumb position-relative">
                   <img src={serDv2} alt="img" />
                   <a
-                    href="https://www.youtube.com/watch?v=zFuJgOiUEso&amp;ab_channel=SujithRajendran"
+                    href="https://www.youtube.com/embed/uHqOZrl3yzE?si=H0Swi7NDRYGXyEFT"
                     className="video__80 video-btn"
                   >
                     <i>
@@ -139,15 +124,11 @@ const ServiceDetails = () => {
                     <i className="bi bi-chevron-right"></i>
                   </a>
                   <a href="#0" className="link__box mb-15">
-                    Application Design
+                    Paid Media
                     <i className="bi bi-chevron-right"></i>
                   </a>
                   <a href="#0" className="link__box mb-15">
-                    Digital Marketing
-                    <i className="bi bi-chevron-right"></i>
-                  </a>
-                  <a href="#0" className="link__box">
-                    Web Development
+                    Video Editing
                     <i className="bi bi-chevron-right"></i>
                   </a>
                 </div>
