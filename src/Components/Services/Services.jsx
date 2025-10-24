@@ -1,40 +1,43 @@
 import React from "react";
 import Service from "./Service";
 import Title from "../Shared/Title/Title";
+import { useTranslation } from 'react-i18next';
 
 const serviceList = [
-  {
+  { 
     id: "01",
-    heading: "Illustration Design",
-    subHeading: "Designer",
-    para: "Transform ideas into striking visuals that connect emotionally and strengthen your brand’s identity.",
+    headingKey: "service.illustration.heading", 
+    subheadingKey: "service.illustration.subheading", 
+    paraKey: "service.illustration.para", 
   },
-  {
+  { 
     id: "02",
-    heading: "Business Branding",
-    subHeading: "Branding",
-    para: "Build a brand that sells: from strategy and logo design to a consistent digital presence across all platforms.",
+    headingKey: "service.branding.heading",
+    subheadingKey: "service.branding.subheading",
+    paraKey: "service.branding.para",
   },
-  {
+  { 
     id: "03",
-    heading: "Web UI/UX Design",
-    subHeading: "UI/UX Design",
-    para: "Designing user-focused, responsive websites that look great and drive real business performance.",
+    headingKey: "service.uiux.heading",
+    subheadingKey: "service.uiux.subheading",
+    paraKey: "service.uiux.para",
   },
-  {
+  { 
     id: "04",
-    heading: "Paid Media",
-    subHeading: "Media Buyer",
-    para: "Maximize ROI with targeted Meta and Google Ads campaigns that turn traffic into measurable results.",
+    headingKey: "service.paidmedia.heading",
+    subheadingKey: "service.paidmedia.subheading",
+    paraKey: "service.paidmedia.para",
   },
-  {
+  { 
     id: "05",
-    heading: "Video Editing",
-    subHeading: "Audiovisuals",
-    para: "Create high-impact videos that tell your story, capture attention, and enhance your brand’s credibility.",
+    headingKey: "service.video.heading",
+    subheadingKey: "service.video.subheading",
+    paraKey: "service.video.para",
   },
 ];
 const Services = ({ isHeading }) => {
+  const { t } = useTranslation();
+
   return (
     <section
       id="services"
@@ -43,19 +46,21 @@ const Services = ({ isHeading }) => {
       <div className="container">
         {isHeading && (
           <Title
-            mainTitle="My Special Service For Your Business Development"
-            sortTitle="What I Do"
+            // 1. Traducción de Títulos
+            mainTitle={t('services.mainTitle')} 
+            sortTitle={t('services.sortTitle')}
           />
         )}
 
         <div className={`service__uniquewrap `}>
-          {serviceList.map(({ id, heading, subHeading, para }) => (
+          {serviceList.map((service) => ( // <-- Corregido para usar 'service'
             <Service
-              key={id}
-              id={id}
-              heading={heading}
-              subHeading={subHeading}
-              para={para}
+            key={service.id}
+            id={service.id}
+            // Usamos t() para traducir las llaves del objeto 'service'
+            heading={t(service.headingKey)} 
+            subheading={t(service.subheadingKey)}
+            para={t(service.paraKey)}
             />
           ))}
         </div>

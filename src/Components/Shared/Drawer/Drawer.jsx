@@ -40,7 +40,7 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
           <div className="sub__contac-item">
             <div className="content">
               <span className="address d-block"> call now </span>
-              <Link className="textp"> +98 4758 2154 021 </Link>
+              <Link className="textp"> +58 414 041 9317 </Link>
             </div>
           </div>
         </div>

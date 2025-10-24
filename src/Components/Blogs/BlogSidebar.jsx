@@ -32,20 +32,20 @@ const recentList = [
   {
     id: 1,
     image: bsmall1,
-    date: "October 19, 2025",
-    title: "The Main Thing For The Designer",
+    date: "October 21, 2025",
+    title: "From Code to Conversion: How I Use Templates to Deliver 6-Month ROI for Clients",
   },
   {
     id: 2,
     image: bsmall2,
-    date: "October 19, 2025",
-    title: "he services provide for design",
+    date: "October 22, 2025",
+    title: "How Structured Creativity Can Scale Your Business",
   },
   {
     id: 3,
     image: bsmall3,
-    date: "October 19, 2025",
-    title: "The Main Thing For The Designer",
+    date: "October 22, 2025",
+    title: "The Power of Purpose-Driven Design: The Formula to Scale Your Ad Results from 3x to 6x",
   },
 ];
 const BlogSidebar = () => {

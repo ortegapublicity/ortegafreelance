@@ -4,6 +4,7 @@ import { router } from "./Router/Router.jsx";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Test from "./Test";
 
 const App = () => {
   useEffect(() => {
@@ -12,8 +13,11 @@ const App = () => {
   return (
     <>
       <RouterProvider router={router} />
+      <Test />
     </>
   );
 };
 
 export default App;
+
+
