@@ -21,7 +21,7 @@ const Metting = () => {
                   data-aos="fade-down"
                   data-aos-duration="1600"
                 >
-                  Let's work together. fixed a meeting
+                  Let's work together. schedule a meeting
                 </h2>
               </div>
               <div
