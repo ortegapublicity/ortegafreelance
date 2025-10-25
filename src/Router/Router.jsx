@@ -11,6 +11,8 @@ import ProtfolioDetails from "../Pages/ProtfolioDetails/ProtfolioDetails";
 import ClientReyAntiguedades from "../Pages/ClientReyAntiguedades/ClientReyAntiguedades";
 import ClientNfAutoparts from "../Pages/ClientNfAutoparts/ClientNfAutoparts";
 import ClientTodxsPodemosSer from "../Pages/ClientTodxsPodemosSer/ClientTodxsPodemosSer";
+import ClientBrandtop from "../Pages/ClientBrandtop/ClientBrandtop";
+import ClientLightsEnglishAdacemy from "../Pages/ClientLightsEnglishAcademy/ClientLightsEnglishAcademy";
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +62,14 @@ export const router = createBrowserRouter([
       {
         path: "/client-todxspodemosser",
         element: <ClientTodxsPodemosSer/>,
+      },
+      {
+        path: "/client-brandtop",
+        element: <ClientBrandtop/>,
+      },
+      {
+        path: "/client-lightsenglishacademy",
+        element: <ClientLightsEnglishAdacemy/>,
       },
     ],
   },

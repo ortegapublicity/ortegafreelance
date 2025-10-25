@@ -6,7 +6,7 @@ const processList = [
   {
     id: 1,
     title: "Concept",
-    info: "I analyze your goals, audience, and market to set measurable objectives, like achieving a strong ROI within the first six months. This stage builds the foundation for a digital brand strategy tailored toyour business growth.",
+    info: "I analyze your goals, audience, and market to set measurable objectives, like achieving a strong ROI within the first six months. This stage builds the foundation for a digital brand strategy tailored to your business growth.",
     list: [
       "Reviewing any existing branding",
       "Target audience and competitors research",

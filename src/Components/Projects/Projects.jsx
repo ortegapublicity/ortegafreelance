@@ -45,7 +45,7 @@ const Projects = () => {
           >
             <span className="box">
               <i className="bi bi-arrow-up-right"></i>
-              <span className="textmore"> Click More Work </span>
+              <span className="textmore"> Click Here For More Work </span>
             </span>
           </Link>
         </div>

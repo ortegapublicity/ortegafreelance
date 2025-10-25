@@ -64,7 +64,7 @@ const ClientNfAutoparts = () => {
               <ul className="social d-flex gap-3">
                 {socialIcons.map(({ icon, id }) => (
                   <li key={id}>
-                    <Link to={"https://www.nfautoparts.com.com"} target="_blank">
+                    <Link to={"https://www.nfautoparts.com"} target="_blank">
                       <i>{icon}</i>
                     </Link>
                   </li>
@@ -175,7 +175,7 @@ const ClientNfAutoparts = () => {
               data-aos="fade-down"
               data-aos-duration="1000"
             >
-              Protfolio
+              Portfolio
             </span>
             <h2 className="fw-500" data-aos="fade-up" data-aos-duration="1000">
               Related Work
@@ -185,7 +185,7 @@ const ClientNfAutoparts = () => {
           <div className=" project__wrapone">
             {projectList
               .slice(0, 2)
-              .map(({ heading, id, image, subHeading }, index) => (
+              .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
                   image={image}
@@ -193,6 +193,7 @@ const ClientNfAutoparts = () => {
                   subHeading={subHeading}
                   openLightbox={openLightbox}
                   index={index}
+                  navigate={routeList}
                 />
               ))}
           </div>
@@ -200,7 +201,7 @@ const ClientNfAutoparts = () => {
         {lightboxOpen && (
           <Lightbox
             images={imagesList}
-            onClose={closeLightbox}
+            setLightboxOpen={setLightboxOpen}
             currentId={currentId}
           />
         )}

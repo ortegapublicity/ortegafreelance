@@ -29,6 +29,7 @@ export const projectList = [
       heading: "Lights English Academy",
       subHeading: "Motion Video presentation",
       category:["Adobe_Suite", "all"],
+      routeList: "/client-lightsenglishacademy",
     },
     {
       id: 4,
@@ -43,7 +44,8 @@ export const projectList = [
       image: pro4,
       heading: "Brandtop",
       subHeading: "Digital Presence With Clear Message",
-      category:["branding", "Adobe_Suite", "all"]
+      category:["branding", "Adobe_Suite", "all"],
+      routeList: "/client-brandtop",
     },
     {
       id: 6,

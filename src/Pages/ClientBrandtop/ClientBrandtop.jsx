@@ -10,7 +10,7 @@ import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
 import Lightbox from "../../Components/Shared/LightBox/LightBox";
 import { socialIcons } from "../../Utlits/socilIcons";
 
-const ClientTodxsPodemosSer = () => {
+const ClientBrandtop = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
 
@@ -26,8 +26,8 @@ const ClientTodxsPodemosSer = () => {
     <>
 
       <PageHeader
-        heading={"From Digital Presence to Real Impact"}
-        page="Building the TodxsPodemosSer Community"
+        heading={"From Complexity to Clarity"}
+        page="Building the BrandTop Identity"
       />
       <section className="protfolio__details pb-120">
         <div className="container">
@@ -43,28 +43,28 @@ const ClientTodxsPodemosSer = () => {
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Clients</h5>
-                    <p>Mima Cortez</p>
+                    <p>Freddy Ortega</p>
                   </div>
                   <div className="items">
                     <h5>Date</h5>
-                    <p>August 1, 2020</p>
+                    <p>July 1, 2018</p>
                   </div>
                 </div>
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Category</h5>
-                    <p>Digital Presence</p>
+                    <p>Branding & Marketing</p>
                   </div>
                   <div className="items">
                     <h5>Location</h5>
-                    <p>Carabobo, Venezuela</p>
+                    <p>Delaware, Estados Unidos</p>
                   </div>
                 </div>
               </div>
               <ul className="social d-flex gap-3">
                 {socialIcons.map(({ icon, id }) => (
                   <li key={id}>
-                    <Link to={"https://www.todxspodemosser.com"} target="_blank">
+                    <Link to={"https://www.brandtop.com"} target="_blank">
                       <i>{icon}</i>
                     </Link>
                   </li>
@@ -79,20 +79,22 @@ const ClientTodxsPodemosSer = () => {
               data-aos-duration="1400"
             >
               <p className="fz-16 pra ttext__one">
-                When I began working on www.todxspodemosser.com, the mission was to create 
-                something deeper than a digital campaign: a community. We built a WordPress 
-                website that reflected inclusion, creativity, and purpose. Alongside it, we 
-                created personalized emails, visual content, and paid ads for key events, 
-                allowing us to host our first event in 2022 with ten attendees through a 
-                minimal ad investment.
+                When I started working with BrandTop, the challenge was clear: transform 
+                a highly technical service into a message people could easily understand, 
+                connect with, and buy into. The company, originally part of SAEES.tech, 
+                offered advanced e-commerce optimization services for Amazon, Walmart, 
+                and Etsy sellers. My first step was to observe their workflow for a week, 
+                listening the process of client calls, understanding their language, and 
+                identifying what truly made their service valuable.
               </p>
               <p className="fz-16 pra">
-                The turning point came when the content creators embraced a unique identity 
-                that connected directly with young audiences between 17 and 24 years old. 
-                Through consistent storytelling, we transformed simple gatherings into 
-                meaningful projects like the Drawing Club, a free creative space that 
-                strengthened both participation and belonging. The digital presence became 
-                the foundation for something real: people connecting through purpose.
+                Through this analysis, I realized that BrandTop’s essence was visual transformation,
+                improving how products look and perform in digital marketplaces. This insight became 
+                the foundation for their new branding. I redefined their mission and vision, connecting 
+                them to the core idea of turning online listings into experiences that sell. From there, 
+                I built their visual identity, editing promotional videos and reels in CapCut, creating 
+                logo animations in After Effects, and structuring the content strategy that would carry 
+                the brand forward.
               </p>
             </div>
             <div
@@ -100,34 +102,28 @@ const ClientTodxsPodemosSer = () => {
               data-aos="fade-up"
               data-aos-duration="1600"
             >
-              <h3 className="text__boxhead">As Simon Sinek once said, “People don’t buy what you do; they buy why you do it.” y once said, A“If it doesn’t sell, it isn’t creative.”</h3>
+              <h3 className="text__boxhead">As Marty Neumeier once said, “Branding is the process of connecting good strategy with good creativity.” That principle guided my approach. I simplified” </h3>
               <p className="fz-16 pra ttext__one">
-               That principle guided every strategy. We documented progress on the website, 
-               shared authentic stories, and presented measurable results to international NGOs, 
-               securing over $6,000 in project funding. Those investments led to two impactful 
-               initiatives before political circumstances in the country shifted the 
-               organization’s partnerships.
-              </p>
-              <p className="fz-16 pra">
-                Even after that, the movement continued growing organically. With over 50 active 
-                members in each ongoing activity and more than 100 attendees at the last major event, 
-                a creative marketplace at the Alliance Française in Carabobo, the project proved that 
-                authenticity, structure, and data-driven creativity can turn a small idea into 
-                a social movement.
+                While my original role was as a Media Buyer, the experience proved that paid 
+                media only works when supported by strategic content. A campaign needs a voice, 
+                a story, and a purpose. By building BrandTop’s digital foundation first, we 
+                turned ads into narratives and clicks into understanding. This project became 
+                an example of how strong storytelling and branding transform not only sales, 
+                but also how a business sees itself.
               </p>
               <h3 className="text__boxhead">Key Takeaways</h3>
               <ul className="challenge__list">
                 <li>
-                  Community growth starts with authentic storytelling and purpose.
+                  Branding must start with clarity before advertising begins.
                 </li>
                 <li>
-                  A clear digital structure transforms online visibility into real action
+                  Understanding the client’s mission is key to creative direction.
                 </li>
                 <li>
-                  Strategic content and events attract engagement and investment
+                  Content built on purpose multiplies AD performance.
                 </li>
                 <li>
-                  Organic impact can outlast external funding when the mission is clear.
+                  Simplicity and storytelling make complex services relatable.
                 </li>
               </ul>
             </div>
@@ -137,10 +133,10 @@ const ClientTodxsPodemosSer = () => {
               data-aos-duration="1800"
             >
               <p className="fz-16 pra">
-                If you’d like to learn how I help creative and social projects turn digital 
-                strategy into real-world impact, explore more case studies on my projects or 
-                book a video call to discuss your next step toward building purpose-driven 
-                visibility.
+               If you want to explore how I help companies define their message, 
+               align their content, and scale their digital impact, read more of 
+               my Projects or book a video call to discuss how we can bring clarity 
+               and structure to your next brand.
               </p>
             </div>
             <div
@@ -176,7 +172,7 @@ const ClientTodxsPodemosSer = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(0, 4)
+              .slice(1, 3)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
@@ -202,4 +198,4 @@ const ClientTodxsPodemosSer = () => {
   );
 };
 
-export default ClientTodxsPodemosSer;
+export default ClientBrandtop;

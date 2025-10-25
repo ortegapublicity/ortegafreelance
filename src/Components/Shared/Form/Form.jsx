@@ -14,7 +14,7 @@ const Form = ({ isColTwo }) => {
           <input type="text" placeholder="Name" />
         </div>
         <div className={` ${isColTwo ? "col-lg-6" : "col-lg-12"}`}>
-          <input type="email" placeholder="Eamil" />
+          <input type="email" placeholder="Email" />
         </div>
         <div className="col-lg-12">
           <textarea

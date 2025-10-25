@@ -57,7 +57,7 @@ const Protfolio = () => {
 
   return (
     <>
-      <PageHeader heading={"My Work & Portfolio"} page="Work" />
+      <PageHeader heading={"My Work"} page="Work" />
       <section className="project__section pb-120">
         <div className="container">
           <div className="singletab protfolio__filter">
@@ -84,7 +84,7 @@ const Protfolio = () => {
             </ul>
             <div className="tabcontents project__wrapone">
               {filterProject.map(
-                ({ heading, id, image, subHeading }, index) => (
+                ({ heading, id, image, subHeading, routeList }, index) => (
                   <ProjectCard
                     key={id}
                     image={image}
@@ -92,7 +92,7 @@ const Protfolio = () => {
                     subHeading={subHeading}
                     openLightbox={openLightbox}
                     index={index}
-                    navigate="/client-javitoyz"
+                    navigate={routeList}
                   />
                 )
               )}

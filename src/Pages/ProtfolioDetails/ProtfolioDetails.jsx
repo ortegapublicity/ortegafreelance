@@ -168,7 +168,7 @@ const ProtfolioDetails = () => {
               data-aos="fade-down"
               data-aos-duration="1000"
             >
-              Protfolio
+              Portfolio
             </span>
             <h2 className="fw-500" data-aos="fade-up" data-aos-duration="1000">
               Related Work
@@ -177,8 +177,8 @@ const ProtfolioDetails = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(0, 2)
-              .map(({ heading, id, image, subHeading }, index) => (
+              .slice(1, 3)
+              .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
                   image={image}
@@ -186,6 +186,7 @@ const ProtfolioDetails = () => {
                   subHeading={subHeading}
                   openLightbox={openLightbox}
                   index={index}
+                  navigate={routeList}
                 />
               ))}
           </div>
@@ -193,7 +194,7 @@ const ProtfolioDetails = () => {
         {lightboxOpen && (
           <Lightbox
             images={imagesList}
-            onClose={closeLightbox}
+            setLightboxOpen={setLightboxOpen}
             currentId={currentId}
           />
         )}
