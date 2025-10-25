@@ -27,7 +27,7 @@ const ClientReyAntiguedades = () => {
 
       <PageHeader
         heading={"Turning Data Into Virality"}
-        page="Brand Identity & Motion Design"
+        page="How Structured Campaigns Scaled ReySubastas.com"
       />
       <section className="protfolio__details pb-120">
         <div className="container">
@@ -43,17 +43,17 @@ const ClientReyAntiguedades = () => {
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Clients</h5>
-                    <p>Javier Tojo</p>
+                    <p>Danilo Rey</p>
                   </div>
                   <div className="items">
                     <h5>Date</h5>
-                    <p>July 12, 2023</p>
+                    <p>Dec 1, 2024</p>
                   </div>
                 </div>
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Category</h5>
-                    <p>Digital Presence</p>
+                    <p>Media Buying</p>
                   </div>
                   <div className="items">
                     <h5>Location</h5>
@@ -64,7 +64,7 @@ const ClientReyAntiguedades = () => {
               <ul className="social d-flex gap-3">
                 {socialIcons.map(({ icon, id }) => (
                   <li key={id}>
-                    <Link to={""}>
+                    <Link to={"https://www.reysubastas.com"} target="_blank">
                       <i>{icon}</i>
                     </Link>
                   </li>
@@ -79,21 +79,21 @@ const ClientReyAntiguedades = () => {
               data-aos-duration="1400"
             >
               <p className="fz-16 pra ttext__one">
-                When I started working with Javier Tojo, the goal was more than 
-                creating a digital presence; it was building a system that allowed 
-                him to live from his art, work remotely, and attract clients from 
-                the U.S. and beyond. We designed and developed www.javitoyz.com on 
-                WordPress, integrating e-commerce functionality and usability tailored 
-                to his artistic style. Each section was crafted to highlight his 
-                personal brand and the professional value behind his visual work.
+                When I began working with ReySubastas.com in December 2024, the goal was
+                to bring visibility and credibility to a luxury auction brand through 
+                paid media. We focused on analyzing retention data and audience behavior 
+                across Meta and Google Ads. From those insights, we built a structured 
+                campaign framework designed to transform organic content into viral 
+                assets that would fuel both reach and conversions.
               </p>
               <p className="fz-16 pra">
-                Along with the website, I produced a video presentation showcasing his 
-                collaboration with Hot Buttered Elves, edited to align with his brand 
-                identity and storytelling. We built Meta Ads campaigns targeting potential 
-                clients in Los Angeles and added LinkedIn Ads to reach agencies and creative 
-                directors. Complementing this, I managed his Meta profiles and digital assets, 
-                ensuring brand consistency across every platform.
+                The process started with small-scale testing. Each video ad went through 
+                several stages of optimization, from concept structure to editing rhythm 
+                and caption design. By identifying audience retention peaks, we learned 
+                exactly when users stayed engaged. Those data points shaped future videos, 
+                allowing us to produce high-performing content that turned viewers into 
+                followers. Within months, costs per follower dropped to between $0.09 and 
+                $0.12, thanks to efficient content loops and data-backed refinements.
               </p>
             </div>
             <div
@@ -101,35 +101,36 @@ const ClientReyAntiguedades = () => {
               data-aos="fade-up"
               data-aos-duration="1600"
             >
-              <h3 className="text__boxhead">As David Ogilvy once said, “If it doesn’t sell, it isn’t creative.”</h3>
+              <h3 className="text__boxhead">As Gary Vaynerchuk once said, “Content is king, but context is God.”</h3>
               <p className="fz-16 pra ttext__one">
-                Every asset we developed, from visuals to campaigns, was designed to drive 
-                opportunity. Within a few months, Javier landed multiple high-value projects 
-                that generated over $10,000 in revenue, achieving his goal of moving from 
-                Uruguay to Bali and working remotely while surfing in the mornings and 
-                designing by the sea in the afternoons.
+                Using this mindset, we took one of our viral videos past 100,000 organic views, 
+                scaling it through paid exposure to over 200,000 total views. Other campaigns 
+                surpassed 400,000 impressions, all driving traffic directly to the brand’s 
+                Instagram profile. The account grew from 3,000 to over 7,000 followers, 
+                while maintaining engagement and trust with an audience genuinely interested 
+                in collectible and high-value items.
               </p>
               <p className="fz-16 pra">
-                Every asset we developed, from visuals to campaigns, was designed to drive 
-                opportunity. Within a few months, Javier landed multiple high-value projects 
-                that generated over $10,000 in revenue, achieving his goal of moving from 
-                Uruguay to Bali and working remotely while surfing in the mornings and 
-                designing by the sea in the afternoons. This project became a clear example of 
-                how structured creativity, aligned with data-driven strategy, transforms not 
-                just a brand but a lifestyle. The blend of e-commerce design, ad strategy, 
-                and branding clarity turned his passion into a sustainable business model 
-                with freedom at its core.
+                The impact was not limited to visibility. Using segmented audiences, CRM 
+                integration through Mailchimp, and retargeting campaigns, ReySubastas sold 
+                Rolex watches worth over $2,000 with campaigns costing as little as $60. This 
+                demonstrated how data-led creativity can connect luxury with accessibility, 
+                turning a local auction house into a growing digital brand with measurable 
+                returns and loyal clients.
               </p>
               <h3 className="text__boxhead">Key Takeaways</h3>
               <ul className="challenge__list">
                 <li>
-                  A cohesive digital ecosystem multiplies results.
+                  Data analysis turns creativity into predictable success.
                 </li>
                 <li>
-                  Paid campaigns amplify creative visibility when aligned with purpose.
+                  Retention peaks are the blueprint for viral content.
                 </li>
                 <li>
-                  Branding consistency builds emotional and professional credibility.
+                  Paid and organic strategies amplify each other when aligned.
+                </li>
+                <li>
+                  Structured campaigns convert engagement into measurable sales.
                 </li>
               </ul>
             </div>
@@ -139,9 +140,9 @@ const ClientReyAntiguedades = () => {
               data-aos-duration="1800"
             >
               <p className="fz-16 pra">
-                If you’d like to learn more about how I approach digital transformation for 
-                creative professionals, explore more insights on my projects or book a video 
-                call to discuss your next project and how we can scale it together.
+              If you want to discover how I combine creative direction, advertising strategy, 
+              and analytics to generate viral growth and real revenue, explore more projects 
+              on my page or book a video call to start building your next digital success story.
               </p>
             </div>
             <div

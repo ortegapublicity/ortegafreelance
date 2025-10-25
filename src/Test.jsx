@@ -5,8 +5,8 @@ export default function Test() {
   const { t } = useTranslation();
   return (
     <div style={{ padding: '20px' }}>
-      <h1>{t('home')}</h1>
-      <p>{t('services')}</p>
+      <h1>{t('')}</h1>
+      <p>{t('')}</p>
     </div>
   );
 }

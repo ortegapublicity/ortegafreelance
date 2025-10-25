@@ -27,7 +27,7 @@ const ProtfolioDetails = () => {
 
       <PageHeader
         heading={"Building a Creative Freedom Path"}
-        page="Brand Identity & Motion Design"
+        page="How We Scaled JaviToyz from Uruguay to Bali"
       />
       <section className="protfolio__details pb-120">
         <div className="container">
@@ -64,8 +64,8 @@ const ProtfolioDetails = () => {
               <ul className="social d-flex gap-3">
                 {socialIcons.map(({ icon, id }) => (
                   <li key={id}>
-                    <Link to={""}>
-                      <i>{icon}</i>
+                    <Link to={"https://www.javitoyz.com"} target="_blank">
+                      <i>{icon} </i>
                     </Link>
                   </li>
                 ))}

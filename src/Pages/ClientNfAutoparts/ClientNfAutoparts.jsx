@@ -27,7 +27,7 @@ const ClientNfAutoparts = () => {
 
       <PageHeader
         heading={"Driving Local Growth Through Digital Vision"}
-        page="Brand Identity & Motion Design"
+        page="The NF Autoparts Case"
       />
       <section className="protfolio__details pb-120">
         <div className="container">
@@ -43,11 +43,11 @@ const ClientNfAutoparts = () => {
                 <div className="prot__left">
                   <div className="items mb__cus30">
                     <h5>Clients</h5>
-                    <p>Javier Tojo</p>
+                    <p>Freddy Ortega</p>
                   </div>
                   <div className="items">
                     <h5>Date</h5>
-                    <p>July 12, 2023</p>
+                    <p>July 1, 2018</p>
                   </div>
                 </div>
                 <div className="prot__left">
@@ -57,14 +57,14 @@ const ClientNfAutoparts = () => {
                   </div>
                   <div className="items">
                     <h5>Location</h5>
-                    <p>Montevideo, Uruguay</p>
+                    <p>Carabobo, Venezuela</p>
                   </div>
                 </div>
               </div>
               <ul className="social d-flex gap-3">
                 {socialIcons.map(({ icon, id }) => (
                   <li key={id}>
-                    <Link to={""}>
+                    <Link to={"https://www.nfautoparts.com.com"} target="_blank">
                       <i>{icon}</i>
                     </Link>
                   </li>
@@ -79,21 +79,29 @@ const ClientNfAutoparts = () => {
               data-aos-duration="1400"
             >
               <p className="fz-16 pra ttext__one">
-                When I started working with Javier Tojo, the goal was more than 
-                creating a digital presence; it was building a system that allowed 
-                him to live from his art, work remotely, and attract clients from 
-                the U.S. and beyond. We designed and developed www.javitoyz.com on 
-                WordPress, integrating e-commerce functionality and usability tailored 
-                to his artistic style. Each section was crafted to highlight his 
-                personal brand and the professional value behind his visual work.
+                When I started working with NF Autoparts, it was a small import company
+                in Venezuela with two partners and one employee. Their main goal was to 
+                strengthen the presence of their brand CRB, earn market trust, and reach 
+                wholesalers despite local digital and logistic limitations. My role was 
+                to create a strategy that combined branding, advertising, and cultural 
+                relevance to transform a traditional business into a recognized 
+                digital brand.
               </p>
               <p className="fz-16 pra">
-                Along with the website, I produced a video presentation showcasing his 
-                collaboration with Hot Buttered Elves, edited to align with his brand 
-                identity and storytelling. We built Meta Ads campaigns targeting potential 
-                clients in Los Angeles and added LinkedIn Ads to reach agencies and creative 
-                directors. Complementing this, I managed his Meta profiles and digital assets, 
-                ensuring brand consistency across every platform.
+                We began by connecting the brand to national pride. Through a campaign 
+                called “Travel Safely,” we showcased CRB products in Venezuela’s most 
+                symbolic locations, collaborating with local photographers and influencers. 
+                This not only promoted tourism but also built emotional connections with 
+                customers, driving sales and brand recognition among retail stores that 
+                became loyal buyers.
+              </p>
+              <p className="fz-16 pra">
+                As the strategy evolved, we shifted toward entertainment-based marketing. 
+                We collaborated with emerging public figures and comedians, using the Product 
+                Launch Formula to tell stories in three sequential ads: one for brand awareness, 
+                one for value, and one for direct action. This approach positioned NF Autoparts 
+                as a relatable, aspirational, and authentic Venezuelan brand that people 
+                wanted to support.
               </p>
             </div>
             <div
@@ -101,7 +109,7 @@ const ClientNfAutoparts = () => {
               data-aos="fade-up"
               data-aos-duration="1600"
             >
-              <h3 className="text__boxhead">As David Ogilvy once said, “If it doesn’t sell, it isn’t creative.”</h3>
+              <h3 className="text__boxhead">As Philip Kotler once said, “Marketing takes a day to learn. Unfortunately, it takes a lifetime to master.” </h3>
               <p className="fz-16 pra ttext__one">
                 Every asset we developed, from visuals to campaigns, was designed to drive 
                 opportunity. Within a few months, Javier landed multiple high-value projects 
@@ -110,26 +118,25 @@ const ClientNfAutoparts = () => {
                 designing by the sea in the afternoons.
               </p>
               <p className="fz-16 pra">
-                Every asset we developed, from visuals to campaigns, was designed to drive 
-                opportunity. Within a few months, Javier landed multiple high-value projects 
-                that generated over $10,000 in revenue, achieving his goal of moving from 
-                Uruguay to Bali and working remotely while surfing in the mornings and 
-                designing by the sea in the afternoons. This project became a clear example of 
-                how structured creativity, aligned with data-driven strategy, transforms not 
-                just a brand but a lifestyle. The blend of e-commerce design, ad strategy, 
-                and branding clarity turned his passion into a sustainable business model 
-                with freedom at its core.
+                That mastery paid off when a key wholesaler, Mayor Beval, joined as a major 
+                partner, leading to a 30,000-dollar increase every quarter. NF Autoparts grew 
+                from four employee to a full team with eight employees and ten vendors, 
+                investing in BTL campaigns and sponsorships with Magallanes, one of Venezuela’s 
+                most iconic baseball teams.
               </p>
               <h3 className="text__boxhead">Key Takeaways</h3>
               <ul className="challenge__list">
                 <li>
-                  A cohesive digital ecosystem multiplies results.
+                  Cultural identity can powerfully elevate brand trust and sales.
                 </li>
                 <li>
-                  Paid campaigns amplify creative visibility when aligned with purpose.
+                  Story-driven campaigns strengthen emotional connections with customers.
                 </li>
                 <li>
-                  Branding consistency builds emotional and professional credibility.
+                  Consistency in visual and strategic communication builds long-term credibility.
+                </li>
+                <li>
+                  Local relevance paired with digital presence multiplies business growth.
                 </li>
               </ul>
             </div>
@@ -139,9 +146,9 @@ const ClientNfAutoparts = () => {
               data-aos-duration="1800"
             >
               <p className="fz-16 pra">
-                If you’d like to learn more about how I approach digital transformation for 
-                creative professionals, explore more insights on my projects or book a video 
-                call to discuss your next project and how we can scale it together.
+               If you’d like to explore how I help companies evolve from local recognition to national 
+               growth through strategic digital design, visit my other projects or book a video call 
+               to discuss your next project and set measurable goals for your brand.
               </p>
             </div>
             <div

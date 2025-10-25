@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import {
   Facebook,
-  Twitter,
+  Behance,
   Linkedin,
-  Globe,
+  Vimeo,
   Instagram,
 } from "react-bootstrap-icons";
 
@@ -26,7 +26,7 @@ const contactInfo = [
   },
   {
     id: 3,
-    system: "Phone",
+    system: "Location",
     contact: "San Diego, Carabobo, Venezuela",
   },
   {
@@ -34,9 +34,9 @@ const contactInfo = [
     system: "Follow",
     socalContact: [
       <Facebook />,
-      <Twitter />,
+      <Behance />,
       <Linkedin />,
-      <Globe />,
+      <Vimeo />,
       <Instagram />,
     ],
   },

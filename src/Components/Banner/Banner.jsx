@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 import {
   Facebook,
-  Twitter,
+  Behance,
   Linkedin,
-  Globe,
+  Vimeo,
   Instagram,
   PlayFill,
 } from "react-bootstrap-icons";
@@ -24,23 +24,23 @@ const socalIcon = [
   },
   {
     id: 2,
-    icon: <Twitter />,
-    routeIcon: "https://www.facebook.com/ortegafreelance",
+    icon: <Behance />,
+    routeIcon: "https://www.behance.net/ortegapublicity/",
   },
   {
     id: 3,
     icon: <Linkedin />,
-    routeIcon: "https://www.facebook.com/ortegafreelance",
+    routeIcon: "https://www.linkedin.com/in/ortegapublicity/",
   },
   {
     id: 4,
-    icon: <Globe />,
-    routeIcon: "https://www.facebook.com/ortegafreelance",
+    icon: <Vimeo />,
+    routeIcon: "https://www.vimeo.com/ortegapublicity/",
   },
   {
     id: 5,
     icon: <Instagram />,
-    routeIcon: "https://www.facebook.com/ortegafreelance",
+    routeIcon: "https://www.instagram.com/ortegafreelance/",
   },
 ];
 const Banner = () => {

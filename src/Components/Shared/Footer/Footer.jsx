@@ -13,19 +13,19 @@ const socalList = [
     id: 2,
     platfrom: "Instagram",
     icon: <ArrowRight />,
-    routelist: ""
+    routelist: "https://www.instagram.com/ortegafreelance/"
   },
   {
     id: 3,
     platfrom: "Behance",
     icon: <ArrowRight />,
-    routelist: ""
+    routelist: "https://www.behance.net/ortegapublicity/"
   },
   {
     id: 4,
     platfrom: "Vimeo",
     icon: <ArrowRight />,
-    routelist: ""
+    routelist: "https://www.vimeo.com/ortegapublicity/"
   },
 ];
 const Footer = () => {
