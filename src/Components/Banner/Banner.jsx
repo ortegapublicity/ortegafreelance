@@ -20,22 +20,27 @@ const socalIcon = [
   {
     id: 1,
     icon: <Facebook />,
+    routeIcon: "https://www.facebook.com/ortegafreelance",
   },
   {
     id: 2,
     icon: <Twitter />,
+    routeIcon: "https://www.facebook.com/ortegafreelance",
   },
   {
     id: 3,
     icon: <Linkedin />,
+    routeIcon: "https://www.facebook.com/ortegafreelance",
   },
   {
     id: 4,
     icon: <Globe />,
+    routeIcon: "https://www.facebook.com/ortegafreelance",
   },
   {
     id: 5,
     icon: <Instagram />,
+    routeIcon: "https://www.facebook.com/ortegafreelance",
   },
 ];
 const Banner = () => {
@@ -123,10 +128,10 @@ const Banner = () => {
         </div>
         <div className="banner__xlsocial">
           <ul className="banner__soci d-grid justify-content-center">
-            {socalIcon.map(({ icon, id }) => {
+            {socalIcon.map(({ icon, id, routeIcon }) => {
               return (
                 <li key={id}>
-                  <Link to={""} >
+                  <Link to={routeIcon} target="_blank" >
                     <i>{icon}</i>
                   </Link>
                 </li>

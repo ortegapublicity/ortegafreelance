@@ -8,6 +8,9 @@ import AllBlogs from "../Pages/AllBlogs/AllBlogs";
 import BlogDetails from "../Pages/BlogDetails/BlogDetails";
 import Protfolio from "../Pages/Protfolio/Protfolio";
 import ProtfolioDetails from "../Pages/ProtfolioDetails/ProtfolioDetails";
+import ClientReyAntiguedades from "../Pages/ClientReyAntiguedades/ClientReyAntiguedades";
+import ClientNfAutoparts from "../Pages/ClientNfAutoparts/ClientNfAutoparts";
+import ClientTodxsPodemosSer from "../Pages/ClientTodxsPodemosSer/ClientTodxsPodemosSer";
 
 export const router = createBrowserRouter([
   {
@@ -39,12 +42,24 @@ export const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "/protfolio",
+        path: "/portfolio",
         element: <Protfolio />,
       },
       {
-        path: "/protfolio-details",
+        path: "/client-javitoyz",
         element: <ProtfolioDetails />,
+      },
+      {
+        path: "/client-reyantiguedades",
+        element: <ClientReyAntiguedades />,
+      },
+      {
+        path: "/client-nfautoparts",
+        element: <ClientNfAutoparts/>,
+      },
+      {
+        path: "/client-todxspodemosser",
+        element: <ClientTodxsPodemosSer/>,
       },
     ],
   },

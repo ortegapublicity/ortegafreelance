@@ -92,7 +92,7 @@ const Protfolio = () => {
                     subHeading={subHeading}
                     openLightbox={openLightbox}
                     index={index}
-                    navigate="/protfolio-details"
+                    navigate="/client-javitoyz"
                   />
                 )
               )}

@@ -12,14 +12,16 @@ export const projectList = [
       image: pro1,
       heading: "Javitoyz",
       subHeading: "Building a Creative Freedom Path",
-      category:["branding", "website", "all"]
+      category:["branding", "website", "all"],
+      routeList: "/client-javitoyz",
     },
     {
       id: 2,
       image: pro3,
       heading: "Todxs Podemos Ser",
       subHeading: "From Digital Presence to Real Impact",
-      category:["Digital_Marketing", "website", "all"]
+      category:["Digital_Marketing", "website", "all"],
+      routeList: "/client-todxspodemosser",
     },
     {
       id: 3,
@@ -33,7 +35,8 @@ export const projectList = [
       image: pro2,
       heading: "NF Autoparts",
       subHeading: "Driving Local Growth Through Digital Vision",
-      category:["Digital_Marketing", "Branding", "all"]
+      category:["Digital_Marketing", "Branding", "all"],
+      routeList: "/client-nfautoparts",
     },
     {
       id: 5,
@@ -47,7 +50,8 @@ export const projectList = [
       image: pro6,
       heading: "Rey Antigüedades",
       subHeading: "Turning Data Into Virality",
-      category:["branding", "Digital_Marketing", "all"]
+      category:["branding", "Digital_Marketing", "all"],
+      routeList: "/client-reyantiguedades"
     },
   ];
 

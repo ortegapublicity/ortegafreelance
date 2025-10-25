@@ -7,21 +7,25 @@ const socalList = [
     id: 1,
     platfrom: "LinkedIn",
     icon: <ArrowRight />,
+    routelist: "https://www.linkedin.com/in/ortegapublicity/"
   },
   {
     id: 2,
     platfrom: "Instagram",
     icon: <ArrowRight />,
+    routelist: ""
   },
   {
     id: 3,
     platfrom: "Behance",
     icon: <ArrowRight />,
+    routelist: ""
   },
   {
     id: 4,
     platfrom: "Vimeo",
     icon: <ArrowRight />,
+    routelist: ""
   },
 ];
 const Footer = () => {
@@ -45,10 +49,10 @@ const Footer = () => {
             <div className="col-lg-6">
               <div className="get__rightcontetn">
                 <div className="row g-4">
-                  {socalList.map(({ id, icon, platfrom }) => {
+                  {socalList.map(({ id, icon, platfrom, routelist }) => {
                     return (
                       <div key={id} className="col-lg-6 col-md-6 col-sm-6">
-                        <a href="#0" className="social__footer">
+                        <a href={routelist} target= "_blank"  className="social__footer">
                           {platfrom}
                           <i>{icon}</i>
                         </a>

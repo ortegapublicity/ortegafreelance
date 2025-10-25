@@ -14,7 +14,7 @@ const skillsList = [
   },
   {
     id: 2,
-    skill: "Full Stack",
+    skill: "Front-End",
     percentage: "85%",
     image: word,
   },
