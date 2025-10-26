@@ -177,7 +177,7 @@ const ProtfolioDetails = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(1, 3)
+              .slice(3, 5)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}

@@ -175,8 +175,8 @@ const ClientLightsEnglishAcademy = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(0, 2)
-              .map(({ heading, id, image, subHeading }, index) => (
+              .slice(3, 5)
+              .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
                   image={image}
@@ -184,6 +184,7 @@ const ClientLightsEnglishAcademy = () => {
                   subHeading={subHeading}
                   openLightbox={openLightbox}
                   index={index}
+                  navigate={routeList}
                 />
               ))}
           </div>

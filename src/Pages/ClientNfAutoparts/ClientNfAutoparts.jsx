@@ -184,7 +184,7 @@ const ClientNfAutoparts = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(0, 2)
+              .slice(1, 3)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
