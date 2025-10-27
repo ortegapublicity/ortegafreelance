@@ -8,7 +8,7 @@ import detailbg1 from "../../assets/img/protfolio/prot-detials1.png";
 import detailbg2 from "../../assets/img/protfolio/prot-detials2.png";
 import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
 import Lightbox from "../../Components/Shared/LightBox/LightBox";
-import { socialIcons } from "../../Utlits/socilIcons";
+import { Globe } from "react-bootstrap-icons";
 
 const ProtfolioDetails = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -62,13 +62,11 @@ const ProtfolioDetails = () => {
                 </div>
               </div>
               <ul className="social d-flex gap-3">
-                {socialIcons.map(({ icon, id }) => (
-                  <li key={id}>
+              <li key={"brandtop-web"}>
                     <Link to={"https://www.javitoyz.com"} target="_blank">
-                      <i>{icon} </i>
+                      <i><Globe/></i>
                     </Link>
                   </li>
-                ))}
               </ul>
             </div>
           </div>

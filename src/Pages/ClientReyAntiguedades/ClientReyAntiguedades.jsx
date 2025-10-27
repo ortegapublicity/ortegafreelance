@@ -3,12 +3,10 @@ import { Link } from "react-router-dom";
 
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
-import detailbg from "../../assets/img/protfolio/prot-detailsbig.png";
-import detailbg1 from "../../assets/img/protfolio/prot-detials1.png";
-import detailbg2 from "../../assets/img/protfolio/prot-detials2.png";
+import detailbg from "../../assets/img/protfolio/reyantiguedades/reybg1.png";
 import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
 import Lightbox from "../../Components/Shared/LightBox/LightBox";
-import { socialIcons } from "../../Utlits/socilIcons";
+import { Globe } from "react-bootstrap-icons";
 
 const ClientReyAntiguedades = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -62,13 +60,11 @@ const ClientReyAntiguedades = () => {
                 </div>
               </div>
               <ul className="social d-flex gap-3">
-                {socialIcons.map(({ icon, id }) => (
-                  <li key={id}>
+              <li key={"brandtop-web"}>
                     <Link to={"https://www.reysubastas.com"} target="_blank">
-                      <i>{icon}</i>
+                      <i><Globe/></i>
                     </Link>
                   </li>
-                ))}
               </ul>
             </div>
           </div>
@@ -151,10 +147,16 @@ const ClientReyAntiguedades = () => {
               data-aos-duration="2000"
             >
               <div className="thumb">
-                <img src={detailbg1} alt="img" />
-              </div>
-              <div className="thumb">
-                <img src={detailbg2} alt="img" />
+              <iframe 
+            width="100%" 
+            height="500" 
+            src="https://www.youtube.com/embed/OUWJ34ifPxo?si=1pmUZXu4lGsTG6BH" 
+            title="Brandtop Video Motion" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+            </iframe>
               </div>
             </div>
           </div>
