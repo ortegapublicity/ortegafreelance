@@ -177,7 +177,7 @@ const ClientLightsEnglishAcademy = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(1, 5)
+              .slice(2 - 4)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}

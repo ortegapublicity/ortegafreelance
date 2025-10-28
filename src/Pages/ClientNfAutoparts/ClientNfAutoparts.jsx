@@ -79,7 +79,7 @@ const ClientNfAutoparts = () => {
               <p className="fz-16 pra ttext__one">
                 When I started working with NF Autoparts, it was a small import company
                 in Venezuela with two partners and one employee. Their main goal was to 
-                strengthen the presence of their brand CRB, earn market trust, and reach 
+                strengthen the presence of their brand |CRB|, earn market trust, and reach 
                 wholesalers despite local digital and logistic limitations. My role was 
                 to create a strategy that combined branding, advertising, and cultural 
                 relevance to transform a traditional business into a recognized 

@@ -180,7 +180,7 @@ const ClientBrandtop = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(2, 4)
+              .slice(0, 2)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}

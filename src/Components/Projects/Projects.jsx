@@ -22,20 +22,29 @@ const Projects = () => {
           mainTitle={"Look at my portfolio and give me your feedback"}
           sortTitle={"Complete Project"}
         />
+        <div className=" project__wrapone">
+    {
+        [
+            // 1. DESESTRUCTURA (spread) el array de slice(0, 1) en el nuevo array
+            ...projectList.slice(1, 2), 
 
-        <div className={`project__wrapone`}>
-          {projectList.map(({ heading, id, image, subHeading, routeList }, index) => (
+            // 2. DESESTRUCTURA (spread) el array de slice(3, 4) en el nuevo array
+            ...projectList.slice(3, 4), 
+        ]
+        // Se ejecuta el .map() sobre el array final [P1, P4]
+        .map(({ heading, id, image, subHeading, routeList }, index) => (
             <ProjectCard
-              key={id}
-              image={image}
-              heading={heading}
-              subHeading={subHeading}
-              openLightbox={openLightbox}
-              index={index}
-              navigate={routeList}
+                key={id}
+                image={image}
+                heading={heading}
+                subHeading={subHeading}
+                openLightbox={openLightbox}
+                index={index}
+                navigate={routeList}
             />
-          ))}
-        </div>
+        ))
+  } 
+</div>
 
         <div className="custom__hover">
           <Link to={"/portfolio"}

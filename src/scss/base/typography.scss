@@ -94,7 +94,7 @@ p {
   font-size: 18px;
   line-height: 1.5;
   margin-bottom: 0;
-  color: var(--pra);
+  color: var(--ftext);
   @include paragraphfont;
 }
 
@@ -913,13 +913,13 @@ p {
   color: var(--white) !important;
 }
 .ptext {
-  color: var(--pra) !important;
+  color: var(--border1) !important;
 }
 .ptext2 {
-  color: var(--pragraph2);
+  color: var(--border1);
 }
 .ptext3 {
-  color: var(--pragraph3);
+  color: var(--border1);
 }
 .bartext {
   color: var(--bartext);

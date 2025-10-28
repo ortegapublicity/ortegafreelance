@@ -174,7 +174,7 @@ const ClientTodxsPodemosSer = () => {
 
           <div className=" project__wrapone">
             {projectList
-              .slice(0, 3)
+              .slice(5 - 1)
               .map(({ heading, id, image, subHeading, routeList }, index) => (
                 <ProjectCard
                   key={id}
