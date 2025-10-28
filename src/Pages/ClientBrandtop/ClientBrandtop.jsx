@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
-import detailbg from "../../assets/img/protfolio/brandtop/Logo-de-Brandtop.png";
-import detailbg1 from "../../assets/img/protfolio/brandtop/Brandtop-image.png";
-import detailbg2 from "../../assets/img/protfolio/brandtop/Brandtop-image2.png";
+import detailbg from "../../assets/img/protfolio/Brandtop/Logo-de-Brandtop.png";
+import detailbg1 from "../../assets/img/protfolio/Brandtop/Brandtop-image.png";
+import detailbg2 from "../../assets/img/protfolio/Brandtop/Brandtop-image2.png";
 import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
 import Lightbox from "../../Components/Shared/LightBox/LightBox";
 import { Globe } from "react-bootstrap-icons";
