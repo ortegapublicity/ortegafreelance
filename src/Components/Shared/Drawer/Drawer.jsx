@@ -63,8 +63,8 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
             ))}
           </ul>
         </div>
-        <a // ✨ CORRECCIÓN: Usar <a> si lleva a un enlace externo (como Calendly)
-          href="https://calendly.com/ortegapublicity" // Asumo que "Let's Talk" va a Calendly
+        <a // 
+          href="https://calendly.com/ortegapublicity/meeting?back=1&month=2025-10" // va a Calendly
           target="_blank"
           rel="noopener noreferrer"
           className="d-flex justify-content-center fw-500 cmn--btn align-items-center gap-2"
