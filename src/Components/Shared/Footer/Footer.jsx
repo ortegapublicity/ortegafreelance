@@ -43,7 +43,7 @@ const Footer = () => {
                   Hello, I'm Raul Ortega, Creative Technologist & Digital Brand Designer
                   based globally.
                 </p>
-                <a href="#0">raul@ortegafreelance.com</a>
+                <a href="mailto:raul@ortegafreelance.com">raul@ortegafreelance.com</a>
               </div>
             </div>
             <div className="col-lg-6">

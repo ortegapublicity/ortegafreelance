@@ -1,10 +1,9 @@
 import React from "react";
-import { PlayFill, ArrowRight } from "react-bootstrap-icons";
+import { ArrowRight } from "react-bootstrap-icons";
 import PageHeader from "../Components/Shared/PageHeader/PageHeader";
 import Accordion from "../Components/Accordion/Accordion";
 
 import serDv1 from "../assets/img/project/ser-dv1.png";
-import serDv2 from "../assets/img/project/ser-dv2.png";
 import detialcontact from "../assets/img/contact/ser-detialcontact.png";
 import { ScrollRestoration } from "react-router-dom";
 
@@ -87,15 +86,17 @@ const ServiceDetails = () => {
                   </p>
                 </div>
                 <div className="paythumb position-relative">
-                  <img src={serDv2} alt="img" />
-                  <a
-                    href="https://www.youtube.com/embed/uHqOZrl3yzE?si=H0Swi7NDRYGXyEFT"
-                    className="video__80 video-btn"
+                  <iframe
+                   width="100%" // O el ancho que necesites
+                   height="450" // O la altura que necesites
+                   src="https://www.youtube.com/embed/uHqOZrl3yzE?si=H0Swi7NDRYGXyEFT"
+                   title="YouTube video player"
+                   frameBorder="0"
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                   allowFullScreen
+                   style={{ zIndex: 9999, position: 'relative' }}
                   >
-                    <i>
-                      <PlayFill />
-                    </i>
-                  </a>
+                  </iframe>
                 </div>
                 <div className="ser__components">
                   <h2 className="whites mb-5">Questions ? You're Covered</h2>
@@ -138,7 +139,12 @@ const ServiceDetails = () => {
                       src={detialcontact}
                       alt="img"
                     />
-                    <a href="#0" className="cmn--btn">
+                    <a 
+                      href="https://calendly.com/ortegapublicity" // ✨ URL de Calendly
+                      className="cmn--btn"
+                      target="_blank" // ✨ Abrir en una nueva pestaña
+                      rel="noopener noreferrer" // 🔒 Práctica de seguridad recomendada
+                    >
                       <span>Contact Me</span>
                       <span>
                         <i>

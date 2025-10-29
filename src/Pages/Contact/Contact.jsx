@@ -19,7 +19,8 @@ const Contact = () => {
               data-aos-duration="1000"
             >
               <div className="contact__box">
-                <Form isColTwo={false} />
+                {/* NOTA: La lógica de envío del formulario está dentro de este componente <Form /> */}
+                <Form isColTwo={false} /> 
               </div>
             </div>
             <div
@@ -31,11 +32,13 @@ const Contact = () => {
                 <h4 className="mb-30">Feel free to contact me anytime</h4>
                 <div className="contact__item mb-20">
                   <span className="he1">Email</span>
-                  <a href="#0">raul@ortegafreelance.com</a>
+                  {/* ✨ CORRECCIÓN: mailto: para abrir el cliente de correo */}
+                  <a href="mailto:raul@ortegafreelance.com">raul@ortegafreelance.com</a>
                 </div>
                 <div className="contact__item mb-20">
                   <span className="he1">Phone</span>
-                  <a href="#0">+(58) 414 041 9317 </a>
+                  {/* ✨ CORRECCIÓN: tel: para iniciar la llamada (solo números) */}
+                  <a href="tel:+584140419317">+(58) 414 041 9317 </a>
                 </div>
                 <div className="contact__item">
                   <span className="he1">Address</span>

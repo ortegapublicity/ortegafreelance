@@ -2,7 +2,7 @@ import React from "react";
 import { XLg, ChevronRight } from "react-bootstrap-icons";
 import logo from "../../../assets/img/logo/logo.png";
 import { socialIcons } from "../../../Utlits/socilIcons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Se mantiene para enlaces de navegación interna
 
 const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
   return (
@@ -16,7 +16,8 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
         </i>
       </div>
       <div className="sub__contact__wrapper d-grid">
-        <Link to={""} className="side-logo">
+        {/* Usar Link si el logo lleva a la página de inicio ('/') o a '' si es el mismo archivo */}
+        <Link to={"/"} className="side-logo"> 
           <img src={logo} alt="img" />
         </Link>
         <p>
@@ -34,29 +35,38 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
           <div className="sub__contac-item">
             <div className="content">
               <span className="address d-block"> email </span>
-              <Link className="textp"> raul@ortegafreelance.com </Link>
+              {/* ✨ CORRECCIÓN: Usar <a> con mailto: */}
+              <a href="mailto:raul@ortegafreelance.com" className="textp"> raul@ortegafreelance.com </a>
             </div>
           </div>
           <div className="sub__contac-item">
             <div className="content">
               <span className="address d-block"> call now </span>
-              <Link className="textp"> +58 414 041 9317 </Link>
+              {/* ✨ CORRECCIÓN: Usar <a> con tel: */}
+              <a href="tel:+584140419317" className="textp"> +58 414 041 9317 </a>
             </div>
           </div>
         </div>
         <div className="sub__contact-right mb-80 position-relative">
           <ul className="social d-flex gap-3">
-            {socialIcons.map(({ icon, id }) => (
+            {/* ✨ CORRECCIÓN: Desestructuración y uso de la URL */}
+            {socialIcons.map(({ icon, id, routeIcon }) => (
               <li key={id}>
-                <Link>
+                <a 
+                  href={routeIcon}           
+                  target="_blank"            
+                  rel="noopener noreferrer"  
+                >
                   <i>{icon}</i>
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
         </div>
-        <Link
-          to={""}
+        <a // ✨ CORRECCIÓN: Usar <a> si lleva a un enlace externo (como Calendly)
+          href="https://calendly.com/ortegapublicity" // Asumo que "Let's Talk" va a Calendly
+          target="_blank"
+          rel="noopener noreferrer"
           className="d-flex justify-content-center fw-500 cmn--btn align-items-center gap-2"
         >
           <span>
@@ -65,7 +75,7 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
             </i>
           </span>
           <span className="get__text"> Let's Talk </span>
-        </Link>
+        </a>
       </div>
     </div>
   );
