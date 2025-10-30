@@ -57,11 +57,9 @@ const IllustrationDesign = () => { // ✨ Nombre de la función corregido: Illus
                     About Illustration Design Service
                   </h3>
                   <p className="fz-16 pra ttext__one">
-                    The power of custom illustration lies in its ability to tell your story 
-                    uniquely, differentiating your brand from competitors. I create 
-                    vector art, editorial illustrations, and visual assets that capture 
-                    complex ideas, making your content engaging, memorable, and 
-                    perfectly aligned with your brand voice.
+                    I design and manage Meta and Google Ads campaigns that transform advertising 
+                    spend into measurable profit. By aligning data insights with creative direction, 
+                    I ensure every campaign speaks directly to your ideal audience.
                   </p>
                   <p className="fz-16 pra">
                     From concept sketches to final digital delivery, my process ensures 
