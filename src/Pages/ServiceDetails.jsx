@@ -2,32 +2,41 @@ import React from "react";
 import { ArrowRight } from "react-bootstrap-icons";
 import PageHeader from "../Components/Shared/PageHeader/PageHeader";
 import Accordion from "../Components/Accordion/Accordion";
-
-import serDv1 from "../assets/img/project/ser-dv1.png";
+import { Link } from "react-router-dom";
+import serDv1 from "../assets/img/project/ser-dt.png";
 import detialcontact from "../assets/img/contact/ser-detialcontact.png";
 import { ScrollRestoration } from "react-router-dom";
 
 const accordionList = [
   {
     id: "cmnid4",
-    heading: "Simple process for workflow?",
-    para: `We start with a discovery session, develop 
-    mood boards and brand archetypes, then move into 
-    design and rollout.`,
+    heading: "What makes your branding and marketing approach different from other freelancers or agencies?",
+    para: `I combine creative design with performance-driven 
+    strategy. Instead of separating visuals from results, 
+    I integrate branding, UX/UI, video, and paid media 
+    into one consistent system. This approach ensures 
+    that every piece of content, from your logo to 
+    your ads, works together to build recognition, 
+    trust, and measurable growth.`,
   },
   {
     id: "cmnid5",
-    heading: "Unique brand identity and strategy",
-    para: ` Your brand is built with clarity and 
-    psychological insight (not trends) ensuring 
-    longevity and memorability.`,
+    heading: "How long does it take to build a complete brand and website?",
+    para: ` Most branding and web design projects take between 
+    3 to 6 weeks, depending on the scope and content readiness. 
+    I start with a discovery phase to define your goals and brand 
+    identity, then move into UX/UI design, development, and 
+    optimization. The goal is to deliver a functional and visually 
+    consistent brand that’s ready to convert.`,
   },
   {
     id: "cmnid6",
-    heading: "Do you handle rebranding?",
-    para: `Absolutely. I help existing companies 
-    realign their image and communication with 
-    current market demands. `,
+    heading: "Can you manage advertising campaigns after the website or branding is complete?",
+    para: `Yes. I manage Meta and Google Ads campaigns to help brands 
+    grow after launch. Each campaign includes audience targeting, 
+    creative testing, remarketing, and performance tracking. 
+    This ensures your investment translates into real traffic, leads, 
+    and sales while maintaining a consistent brand voice across all platforms.`,
   },
 ];
 const ServiceDetails = () => {
@@ -35,7 +44,7 @@ const ServiceDetails = () => {
   return (
     <>
  
-      <PageHeader heading={"Business Branding"} page={"Business Branding"} />
+      <PageHeader heading={"Services Details"} page={"Services Details"} />
       <section className="service__details overhid pb-120">
         <div className="container">
           <div className="row g-4">
@@ -50,20 +59,20 @@ const ServiceDetails = () => {
                   data-aos-duration="1400"
                 >
                   <h3 className="textt36 d-block">
-                    About Business Branding Service
+                    Integrated Design and Marketing Strategy That Builds Brands with Purpose
                   </h3>
                   <p className="fz-16 pra ttext__one">
-                    Branding is the foundation of every successful business.
-                    I help companies craft brands that sell, building strong 
-                    visual systems supported by strategy, storytelling, and 
-                    design consistency. From defining your mission to designing 
-                    your logo and brand guidelines, my process shapes an 
-                    identity that speaks with authenticity and drives conversion.
+                    A strong digital presence starts with clarity and consistency. 
+                    Every successful brand needs strategy, design, and communication 
+                    working together. That’s where branding, web design, video, 
+                    and paid media align to generate real growth.
                   </p>
                   <p className="fz-16 pra">
-                    Each brand strategy I create connects emotion with data
-                    combining intuition with measurable goals to make your 
-                    brand both memorable 
+                    A website is more than a place to visit. Through UX/UI design 
+                    and front-end development, I create WordPress websites that 
+                    communicate trust, convert visitors, and deliver a seamless experience. 
+                    Every layout, button, and section is designed to guide users 
+                    toward action and build credibility online.
                   </p>
                 </div>
                 <div
@@ -71,32 +80,43 @@ const ServiceDetails = () => {
                   data-aos="fade-up"
                   data-aos-duration="1400"
                 >
-                  <h3 className="textt36 d-block">
-                    Specialization & Working Process
-                  </h3>
-                  <p className="fz-16 pra">
-                    My branding approach blends creative 
-                    strategy with business insight. I use 
-                    market research, audience analysis, 
-                    and competitive positioning to establish 
-                    a strong foundation. Once your tone and 
-                    purpose are defined, I develop logo systems, 
-                    color palettes, and typography that translate 
-                    your story into visuals that convert.
+                  <p className="fz-16 ttext__one">
+                   Visual identity defines how people see and remember your business. 
+                   Branding and illustration design transform ideas into visuals that 
+                   communicate your message with precision and emotion. When your colors, 
+                   typography, and style are consistent, your audience instantly recognizes 
+                   your brand.
                   </p>
-                </div>
-                <div className="paythumb position-relative">
-                  <iframe
-                   width="100%" // O el ancho que necesites
-                   height="450" // O la altura que necesites
-                   src="https://www.youtube.com/embed/uHqOZrl3yzE?si=H0Swi7NDRYGXyEFT"
-                   title="YouTube video player"
-                   frameBorder="0"
-                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                   allowFullScreen
-                   style={{ zIndex: 9999, position: 'relative' }}
-                  >
-                  </iframe>
+                  <p className="fz-16 pra">
+                    Video editing and paid media strategy take your message further. 
+                    Video captures attention, and ads turn that attention into measurable 
+                    results. By combining creative storytelling with data-driven campaigns 
+                    on Meta and Google Ads, I help brands increase traffic, engagement, 
+                    and sales.
+                  </p>               
+                  <p className="fz-16 ttext__one">
+                    When all elements of your digital ecosystem work together, growth becomes 
+                    predictable. The right combination of design, content, and marketing creates
+                    a brand that stands out, builds trust, and drives long-term results.
+                    </p>
+                    <h3 className="textt36 d-block">
+                    “People don’t buy products, they buy stories.” — Gary Vaynerchuk
+                  </h3>
+                  <h3 className="text__boxhead">Key Takeaways</h3>
+              <ul className="challenge__list">
+                <li>
+                  A strong brand identity builds trust and recognition
+                </li>
+                <li>
+                  High-converting websites turn visitors into customers
+                </li>
+                <li>
+                  Video and paid media amplify reach and performance
+                </li>
+                <li>
+                  Consistency across design and strategy drives growth
+                </li>
+              </ul>
                 </div>
                 <div className="ser__components">
                   <h2 className="whites mb-5">Questions ? You're Covered</h2>
@@ -112,38 +132,38 @@ const ServiceDetails = () => {
               <div className="service__right__wrap">
                 <div className="service__rightbox mb-30">
                   <h3>Service List</h3>
-                  <a href="#0" className="link__box mb-15">
+                 {/* ✨ MODIFICACIÓN: Usamos <Link> con rutas relativas */}
+                 <Link to="/Pages/illustration-design" className="link__box mb-15">
                     Illustration Design
                     <i className="bi bi-chevron-right"></i>
-                  </a>
-                  <a href="#0" className="link__box mb-15">
+                  </Link>
+                  <Link to="/Pages/business-branding" className="link__box mb-15">
                     Business Branding
                     <i className="bi bi-chevron-right"></i>
-                  </a>
-                  <a href="#0" className="link__box mb-15">
+                  </Link>
+                  <Link to="/Pages/web-design" className="link__box mb-15">
                     Web UI/UX Design
                     <i className="bi bi-chevron-right"></i>
-                  </a>
-                  <a href="#0" className="link__box mb-15">
+                  </Link>
+                  <Link to="/Pages/paid-media" className="link__box mb-15">
                     Paid Media
                     <i className="bi bi-chevron-right"></i>
-                  </a>
-                  <a href="#0" className="link__box mb-15">
+                  </Link>
+                  <Link to="/Pages/video-editing" className="link__box mb-15">
                     Video Editing
                     <i className="bi bi-chevron-right"></i>
-                  </a>
-                </div>
+                  </Link>
+                  </div>
+                  {/* FIN de MODIFICACIÓN */}
                 <div className="service__rightbox">
                   <div className="thumb">
                     <img
                       src={detialcontact}
                       alt="img"
                     />
-                    <a 
-                      href="https://calendly.com/ortegapublicity" // ✨ URL de Calendly
+                     <Link 
+                      to="/contact" // Redirige a la ruta /contact
                       className="cmn--btn"
-                      target="_blank" // ✨ Abrir en una nueva pestaña
-                      rel="noopener noreferrer" // 🔒 Práctica de seguridad recomendada
                     >
                       <span>Contact Me</span>
                       <span>
@@ -151,7 +171,7 @@ const ServiceDetails = () => {
                           <ArrowRight/>
                         </i>
                       </span>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
