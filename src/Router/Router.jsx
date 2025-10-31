@@ -33,27 +33,33 @@ export const router = createBrowserRouter([
         element: <AllServices />,
       },
       {
+        // Ruta genérica original (la mantendremos)
         path: "/service-details",
         element: <ServiceDetails />,
       },
       {
-        path: "/Pages/illustration-design",
+        // ✨ CORREGIDO: URL pública debe ser /services/nombre
+        path: "/services/illustration-design",
         element: <IllustrationDesign />,
       },
       {
-        path: "/Pages/business-branding",
+        // ✨ CORREGIDO
+        path: "/services/business-branding",
         element: <BusinessBranding />,
       },
       {
-        path: "/Pages/web-design",
+        // ✨ CORREGIDO
+        path: "/services/web-design",
         element: <WebDesign />,
       },
       {
-        path: "/Pages/paid-media",
+        // ✨ CORREGIDO
+        path: "/services/paid-media",
         element: <PaidMedia />,
       },
       {
-        path: "/Pages/video-editing",
+        // ✨ CORREGIDO
+        path: "/services/video-editing",
         element: <VideoEditing />,
       },
       {
