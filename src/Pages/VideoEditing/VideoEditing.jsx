@@ -127,19 +127,19 @@ const VideoEditing = () => {
               <div className="service__right__wrap">
                 <div className="service__rightbox mb-30">
                   <h3>Service List</h3>
-                  <Link to="/Pages/illustration-design" className="link__box mb-15">
+                  <Link to="/services/illustration-design" className="link__box mb-15">
                     Illustration Design <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/business-branding" className="link__box mb-15">
+                  <Link to="/services/business-branding" className="link__box mb-15">
                     Business Branding <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/web-design" className="link__box mb-15">
+                  <Link to="/services/web-design" className="link__box mb-15">
                     Web UI/UX Design <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/paid-media" className="link__box mb-15">
+                  <Link to="/services/paid-media" className="link__box mb-15">
                     Paid Media <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/video-editing" className="link__box mb-15">
+                  <Link to="/services/video-editing" className="link__box mb-15">
                     Video Editing <i className="bi bi-chevron-right"></i>
                   </Link>
                 </div>
