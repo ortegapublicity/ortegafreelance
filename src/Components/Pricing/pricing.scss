@@ -9,6 +9,22 @@
     background: var(--base);
     margin-bottom: 40px;
   }
+  .price__description {
+  color: #6f6f6f;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+.price__result {
+  color: var(--subtitle);
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  text-transform: none;
+  letter-spacing: 0.2px;
+}
   .big__title {
     display: flex;
     font-size: 60px;

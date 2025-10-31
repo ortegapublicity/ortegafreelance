@@ -18,10 +18,13 @@ const accordionList = [
   },
   {
     id: "cmnid5",
-    heading: "Unique brand identity and strategy",
-    para: ` I design interfaces that reflect your visual 
-    tone and business values, connecting your brand to 
-    user emotion.`,
+    heading: "How long does it take to build a website?",
+    para: ` Most web design projects take between 
+    3 to 5 weeks, depending on the scope and content readiness. 
+    I start with knowing your goals and brand 
+    identity, then move into UX/UI design, development, and 
+    optimization. The goal is to deliver a functional and visually 
+    consistent brand that’s ready to convert.`,
   },
   {
     id: "cmnid6",
