@@ -18,6 +18,8 @@ import BusinessBranding from "../Pages/BusinessBranding/BusinessBranding";
 import WebDesign from "../Pages/WebDesign/WebDesign";
 import PaidMedia from "../Pages/PaidMedia/PaidMedia";
 import VideoEditing from "../Pages/VideoEditing/VideoEditing";
+// ✨ NUEVA IMPORTACIÓN: Componente para la pasarela de pagos
+import Checkout from "../Pages/Checkout/Checkout"; 
 
 export const router = createBrowserRouter([
   {
@@ -38,29 +40,30 @@ export const router = createBrowserRouter([
         element: <ServiceDetails />,
       },
       {
-        // ✨ CORREGIDO: URL pública debe ser /services/nombre
+        // Rutas de detalle de servicio
         path: "/services/illustration-design",
         element: <IllustrationDesign />,
       },
       {
-        // ✨ CORREGIDO
         path: "/services/business-branding",
         element: <BusinessBranding />,
       },
       {
-        // ✨ CORREGIDO
         path: "/services/web-design",
         element: <WebDesign />,
       },
       {
-        // ✨ CORREGIDO
         path: "/services/paid-media",
         element: <PaidMedia />,
       },
       {
-        // ✨ CORREGIDO
         path: "/services/video-editing",
         element: <VideoEditing />,
+      },
+      // ✨ NUEVA RUTA: Para el proceso de pago
+      {
+        path: "/checkout",
+        element: <Checkout />,
       },
       {
         path: "/all-blog",

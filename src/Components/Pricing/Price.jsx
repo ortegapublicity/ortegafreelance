@@ -39,9 +39,11 @@ const Price = ({ image, planName, price, time, fetcher, id, description, result 
           <p className="price__result">{result}</p>
         )}
 
-        {/* CTA */}
+        {/* CTA: Corregido para enlazar a la página de Checkout y ENVIAR los datos del plan */}
         <Link
-          to={""}
+          to={"/checkout"}
+          // ✨ CAMBIO CLAVE: Usamos 'state' para pasar los datos.
+          state={{ planName, price }} 
           className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
         >
           <span>Start My Project Now</span>
