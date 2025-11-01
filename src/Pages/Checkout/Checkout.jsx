@@ -173,14 +173,38 @@ const Checkout = () => {
                             <option value="">Selecciona tu país...</option>
                             <option value="VE">Venezuela</option>
                             <option value="US">Estados Unidos</option>
-                            <option value="UY">Uruguay</option>
-                            <option value="MX">México</option>
                             <option value="COL">Colombia</option>
+                            <option value="MEX">México</option>
+                            <option value="UY">Uruguay</option>
                             <option value="AR">Argentina</option>
                             <option value="BR">Brasil</option>
-                            <option value="ES">España</option>
-                            <option value="PE">Perú</option>
                             <option value="CL">Chile</option>
+                            <option value="PE">Perú</option>
+                            <option value="EC">Ecuador</option>
+                            <option value="PY">Paraguay</option>
+                            <option value="BO">Bolivia</option>
+                            <option value="HN">Honduras</option>
+                            <option value="GT">Guatemala</option>
+                            <option value="CR">Costa Rica</option>
+                            <option value="PA">Panamá</option>
+                            <option value="SV">El Salvador</option>
+                            <option value="NI">Nicaragua</option>
+                            <option value="DO">República Dominicana</option>
+                            <option value="IT">Italia</option>
+                            <option value="ES">España</option>
+                            <option value="FR">Francia</option>
+                            <option value="DE">Alemania</option>
+                            <option value="PT">Portugal</option>
+                            <option value="GB">Reino Unido</option>
+                            <option value="CH">Suiza</option>
+                            <option value="AU">Australia</option>
+                            <option value="NZ">Nueva Zelanda</option>
+                            <option value="CN">China</option>
+                            <option value="JP">Japón</option>
+                            <option value="IN">India</option>
+                            <option value="RU">Rusia</option>
+                            <option value="SA">Arabia Saudita</option>
+                            <option value="AE">Emiratos Árabes Unidos</option>
                           </select>
                         </div>
                         <div className="col-md-6 mb-3">
@@ -245,7 +269,7 @@ const Checkout = () => {
                       {/* reCAPTCHA */}
                       <div className="mt-3">
                         <ReCAPTCHA
-                          sitekey="6LfAr_4rAAAAAJT-Fs4Q6aLIPyAHHfkmL39zGCpT"
+                          sitekey="6LdiV_4rAAAAAAr_73Pwedv9qaLMMNlyjM7ujwEN"
                           onChange={handleCaptchaChange}
                         />
                       </div>
