@@ -245,7 +245,7 @@ const Checkout = () => {
                       {/* reCAPTCHA */}
                       <div className="mt-3">
                         <ReCAPTCHA
-                          sitekey="TU_SITE_KEY_DE_GOOGLE_RECAPTCHA"
+                          sitekey="6LFAr_4RAAAAIOtQPgEdn_wgUqfgrBD_pZ3gSiR"
                           onChange={handleCaptchaChange}
                         />
                       </div>
