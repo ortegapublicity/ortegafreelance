@@ -1,260 +1,349 @@
 import React, { useState } from 'react';
-// ✨ IMPORTACIÓN CLAVE: Necesitas useLocation para leer el estado del Link
-import { useLocation } from 'react-router-dom'; 
-// ⚠️ VERIFICA ESTA RUTA: Asegúrate de que PageHeader exista en esta ruta
-import PageHeader from '../../Components/Shared/PageHeader/PageHeader'; 
-import './Checkout.scss'; 
-// Asegurarse que todos los iconos de Bootstrap se importen desde el mismo lugar
-import { CreditCardFill, Paypal, Bank, CurrencyDollar } from 'react-bootstrap-icons'; 
+import { useLocation } from 'react-router-dom';
+import PageHeader from '../../Components/Shared/PageHeader/PageHeader';
+import './Checkout.scss';
+// Necesitas tu propia librería/componente de reCAPTCHA. 
+// Asumo que 'ReCAPTCHA' ya está configurado para usarse.
+import ReCAPTCHA from "react-google-recaptcha"; 
+import { Paypal, Bank, CurrencyDollar, } from 'react-bootstrap-icons';
 
 const Checkout = () => {
-  // ✨ PASO 1: Obtener la ubicación y los datos del estado
   const location = useLocation();
-  // Asignamos valores por defecto si el usuario llega directamente a /checkout
-  const { 
-      planName: selectedPlanName = "Plan No Seleccionado", 
-      price: selectedPrice = "$0.00" 
-  } = location.state || {}; // location.state será null si se navega directamente
-
-  // Estado para manejar el método de pago seleccionado
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
+  // Se obtiene el plan y el precio del estado de la ruta, o valores por defecto
+  const { planName: selectedPlanName = "Plan No Seleccionado", price: selectedPrice = "$0.00" } = location.state || {};
   
-  // ✨ PASO 2: Convertir el precio de string a número para posibles cálculos (si es necesario)
-  // Eliminamos el símbolo '$' y las comas para obtener un número.
+  // Estado para manejar si la información del usuario ya fue verificada
+  const [isVerified, setIsVerified] = useState(false);
+  // Estado para el método de pago seleccionado
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('paypal');
+  // Estado para la verificación del reCAPTCHA
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  
+  // Estado para los datos del formulario de facturación
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    idNumber: '',
+    country: '',
+    address1: '',
+    city: '',
+    zip: '',
+  });
+
+  // Cálculo del precio
   const numericPrice = parseFloat(selectedPrice.replace('$', '').replace(',', ''));
-  
-  // Cálculo simple (puedes añadir impuestos/descuentos aquí)
   const subtotal = isNaN(numericPrice) ? 0 : numericPrice;
-  const taxes = 0.00; // Asumiendo 0% de impuesto por ahora
-  const total = (subtotal + taxes).toFixed(2); // Mantener el total con 2 decimales
+  const taxes = 0.00;
+  const total = (subtotal + taxes).toFixed(2);
 
+  // 🎯 PayPal Payment Routes (Se asume que estas rutas son correctas)
+  const paypalLinks = {
+    1050: "https://www.paypal.com/ncp/payment/Z36K9R9B56B9U",
+    1650: "https://www.paypal.com/ncp/payment/L74D9ZQ7SL7ZC",
+    2250: "https://www.paypal.com/ncp/payment/5D6JJKGL8J6UG"
+  };
+
+  // 🎯 Bank Transfer Info
+  const transferInfo = (
+    <div className="p-3 mt-3 border rounded bg-light small">
+      <p><strong>Cuenta ACH:</strong> 028000024</p>
+      <p><strong>Tipo de cuenta:</strong> Checking</p>
+      <p><strong>Routing Wire:</strong> 021000021</p>
+      <p><strong>Titular:</strong> RAUL ALBERTO ORTEGA TALAVERA</p>
+      <p><strong>Dirección del banco:</strong> 270 Park Avenue, New York, NY 10017</p>
+    </div>
+  );
+
+  // 🎯 Crypto Wallets
+  const cryptoInfo = (
+    <div className="p-3 mt-3 border rounded bg-light small">
+      <p><strong>Red ETH (ERC20):</strong> 0x8D134699291Bc87Ebbe3B1Ff76e799bd5FB3F8c2</p>
+      <p><strong>Red TRON (TRC20):</strong> TYM1tUs5Wc5xAgyGddpmcqhYQfyXgMwGqA</p>
+      <p><strong>BNB Smart Chain:</strong> 0x8D134699291Bc87Ebbe3B1Ff76e799bd5FB3F8c2</p>
+      <p><strong>Solana:</strong> DzrUN9tfCRiAjR9zNviRNHFUJkvih8N5SXmsFszL1QL3</p>
+      <p><strong>Polygon:</strong> 0x8D134699291Bc87Ebbe3B1Ff76e799bd5FB3F8c2</p>
+    </div>
+  );
+
+  // 🎯 Handle CAPTCHA verification
+  const handleCaptchaChange = (value) => {
+    setCaptchaVerified(!!value);
+  };
+  
+  // 🎯 Manejador de cambios en el formulario
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+
+  // 🎯 Handle form submit
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    // Verificación de campos y reCAPTCHA
+    if (
+      formData.fullName &&
+      formData.email &&
+      formData.idNumber &&
+      formData.country &&
+      formData.address1 &&
+      formData.city &&
+      captchaVerified
+    ) {
+      // Simular envío de datos a Netlify (no pasa por aquí en producción)
+      
+      // Una vez que los datos son válidos, pasamos a la fase de pago
+      setIsVerified(true); 
+      // Si usas Netlify, aquí podrías redirigir o hacer un fetch POST manual. 
+      // Para esta demo, solo cambiamos el estado.
+    } else {
+      // Nota: Reemplazar alert() por un componente modal en producción
+      console.error("Por favor completa todos los campos y verifica el reCAPTCHA.");
+      alert("Por favor completa todos los campos y verifica el reCAPTCHA.");
+    }
+  };
 
   return (
     <>
-      {/* Encabezado genérico para la página de Checkout */}
-      <PageHeader
-        mainTitle="Proceso de Pago"
-        sortTitle="Completa tu Compra"
-      />
+      <PageHeader mainTitle="Proceso de Pago" sortTitle="Completa tu Compra" />
 
-      {/* Contenedor principal del Checkout */}
       <section className="checkout__section py-120">
         <div className="container">
           <div className="row g-5">
-            {/* Columna Izquierda: Formulario de Información y Pago (col-lg-7 para mejor distribución) */}
+
+            {/* Columna izquierda: Información o Pago */}
             <div className="col-lg-7">
-              <h3 className="mb-4 text-primary">Información de Contacto y Facturación</h3>
-              
-              <div className="checkout__form p-4 rounded shadow-sm bg-white">
-                <form>
-                  {/* Fila 1: Nombre y Correo */}
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="fullName" className="form-label">Nombre Completo</label>
-                      <input type="text" id="fullName" className="form-control" placeholder="Escribe tu nombre" required />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="email" className="form-label">Correo Electrónico</label>
-                      <input type="email" id="email" className="form-control" placeholder="tu.correo@ejemplo.com" required />
-                    </div>
-                  </div>
-                  
-                  {/* Fila 2: País y Dirección */}
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="country" className="form-label">País</label>
-                      <select id="country" className="form-select" required>
-                        <option value="">Selecciona tu país...</option>
-                        <option value="VE">Venezuela</option>
-                        <option value="US">Estados Unidos</option>
-                        {/* Agrega más países relevantes */}
-                      </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="address1" className="form-label">Dirección (Línea 1)</label>
-                      <input type="text" id="address1" className="form-control" placeholder="Calle, número, urbanización" required />
-                    </div>
-                  </div>
+              {/* --- LÓGICA CONDICIONAL ARREGLADA --- */}
+              {!isVerified ? (
+                <>
+                  <h3 className="mb-4 text-primary">Información de Contacto y Facturación</h3>
+                  <div className="checkout__form p-4 rounded shadow-sm bg-white">
+                    <form
+                      name="checkout-form"
+                      method="POST"
+                      data-netlify="true"
+                      onSubmit={handleFormSubmit}
+                    >
+                      {/* Netlify Hidden Field */}
+                      <input type="hidden" name="form-name" value="checkout-form" />
 
-                  {/* Fila 3: Ciudad y Código Postal */}
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="city" className="form-label">Ciudad</label>
-                      <input type="text" id="city" className="form-control" placeholder="Ciudad o Municipio" required />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                      <label htmlFor="zip" className="form-label">Código Postal</label>
-                      <input type="text" id="zip" className="form-control" placeholder="0000" />
-                    </div>
-                  </div>
-
-                  {/* Checkbox: Usar como dirección de envío (si aplica) */}
-                  <div className="form-check mt-3">
-                    <input className="form-check-input" type="checkbox" value="" id="shippingSame" defaultChecked />
-                    <label className="form-check-label" htmlFor="shippingSame">
-                      Usar esta información como dirección de contacto principal.
-                    </label>
-                  </div>
-                </form>
-              </div>
-
-              {/* SECCIÓN DE MÉTODOS DE PAGO */}
-              <div className="checkout__payment mt-5 p-4 rounded shadow-sm bg-white">
-                <h3 className="mb-4 text-primary">Métodos de Pago</h3>
-                
-                {/* Opciones de Pago (Radio Buttons) */}
-                <div className="payment-options">
-                  
-                  {/* Opción 1: Tarjeta de Crédito/Débito */}
-                  <div 
-                    className={`payment-option-item ${selectedPaymentMethod === 'card' ? 'active' : ''}`}
-                    onClick={() => setSelectedPaymentMethod('card')}
-                  >
-                    <input 
-                      type="radio" 
-                      id="payCard" 
-                      name="paymentMethod" 
-                      checked={selectedPaymentMethod === 'card'} 
-                      readOnly 
-                    />
-                    <label htmlFor="payCard">
-                      <CreditCardFill className="payment-icon text-muted me-2" /> Tarjeta de Crédito o Débito
-                    </label>
-                    
-                    {selectedPaymentMethod === 'card' && (
-                      <div className="card-details-form p-3 mt-2 border rounded">
-                        <p className="small text-muted mb-3">Pago seguro procesado por Stripe/Pasarela.</p>
-                        {/* Aquí iría el widget o formulario de la pasarela */}
-                        <input type="text" className="form-control mb-2" placeholder="Número de tarjeta" />
-                        <div className='row'>
-                            <div className='col-6'>
-                                <input type="text" className="form-control" placeholder="MM/AA" />
-                            </div>
-                            <div className='col-6'>
-                                <input type="text" className="form-control" placeholder="CVC" />
-                            </div>
+                      {/* Fila 1: Nombre y Correo */}
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="fullName" className="form-label">Nombre Completo</label>
+                          <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            className="form-control"
+                            placeholder="Escribe tu nombre"
+                            value={formData.fullName}
+                            onChange={handleInputChange}
+                            required
+                          />
                         </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="email" className="form-label">Correo Electrónico</label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            className="form-control"
+                            placeholder="tu.correo@ejemplo.com"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Fila 2: País y Dirección */}
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="country" className="form-label">País</label>
+                          <select
+                            id="country"
+                            name="country"
+                            className="form-select"
+                            value={formData.country}
+                            onChange={handleInputChange}
+                            required
+                          >
+                            <option value="">Selecciona tu país...</option>
+                            <option value="VE">Venezuela</option>
+                            <option value="US">Estados Unidos</option>
+                            <option value="UY">Uruguay</option>
+                            <option value="MX">México</option>
+                            <option value="COL">Colombia</option>
+                            <option value="AR">Argentina</option>
+                            <option value="BR">Brasil</option>
+                            <option value="ES">España</option>
+                            <option value="PE">Perú</option>
+                            <option value="CL">Chile</option>
+                          </select>
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="address1" className="form-label">Dirección (Línea 1)</label>
+                          <input
+                            type="text"
+                            id="address1"
+                            name="address1"
+                            className="form-control"
+                            placeholder="Calle, número, urbanización"
+                            value={formData.address1}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Fila 3: Ciudad y Código Postal */}
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="city" className="form-label">Ciudad</label>
+                          <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            className="form-control"
+                            placeholder="Ciudad o Municipio"
+                            value={formData.city}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="zip" className="form-label">Código Postal</label>
+                          <input
+                            type="text"
+                            id="zip"
+                            name="zip"
+                            className="form-control"
+                            placeholder="0000"
+                            value={formData.zip}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Campo RUT / RIF / NIT */}
+                      <div className="col-md-12 mb-3">
+                        <label htmlFor="idNumber" className="form-label">RUT / RIF / NIT / NTC</label>
+                        <input
+                          type="text"
+                          id="idNumber"
+                          name="idNumber"
+                          className="form-control"
+                          placeholder="Ejemplo: J-12345678-9 o 123456789"
+                          value={formData.idNumber}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+
+                      {/* reCAPTCHA */}
+                      <div className="mt-3">
+                        <ReCAPTCHA
+                          sitekey="TU_SITE_KEY_DE_GOOGLE_RECAPTCHA"
+                          onChange={handleCaptchaChange}
+                        />
+                      </div>
+
+                      <button className="common__btn w-100 mt-4" type="submit">
+                        Verificar Identidad
+                      </button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <div className="checkout__payment mt-5 p-4 rounded shadow-sm bg-white">
+                  <h3 className="mb-4 text-primary">Métodos de Pago</h3>
+
+                  {/* PAYPAL */}
+                  <div
+                    className={`payment-option-item ${selectedPaymentMethod === 'paypal' ? 'active' : ''}`}
+                    onClick={() => setSelectedPaymentMethod('paypal')}
+                  >
+                    <input type="radio" checked={selectedPaymentMethod === 'paypal'} readOnly />
+                    <label><Paypal className="payment-icon me-2" /> PayPal</label>
+                    {selectedPaymentMethod === 'paypal' && (
+                      <div className="p-3 mt-3 border rounded text-center">
+                        <p className="small text-muted">Serás redirigido a PayPal para completar el pago.</p>
+                        <form
+                          action={paypalLinks[numericPrice]}
+                          method="post"
+                          target="_blank"
+                        >
+                          <input type="submit" value="Comprar ahora" className="btn btn-warning fw-bold text-dark" />
+                          <img src="https://www.paypalobjects.com/images/Debit_Credit.svg" alt="cards" width="100" />
+                        </form>
                       </div>
                     )}
                   </div>
 
-                  {/* Opción 2: PayPal */}
-                  <div 
-                    className={`payment-option-item ${selectedPaymentMethod === 'paypal' ? 'active' : ''}`}
-                    onClick={() => setSelectedPaymentMethod('paypal')}
-                  >
-                    <input 
-                      type="radio" 
-                      id="payPaypal" 
-                      name="paymentMethod" 
-                      checked={selectedPaymentMethod === 'paypal'} 
-                      readOnly 
-                    />
-                    <label htmlFor="payPaypal">
-                      <Paypal className="payment-icon text-muted me-2" /> PayPal
-                    </label>
-                    {selectedPaymentMethod === 'paypal' && (
-                       <div className="p-3 mt-2 border rounded">
-                          <p className="small text-muted">Serás redirigido a la página de PayPal para completar el pago.</p>
-                          <button type="button" className="btn btn-primary btn-sm">Continuar con PayPal</button>
-                       </div>
-                    )}
-                  </div>
-                  
-                  {/* Opción 3: Transferencia (AHC / Zelle) */}
-                   <div 
+                  {/* TRANSFERENCIA */}
+                  <div
                     className={`payment-option-item ${selectedPaymentMethod === 'transfer' ? 'active' : ''}`}
                     onClick={() => setSelectedPaymentMethod('transfer')}
                   >
-                    <input 
-                      type="radio" 
-                      id="payTransfer" 
-                      name="paymentMethod" 
-                      checked={selectedPaymentMethod === 'transfer'} 
-                      readOnly 
-                    />
-                    <label htmlFor="payTransfer">
-                      <Bank className="payment-icon text-muted me-2" /> Transferencia Bancaria (AHC/Zelle)
-                    </label>
+                    <input type="radio" checked={selectedPaymentMethod === 'transfer'} readOnly />
+                    <label><Bank className="payment-icon me-2" /> Transferencia Bancaria (ACH / Zelle)</label>
                     {selectedPaymentMethod === 'transfer' && (
-                       <div className="p-3 mt-2 border rounded">
-                          <p className="small text-danger">Instrucciones: Una vez finalizada la compra, se mostrarán los datos bancarios para realizar la transferencia. El servicio se activará tras la confirmación.</p>
-                       </div>
+                      <>
+                        <p className="small mt-2 text-danger">
+                          Realiza tu pago mediante transferencia bancaria. El servicio se activará tras la confirmación del pago.
+                        </p>
+                        {transferInfo}
+                      </>
                     )}
                   </div>
-                  
-                  {/* Opción 4: Criptomonedas (USDT) */}
-                  <div 
+
+                  {/* CRYPTO */}
+                  <div
                     className={`payment-option-item ${selectedPaymentMethod === 'crypto' ? 'active' : ''}`}
                     onClick={() => setSelectedPaymentMethod('crypto')}
                   >
-                    <input 
-                      type="radio" 
-                      id="payCrypto" 
-                      name="paymentMethod" 
-                      checked={selectedPaymentMethod === 'crypto'} 
-                      readOnly 
-                    />
-                    <label htmlFor="payCrypto">
-                      <CurrencyDollar className="payment-icon text-muted me-2" /> Criptomonedas (USDT vía Binance Pay)
-                    </label>
+                    <input type="radio" checked={selectedPaymentMethod === 'crypto'} readOnly />
+                    <label><CurrencyDollar className="payment-icon me-2" /> Criptomonedas (USDT)</label>
                     {selectedPaymentMethod === 'crypto' && (
-                       <div className="p-3 mt-2 border rounded">
-                          <p className="small text-warning">Se te proporcionará una dirección de billetera y un código QR para pagar la cantidad exacta en USDT.</p>
-                       </div>
+                      <>
+                        <p className="small mt-2 text-warning">Envía exactamente <strong>${total}</strong> USDT a cualquiera de las siguientes redes:</p>
+                        {cryptoInfo}
+                      </>
                     )}
                   </div>
-                  
                 </div>
-
-                {/* Botón de pago final */}
-                <button className="common__btn mt-5 w-100" type="submit">
-                    Finalizar Compra y Pagar
-                </button>
-              </div>
-
+              )}
             </div>
 
-            {/* Columna Derecha: Resumen del Carrito/Pago (col-lg-5) */}
+            {/* Columna derecha: resumen */}
             <div className="col-lg-5">
               <div className="order-summary p-4 bg-light rounded shadow-lg sticky-top">
                 <h4 className='mb-4'>Resumen de la Orden</h4>
-                
-                {/* Detalles del servicio */}
                 <div className="d-flex justify-content-between my-3 border-bottom pb-2">
                   <span>Servicio Contratado:</span>
-                  {/* ✨ MUESTRA EL NOMBRE DEL PLAN ENVIADO */}
-                  <span className='fw-bold'>{selectedPlanName}</span> 
+                  <span className='fw-bold'>{selectedPlanName}</span>
                 </div>
-
-                {/* Subtotal */}
                 <div className="d-flex justify-content-between my-3">
                   <span>Subtotal:</span>
-                  {/* ✨ MUESTRA EL PRECIO DEL PLAN ENVIADO */}
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
-                
-                {/* Impuestos / Descuentos */}
                 <div className="d-flex justify-content-between my-3">
-                  <span>Impuestos (0%):</span>
+                  <span>Impuestos:</span>
                   <span>${taxes.toFixed(2)}</span>
                 </div>
-                
                 <hr />
-                
-                {/* Total */}
                 <div className="d-flex justify-content-between fw-bold fs-5 pt-2">
-                  <span>Total a Pagar:</span>
-                  {/* ✨ MUESTRA EL TOTAL CALCULADO */}
-                  <span className="text-primary">${total}</span> 
+                  <span>Total:</span>
+                  <span className="text-primary">${total}</span>
                 </div>
-                
-                {/* Términos */}
                 <p className="small mt-4 text-muted border-top pt-3">
-                    Al hacer clic en "Finalizar Compra y Pagar", aceptas nuestros términos y condiciones de servicio.
+                  Al hacer clic en “Finalizar Compra y Pagar”, aceptas nuestros términos y condiciones de servicio.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </section>
