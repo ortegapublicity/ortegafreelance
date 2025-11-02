@@ -18,7 +18,7 @@ npm install
 
 3. Configure environment variables:
    - Copy `.env.example` to `.env`
-   - Update `VITE_RECAPTCHA_SITE_KEY` with your Google reCAPTCHA v2 site key
+   - Update `VITE_RECAPTCHA_SITE_KEY` with your Google reCAPTCHA v2 site key.
    - **Important:** You must use a **reCAPTCHA v2 "I'm not a robot" Checkbox** key (NOT v3)
 
 ## Running the Project
