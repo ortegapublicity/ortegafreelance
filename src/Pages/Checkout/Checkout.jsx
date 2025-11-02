@@ -269,7 +269,7 @@ const Checkout = () => {
                       {/* reCAPTCHA */}
                       <div className="mt-3">
                         <ReCAPTCHA
-                          sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LdiV_4rAAAAAAr_73Pwedv9qaLMMNlyjM7ujwEN"}
+                          sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LcQ2v8rAAAAAFqiyZqI8lETPeC9fi_3_3BvQXji"}
                           onChange={handleCaptchaChange}
                         />
                       </div>
