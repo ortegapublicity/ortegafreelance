@@ -1,17 +1,31 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import Lightbox from "../Shared/LightBox/LightBox";
-import { blogImages } from "../../Utlits/blogList";
-const Blog = ({ date, heading, image, index }) => {
+// ... otras importaciones ...
+
+// El componente ahora recibe una prop 'post' de Contentful
+// y (opcionalmente) el índice para la lightbox.
+const Blog = ({ post, index }) => { 
   const [currentId, setCurrentId] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  
+  // Extrae los campos de Contentful. 
+  // ¡Asegúrate de que estos nombres coincidan con los de tu Content Model!
+  const { title, date, slug, featuredImage } = post.fields; 
+  
+  // Obtiene la URL de la imagen. La imagen de Contentful es un objeto de Asset.
+  const imageUrl = featuredImage 
+    ? `https:${featuredImage.fields.file.url}` 
+    : 'placeholder.jpg'; // Sustituye con una imagen por defecto
 
   const openLightbox = (index) => {
     setCurrentId(index);
     setLightboxOpen(true);
   };
+  
+  // Nota: Si usas la lightbox, necesitarás adaptar `blogImages` para que use
+  // las imágenes de Contentful en lugar de las estáticas.
+  
   return (
     <>
       <div
@@ -22,16 +36,22 @@ const Blog = ({ date, heading, image, index }) => {
         <div className="left__service">
           <div className="serial__adjust">
             <div className="cont">
-              <span className="dates"> {date} </span>
+              <span className="dates">
+                {/* 1. Formatea la fecha de Contentful */}
+                {new Date(date).toLocaleDateString()} 
+              </span>
               <h3>
-                <Link to={"/blog-details"}>{heading}</Link>
+                {/* 2. ENLACE DINÁMICO: usa el slug para apuntar a la plantilla de detalle */}
+                {/* Debes asegurar que tu router tiene la ruta /blog/:slug */}
+                <Link to={`/blog/${slug}`}>{title}</Link> 
               </h3>
             </div>
           </div>
           <div className="opa__thumb imgc">
+            {/* 3. IMAGEN DINÁMICA: usa la URL de Contentful */}
             <img
-              src={image}
-              alt="img-opa"
+              src={imageUrl} 
+              alt={title}
               onClick={() => openLightbox(index)}
             />
           </div>
@@ -40,13 +60,7 @@ const Blog = ({ date, heading, image, index }) => {
           <Eye className="i" />
         </div>
       </div>
-      {lightboxOpen && (
-        <Lightbox
-          images={blogImages}
-          setLightboxOpen={setLightboxOpen}
-          currentId={currentId}
-        />
-      )}
+      {/* ... Lightbox ... */}
     </>
   );
 };

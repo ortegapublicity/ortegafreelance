@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
         element: <AllBlogs />,
       },
       {
-        path: "/blog-details",
+        path: "/blog/:slug",
         element: <BlogDetails />,
       },
       {

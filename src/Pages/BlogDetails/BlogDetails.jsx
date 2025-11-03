@@ -1,23 +1,137 @@
-import React from "react";
-import { Link, ScrollRestoration } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, ScrollRestoration, useParams } from "react-router-dom";
 
+// Importaciones de Contentful y Rich Text
+import contentfulClient from "../../Utlits/contentfulClient"; 
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer'; 
+import { INLINES, BLOCKS, MARKS } from '@contentful/rich-text-types'; // <-- Necesario para definir las opciones
 
+// Importaciones de Componentes y Utilidades
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
 import BlogSidebar from "../../Components/Blogs/BlogSidebar";
-
-import bblog1 from "../../assets/img/blog/bblog1.png";
-import blogDetailsb2 from "../../assets/img/blog/blog-detailsb2.png";
-import straightQuotes from "../../assets/img/blog/straight-quotes.png";
 import Form from "../../Components/Shared/Form/Form";
 import { socialIcons } from "../../Utlits/socilIcons";
+// Importa las imágenes que usas en bloques fijos si deseas mantenerlas
+import straightQuotes from "../../assets/img/blog/straight-quotes.png"; 
+
 
 const BlogDetails = () => {
+  const { slug } = useParams(); 
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Lógica de carga del post... (TU CÓDIGO ACTUAL)
+  useEffect(() => {
+    if (!slug) return;
+    contentfulClient.getEntries({
+      content_type: 'blogPost', 
+      'fields.slug': slug 
+    }).then(response => {
+      setPost(response.items[0]);
+      setLoading(false);
+    }).catch(error => {
+      console.error("Error fetching blog post by slug:", error);
+      setLoading(false);
+    });
+  }, [slug]);
+
+  // Manejo de estados de carga y 404... (TU CÓDIGO ACTUAL)
+  if (loading) {
+    return (
+      <section className="blog__bsection pb-120">
+        <div className="container">
+          <p className="white fz-24">Cargando artículo...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!post) {
+    return (
+      <section className="blog__bsection pb-120">
+        <div className="container">
+          <p className="white fz-24">Error 404: Artículo no encontrado.</p>
+          <Link to="/all-blog" className="cmn--btn">Volver al Blog</Link>
+        </div>
+      </section>
+    );
+  }
+
+  // Desestructura y Formatea... (TU CÓDIGO ACTUAL)
+  const { title, date, body, featuredImage, tags, author } = post.fields; 
+  
+  const postDate = new Date(date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  
+  const imageUrl = featuredImage 
+    ? `https:${featuredImage.fields.file.url}` 
+    : '/ruta/a/imagen/por/defecto.jpg'; 
+    
+  // --- CONFIGURACIÓN DE RENDERING PARA APLICAR ESTILOS ---
+  const richTextOptions = {
+    renderNode: {
+      // PÁRRAFOS: Aplica tus clases de texto por defecto
+      [BLOCKS.PARAGRAPH]: (node, children) => (
+        <p className="fz-16 pra ttext__one">{children}</p>
+      ),
+      
+      // CITAS DE BLOQUE: Recrea la estructura visual de tu quote__box
+      [BLOCKS.QUOTE]: (node, children) => (
+        <div className="quite__box mb-30">
+          <img src={straightQuotes} alt="Quotes" />
+          <p>{children}</p>
+          {/* Si quieres una línea para autor, Contentful requiere que lo hagas en Rich Text */}
+        </div>
+      ),
+
+      // LISTAS NO ORDENADAS (ul): Aplica el estilo de tus "Key Takeaways"
+      [BLOCKS.UL_LIST]: (node, children) => (
+        <div className="text__box mb-30">
+            <ul className="challenge__list">
+                {children}
+            </ul>
+        </div>
+      ),
+      
+      // CABECERAS (H3): Aplica el estilo de tus títulos de sección
+      [BLOCKS.HEADING_3]: (node, children) => <h3 className="white mb-30">{children}</h3>,
+      
+      // IMÁGENES INCRUSTADAS: Recrea el contenedor 'thumb mb-30'
+      [BLOCKS.EMBEDDED_ASSET]: (node) => {
+        const { title, description, file } = node.data.target.fields;
+        const assetUrl = `https:${file.url}`;
+        
+        return (
+          <div className="thumb mb-30">
+            <img src={assetUrl} alt={description || title || 'Imagen de Contenido'} />
+          </div>
+        );
+      },
+      
+      // ENLACES INCRUSTADOS: (Si hay un Content Model enlazado)
+      // [BLOCKS.EMBEDDED_ENTRY]: (node) => (
+      //    // Aquí puedes renderizar un componente específico, como un CTA
+      // ),
+    },
+    // Enlaces estándar (Hyperlinks)
+    renderInline: {
+      [INLINES.HYPERLINK]: (node, children) => {
+        const url = node.data.uri;
+        return <a href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
+      },
+    }
+  };
+  
+  // --- FIN DE CONFIGURACIÓN DE RENDERING ---
 
   return (
     <>
       <PageHeader
-        heading={"Brand design that helps the company grow"}
-        page={"Brand design that helps the company grow"}
+        heading={title}
+        page={title}
       />
       <section className="blog__bsection pb-120">
         <div className="container">
@@ -29,102 +143,37 @@ const BlogDetails = () => {
                   data-aos="fade-up"
                   data-aos-duration="1000"
                 >
+                  {/* 4. Imagen Destacada Dinámica */}
                   <Link to="" className="thumb">
-                    <img src={bblog1} alt="img" />
+                    <img src={imageUrl} alt={title} />
                   </Link>
+                  
                   <div className="content__two">
                     <div
                       className="text__box mb-30"
                       data-aos="fade-up"
                       data-aos-duration="1400"
                     >
+                      {/* 5. Metadatos Dinámicos */}
                       <span className="text__de">
-                        By: admin / Lifestyle / Posted on September 19, 2025 /
-                        Comments: 0
+                        By: {author || 'admin'} / Posted on {postDate}
                       </span>
-                      <p className="fz-16 pra ttext__one">
-                        From my perspective, branding is not just about visuals, 
-                        it’s about defining who you are and why you exist. 
-                        It starts with uncovering the real mission behind your 
-                        business: your philosophy, your story, and the emotion 
-                        that drives your work. When that clarity is translated 
-                        into a consistent identity, your brand stops being 
-                        decoration and becomes direction.
-                      </p>
-                      <p className="fz-16 pra">
-                        Authenticity is what makes a brand truly valuable.
-                        Today’s audiences, and even the algorithms, recognize 
-                        sincerity. They reward it with engagement, trust, and 
-                        loyalty. When your design and message speak from the 
-                        same truth, everything else aligns naturally.
-                      </p>
+                      
+                      {/* 6. CUERPO DEL CONTENIDO DINÁMICO */}
+                      {/* Aquí reemplazamos todo el contenido estático por el renderizado de Rich Text */}
+                      {documentToReactComponents(body, richTextOptions)}
+                      
+                      {/* ¡TODO el contenido anterior fijo (párrafos, citas, listas) DEBE SER ELIMINADO de aquí! */}
+                      
                     </div>
-                    <div className="quite__box mb-30">
-                      <img src={straightQuotes} alt="img" />
-                      <p>
-                        Your brand is what other people say about you when
-                        you’re not in the room.
-                      </p>
-                      <Link to="">Jeff Bezos</Link>
-                    </div>
-                    <p className="fz-16 pra ttext__one mb__cus60">
-                      Good branding is like the umami of business, subtle but 
-                      unforgettable. It’s the perfect balance between what you 
-                      show and what you stand for. Every ad, video, and web 
-                      experience should be part of the same recipe, one that 
-                      reflects the heart of your company and the value you bring 
-                      to others. That’s how marketing stops feeling forced and 
-                      starts feeling human.
-                    </p>
-                    <h3 className="white mb-30">
-                      Branding made for NF Autoparts Corporations, LLC.
-                    </h3>
-                    <div className="thumb mb-30">
-                      <img src={blogDetailsb2} alt="img" />
-                    </div>
-                    <p className="fz-16 pra ttext__one mb-30">
-                      When design, motion, ads, and strategy work together, 
-                      growth stops being an accident and becomes a process. 
-                      It’s not just about aesthetics or metrics; it’s about 
-                      building a digital presence that sells with purpose. 
-                      The brands that understand this are the ones that last, 
-                      because they grow from within.
-                    </p>
-                    <h3 className="white mb-30">
-                      Key Takeaways:
-                    </h3>
-                    <div
-                      className="text__box mb-30"
-                      data-aos="fade-up"
-                      data-aos-duration="1600"
-                    >
-                      <ul className="challenge__list">
-                        <li>
-                          Authentic branding builds trust before conversion.
-                        </li>
-                        <li>
-                          A clear digital identity enhances ad performance and ROI.
-                        </li>
-                        <li>
-                          Consistency across design, content, and tone creates recognition.
-                        </li>
-                        <li>
-                          Strategy without authenticity is noise; authenticity without strategy is silence.
-                        </li>
-                      </ul>
-                    </div>
-                    <p className="fz-16 pra ttext__one mb-30">
-                      Want to take your brand to the next level? 
-                      Explore more insights on my blog or book a 
-                      session with me to start building a brand 
-                      that truly sells.
-                    </p>
                   </div>
+                  {/* 7. Tags y Compartir */}
                   <div className="post__in cmn__bg mb__cus60">
                     <div className="post__left">
                       <span className="fz-20 fw-500 white">Posted in :</span>
-                      <Link to="">Business</Link>
-                      <Link to="">Digital</Link>
+                      {tags && tags.map(tag => (
+                        <Link key={tag} to={`/tag/${tag}`}>{tag}</Link>
+                      ))}
                     </div>
                     <div className="post__right">
                       <span className="fz-20 fw-500 white">Share :</span>
