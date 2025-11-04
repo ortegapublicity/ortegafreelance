@@ -1,6 +1,6 @@
 import React from "react";
 import Blog from "./Blog";
-import { blogsList } from "../../Utils/blogList.jsx";
+import { blogsList } from "../../Utlits/blogList.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
