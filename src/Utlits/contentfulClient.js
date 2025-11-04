@@ -1,8 +1,11 @@
-// src/Utils/contentfulClient.js
+// src/Utlits/contentfulClient.js (Versión CORREGIDA)
 const contentful = require('contentful'); 
+
 const client = contentful.createClient({
-  space: process.env.VITE_CONTENTFUL_SPACE_ID,
-  accessToken: process.env.VITE_CONTENTFUL_ACCESS_TOKEN,
+  // CAMBIO CLAVE: Usar la sintaxis de Vite/ESM para variables de entorno en el cliente
+  space: import.meta.env.VITE_CONTENTFUL_SPACE_ID, // <-- CORREGIDO
+  accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN, // <-- CORREGIDO
   environment: 'master' 
 });
+
 export default client;
