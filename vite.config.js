@@ -9,4 +9,10 @@ export default defineConfig({
   // build:{
   //   outDir:"../dist"
   // }
-})
+build: {
+    rollupOptions: {
+      // Le dice a Rollup que no intente empaquetar "contentful"
+      external: ['contentful'],
+    },
+  },
+});
