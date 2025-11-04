@@ -9,16 +9,9 @@ export default defineConfig({
   // build:{
   //   outDir:"../dist"
   // }
-optimizeDeps: {
-    include: ['contentful'],
-  },
-// AÑADIR ESTA SECCIÓN FINAL para forzar el procesamiento CJS
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/],
-      namedExports: {
-        'contentful': ['createClient'], // Indica explícitamente qué exportaciones usar
-      },
+build: {
+    rollupOptions: {
+      external: ['contentful'],
     },
   },
 });
