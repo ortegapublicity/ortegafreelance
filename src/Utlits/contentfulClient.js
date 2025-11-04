@@ -1,5 +1,5 @@
 // src/Utlits/contentfulClient.js (Versión CORREGIDA)
-const contentful = require('contentful');
+import * as contentful from 'contentful';
 
 const client = contentful.createClient({
   // CAMBIO CLAVE: Usar la sintaxis de Vite/ESM para variables de entorno en el cliente
