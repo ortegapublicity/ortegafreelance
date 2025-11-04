@@ -9,9 +9,15 @@ export default defineConfig({
   // build:{
   //   outDir:"../dist"
   // }
+  optimizeDeps: {
+    include: ['contentful'],
+  },
 build: {
-    rollupOptions: {
-      external: ['contentful'],
+    commonjsOptions: {
+      include: [/node_modules/],
+      namedExports: {
+        'contentful': ['createClient'], // Indica qué exportaciones buscar
     },
   },
+},
 });
