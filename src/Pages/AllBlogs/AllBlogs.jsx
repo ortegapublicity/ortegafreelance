@@ -6,7 +6,7 @@ import BlogSidebar from "../../Components/Blogs/BlogSidebar";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
 
 import BlogCard from "../../Components/Blogs/BlogCard/BlogCard";
-import { blogsList } from "../../Utils/blogList";
+import { blogsList } from "../../Utils/blogList.jsx";
 
 const AllBlogs = () => {
 
