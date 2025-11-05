@@ -1,28 +1,30 @@
-// src/pages/AllBlogs.jsx
+// src/Pages/AllBlogs/AllBlogs.jsx
 import React, { useEffect, useState } from "react";
 import { fetchAllBlogs } from "../../data/contentfulClient";
-import { Link } from "react-router-dom";
+import BlogCard from "../../Components/Blogs/BlogCard/BlogCard";
 
 export default function AllBlogs() {
-  const [blogs, setBlogs] = useState(null);
+  const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    fetchAllBlogs().then(setBlogs).catch(console.error);
+    fetchAllBlogs()
+      .then((data) => {
+        console.log("BLOGS DATA:", data); // ✅ verifica aquí que llegan bien
+        setBlogs(data);
+      })
+      .catch(console.error);
   }, []);
+
+  if (!blogs || blogs.length === 0) {
+    return <p>Loading blogs...</p>;
+  }
 
   return (
     <section className="all-blogs">
       <h2>All Blogs</h2>
       <div className="blog-grid">
         {blogs.map((blog) => (
-          <article key={blog.id} className="blog-card">
-            <Link to={`/blog/${blog.slug}`}>
-              <img src={blog.image} alt={blog.title} />
-            </Link>
-            <p className="date">{blog.date}</p>
-            <h3>{blog.title}</h3>
-            <p>{blog.description}</p>
-          </article>
+          <BlogCard key={blog.id} blog={blog} />
         ))}
       </div>
     </section>
