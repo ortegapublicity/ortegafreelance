@@ -4,7 +4,7 @@ import { fetchAllBlogs } from "../../data/contentfulClient";
 import { Link } from "react-router-dom";
 
 export default function AllBlogs() {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState(null);
 
   useEffect(() => {
     fetchAllBlogs().then(setBlogs).catch(console.error);
