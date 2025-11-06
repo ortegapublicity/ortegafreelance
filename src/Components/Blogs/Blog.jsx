@@ -1,17 +1,33 @@
 import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
+import defaultBlogImage from "../../assets/img/blog/bblog1.png";
+
+const resolveAssetUrl = (asset) => {
+  if (!asset) return null;
+
+  if (Array.isArray(asset)) {
+    return resolveAssetUrl(asset[0]);
+  }
+
+  if (typeof asset === "string") {
+    return asset;
+  }
+
+  const url = asset?.fields?.file?.url;
+  if (!url) return null;
+
+  return url.startsWith("http") ? url : `https:${url}`;
+};
 
 const Blog = ({ post, index }) => {
   const [currentId, setCurrentId] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const fields = post?.fields ?? {};
-  const { title = "Entrada sin título", date, slug = "", featuredImage } = fields;
+  const { title = "Entrada sin titulo", date, slug = "", featuredImage } = fields;
 
-  const imageUrl = featuredImage?.fields?.file?.url
-    ? `https:${featuredImage.fields.file.url}`
-    : "placeholder.jpg";
+  const imageUrl = resolveAssetUrl(featuredImage) || defaultBlogImage;
 
   const formattedDate = date ? new Date(date).toLocaleDateString() : "";
   const blogHref = slug ? `/blog/${slug}` : "#";
