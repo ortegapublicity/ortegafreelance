@@ -2,23 +2,7 @@ import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import defaultBlogImage from "../../assets/img/blog/bblog1.png";
-
-const resolveAssetUrl = (asset) => {
-  if (!asset) return null;
-
-  if (Array.isArray(asset)) {
-    return resolveAssetUrl(asset[0]);
-  }
-
-  if (typeof asset === "string") {
-    return asset;
-  }
-
-  const url = asset?.fields?.file?.url;
-  if (!url) return null;
-
-  return url.startsWith("http") ? url : `https:${url}`;
-};
+import { resolveAssetUrl } from "../../utils/contentfulPosts";
 
 const Blog = ({ post, index }) => {
   const [currentId, setCurrentId] = useState(0);

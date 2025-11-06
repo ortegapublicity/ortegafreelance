@@ -1,58 +1,81 @@
-// src/Components/Blogs/BlogCard/BlogCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
+import defaultBlogImage from "../../../assets/img/blog/bblog1.png";
+import { resolveAssetUrl, slugify } from "../../../utils/contentfulPosts";
 
-const BlogCard = ({ blog }) => {
+const truncate = (value = "", maxLength = 180) => {
+  const text = value?.toString().trim();
+  if (!text) return "";
+  return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+};
+
+const BlogCard = ({ blog, index = 0 }) => {
   if (!blog) {
-    return <div>Loading blog...</div>;
+    return null;
   }
 
-  const { title, summary, date, slug, image } = blog;
+  const fields = blog.fields ?? blog;
 
-  // Verificamos la URL de imagen
-  const imageUrl = image
-    ? image
-    : "/ruta/a/imagen/por/defecto.jpg";
+  const title = fields.title ?? blog.title ?? "Entrada sin titulo";
+  const rawSlug =
+    fields.slug ??
+    blog.slug ??
+    (title ? slugify(title) : blog.sys?.id ?? "");
+  const slug =
+    typeof rawSlug === "string" && rawSlug.length
+      ? rawSlug
+      : rawSlug?.sys?.id
+      ? slugify(rawSlug.sys.id)
+      : "";
+  const rawDate = fields.date ?? blog.date ?? "";
+  const excerptSource =
+    fields.excerpt ??
+    fields.summary ??
+    blog.summary ??
+    blog.para ??
+    "";
+  const excerpt = truncate(excerptSource);
 
-  // Formateamos la fecha
-  const formattedDate = date
-    ? new Date(date).toLocaleDateString("es-ES", {
+  const imageUrl =
+    resolveAssetUrl(fields.featuredImage) ??
+    blog.image ??
+    defaultBlogImage;
+
+  const formattedDate = rawDate
+    ? new Date(rawDate).toLocaleDateString("es-ES", {
         year: "numeric",
         month: "long",
         day: "numeric",
       })
     : "Fecha no disponible";
 
+  const href = slug ? `/blog/${slug}` : "#";
+
   return (
-    <div
-      className="blog__bitem mb__cus50"
+    <article
+      className="allblogs__card"
       data-aos="fade-up"
-      data-aos-duration="1000"
+      data-aos-duration={900 + index * 100}
     >
-      <Link to={`/blog/${slug}`} className="thumb">
-        <img src={imageUrl} alt={title || "Blog Image"} />
+      <Link to={href} className="allblogs__thumb">
+        <img src={imageUrl} alt={title} loading="lazy" />
       </Link>
-
-      <div className="content">
-        <span className="bdate d-flex align-items-center gap-1 ptext fz-16">
-          <span className="text-uppercase text-white">NEWS</span>. {formattedDate}
-        </span>
-        <h3>
-          <Link to={`/blog/${slug}`}>{title}</Link>
+      <div className="allblogs__body">
+        <div className="allblogs__meta">
+          <span className="allblogs__meta-pill">{formattedDate}</span>
+        </div>
+        <h3 className="allblogs__title">
+          <Link to={href}>{title}</Link>
         </h3>
-        <p className="fz-16 ptext">{summary}</p>
-
-        <Link
-          to={`/blog/${slug}`}
-          className="d-flex justify-content-center fw-500 cmn--btn align-items-center gap-2"
-        >
-          <span className="get__text">Read More</span>
-          <span>
+        <p className="allblogs__excerpt">{excerpt}</p>
+        <Link to={href} className="allblogs__cta">
+          Leer mas
+          <span className="allblogs__cta-icon">
             <i className="bi bi-arrow-right"></i>
           </span>
         </Link>
       </div>
-    </div>
+    </article>
   );
 };
 
