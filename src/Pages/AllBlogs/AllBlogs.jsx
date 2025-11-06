@@ -1,32 +1,81 @@
-// src/Pages/AllBlogs/AllBlogs.jsx
-import React, { useEffect, useState } from "react";
-import { fetchAllBlogs } from "../../data/contentfulClient";
+import React, { useEffect, useMemo, useState } from "react";
 import BlogCard from "../../Components/Blogs/BlogCard/BlogCard";
+import {
+  buildFallbackPosts,
+  loadContentfulPosts,
+} from "../../utils/contentfulPosts";
 
-export default function AllBlogs() {
-  const [blogs, setBlogs] = useState([]);
+const AllBlogs = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fallbackPosts = useMemo(() => buildFallbackPosts(), []);
 
   useEffect(() => {
-    fetchAllBlogs()
-      .then((data) => {
-        console.log("BLOGS DATA:", data); // ✅ verifica aquí que llegan bien
-        setBlogs(data);
-      })
-      .catch(console.error);
+    let isMounted = true;
+
+    const fetchPosts = async () => {
+      const { posts: fetchedPosts, error: fetchError } = await loadContentfulPosts({
+        include: 2,
+      });
+
+      if (!isMounted) {
+        return;
+      }
+
+      setPosts(fetchedPosts ?? []);
+      setError(fetchError ?? null);
+      setLoading(false);
+    };
+
+    fetchPosts().catch((err) => {
+      if (isMounted) {
+        setError(err.message || "No fue posible cargar las entradas de Contentful.");
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (!blogs || blogs.length === 0) {
-    return <p>Loading blogs...</p>;
-  }
+  const postsToRender = posts.length ? posts : fallbackPosts;
 
   return (
-    <section className="all-blogs">
-      <h2>All Blogs</h2>
-      <div className="blog-grid">
-        {blogs.map((blog) => (
-          <BlogCard key={blog.id} blog={blog} />
-        ))}
+    <section className="allblogs">
+      <div className="container">
+        <header className="allblogs__header" data-aos="fade-down" data-aos-duration="1000">
+          <span className="allblogs__eyebrow">Lecturas recientes</span>
+          <h1 className="allblogs__headline">Historias, ideas y aprendizajes</h1>
+          <p className="allblogs__intro">
+            Explora las ultimas entradas del blog con recomendaciones utiles, procesos creativos
+            y tacticas que ya estan ayudando a otras marcas a crecer. Selecciona un articulo para
+            profundizar en los detalles.
+          </p>
+        </header>
+
+        {loading && (
+          <div className="allblogs__status" role="status">
+            Cargando contenidos...
+          </div>
+        )}
+
+        {error && !loading && (
+          <div className="allblogs__alert" role="alert">
+            {error}
+          </div>
+        )}
+
+        <div className="allblogs__grid">
+          {postsToRender.map((post, index) => (
+            <BlogCard key={post.sys?.id ?? index} blog={post} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
-}
+};
+
+export default AllBlogs;

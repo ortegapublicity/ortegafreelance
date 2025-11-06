@@ -1,3 +1,5 @@
+@use "./mixins" as *;
+
 //>>>>> Component Button Here <<<<<//
 .cmn--btn {
   padding: 20px 30px 21px;
