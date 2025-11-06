@@ -40,6 +40,9 @@ exports.handler = async (event) => {
             // Manejo de la URL de la imagen
             image: post.fields.image?.fields?.file?.url 
                 ? `https:${post.fields.image.fields.file.url}`
+            image: post.fields.featuredImage?.fields?.file?.url
+                ? `https:${post.fields.featuredImage.fields.file.url}`
+                : (post.fields.image?.fields?.file?.url ? `https:${post.fields.image.fields.file.url}`
                 : "/default-image.png",
         };
         
