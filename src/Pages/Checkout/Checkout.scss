@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // ----------------------------------------------
 // Variables (Ajusta estos colores a la paleta de tu sitio)
 // ----------------------------------------------
@@ -87,12 +89,12 @@ $shadow-light: rgba(0, 0, 0, 0.05);
 
     // Estado HOVER y ACTIVE
     &:hover {
-        border-color: lighten($primary-color, 20%);
+        border-color: color.adjust($primary-color, $lightness: 20%);
     }
 
     &.active {
         border-color: $primary-color; /* Borde primario para la selección */
-        background-color: lighten($primary-color, 48%); /* Fondo muy ligero */
+        background-color: color.adjust($primary-color, $lightness: 48%); /* Fondo muy ligero */
         
         // Estilo del ícono cuando está activo
         .payment-icon {
