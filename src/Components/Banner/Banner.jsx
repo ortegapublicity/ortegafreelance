@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   Facebook,
@@ -44,6 +45,7 @@ const socalIcon = [
   },
 ];
 const Banner = () => {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [position, setPosition] = useState(false);
 
@@ -65,17 +67,17 @@ const Banner = () => {
             <div className="banner__content">
               <Link to={""} className="bn__currently">
                 <span className="d-block">
-                  Currently available for freelance
+                  {t("banner.currentlyAvailable")}
                 </span>
                 <span className="d-flex gap-4 align-items-center">
-                  worldwide
+                  {t("banner.worldwide")}
                   <i className="bi bi-arrow-up-right"></i>
                 </span>
               </Link>
               <h1>
-                <span className="hone"> Creative Visual</span>
-                <span className="d-block designers" data-text="Designer">
-                  Designer
+                <span className="hone"> {t("banner.creativeVisual")}</span>
+                <span className="d-block designers" data-text={t("banner.designer")}>
+                  {t("banner.designer")}
                 </span>
               </h1>
               <div className="video__area">
@@ -85,7 +87,7 @@ const Banner = () => {
                     <PlayFill />
                   </i>
                 </div>
-                <span className="proces">Recent Results</span>
+                <span className="proces">{t("banner.recentResults")}</span>
               </div>
             </div>
           </div>
@@ -110,7 +112,7 @@ const Banner = () => {
         </div>
         <div className="right__infoscroll">
           <Link className="scroll">
-            scroll down
+            {t("banner.scrollDown")}
           </Link>
           <Link className="scroll__bar">
             <img src={scrollDown} alt="img" />
@@ -120,7 +122,7 @@ const Banner = () => {
       <div className="banner__rightinfo">
         <div className="right__infoscroll">
           <Link to={""} className="scroll">
-            Follow Me
+            {t("banner.followMe")}
           </Link>
           <Link to={""} className="scroll__bar">
             <img src={scrollDown} alt="img" />

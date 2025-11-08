@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, ScrollRestoration } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
@@ -9,6 +10,7 @@ import Lightbox from "../../Components/Shared/LightBox/LightBox";
 import { Globe } from "react-bootstrap-icons";
 
 const ClientReyAntiguedades = () => {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
 
@@ -22,10 +24,10 @@ const ClientReyAntiguedades = () => {
   };
   return (
     <>
-
+      <ScrollRestoration />
       <PageHeader
-        heading={"Turning Data Into Virality"}
-        page="How Structured Campaigns Scaled ReySubastas.com"
+        heading={t('clientreyantiguedades.header.heading')}
+        page={t('clientreyantiguedades.header.page')}
       />
       <section className="protfolio__details pb-120">
         <div className="container">

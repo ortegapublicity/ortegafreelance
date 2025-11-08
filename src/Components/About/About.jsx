@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import sectionStar from "../../assets/img/about/section-star.png";
 import Experience from "./Experience";
@@ -9,32 +10,34 @@ import AboutMe from "./AboutMe";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const tabList = [
-  {
-    id: 1,
-    name: "About",
-    value: "about",
-  },
-  {
-    id: 2,
-    name: "Experience",
-    value: "experience",
-  },
-  {
-    id: 3,
-    name: "Education",
-    value: "education",
-  },
-  {
-    id: 4,
-    name: "Skills",
-    value: "skills",
-  },
-];
-
 const About = () => {
+  const { t } = useTranslation();
+
+  const tabList = [
+    {
+      id: 1,
+      name: t("about.tab.about"),
+      value: "about",
+    },
+    {
+      id: 2,
+      name: t("about.tab.experience"),
+      value: "experience",
+    },
+    {
+      id: 3,
+      name: t("about.tab.education"),
+      value: "education",
+    },
+    {
+      id: 4,
+      name: t("about.tab.skills"),
+      value: "skills",
+    },
+  ];
+
   const [isTabActive, setIsTabAative] = useState("about");
-  
+
   useEffect(() => {
     AOS.init();
   }, []);
@@ -56,9 +59,7 @@ const About = () => {
               data-aos-duration="1000"
             />
             <p className="descrp" data-aos="fade-up" data-aos-duration="1500">
-              I'm Raul Ortega, a Creative Technologist & Digital Brand Designer.
-              I build data-driven digital experiences that merge design, strategy,
-              and technology, helping businesses grow online with clarity and confidence.
+              {t("about.description")}
             </p>
           </div>
           <div className="singletab">
@@ -66,9 +67,14 @@ const About = () => {
               {tabList.map(({ id, name, value }) => (
                 <li
                   key={id}
-                  className={`nav-links ${isTabActive === value ? "active" : ""} `}
+                  className={`nav-links ${
+                    isTabActive === value ? "active" : ""
+                  } `}
                 >
-                  <button onClick={() => handleTabClick(value)} className="tablink">
+                  <button
+                    onClick={() => handleTabClick(value)}
+                    className="tablink"
+                  >
                     {name}
                   </button>
                 </li>

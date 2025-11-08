@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { List, ArrowRight } from "react-bootstrap-icons";
+import i18n from "../../../i18n"; // Import i18n
 
 import Drawer from "../Drawer/Drawer";
 import logo from "../../../assets/img/logo/logo.png";
@@ -59,11 +60,6 @@ const menuList = [
         path: "/all-blog",
         name: "Blog",
       },
-      {
-        id: 2,
-        path: "/blog-details",
-        name: "Blog Details",
-      },
     ],
   },
   {
@@ -77,6 +73,7 @@ const Header = () => {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
   const [dropDownId, setDropDownId] = useState(null);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n?.language || 'en'); // State for current language
 
   useEffect(() => {
     window.addEventListener("scroll", isSticky);
@@ -102,16 +99,25 @@ const Header = () => {
     setDropDownId(id);
   };
 
+  const toggleLanguage = () => {
+    const newLang = currentLanguage === 'en' ? 'es' : 'en';
+    i18n.changeLanguage(newLang);
+    setCurrentLanguage(newLang);
+  };
+
   return (
     <header className={`header-section `}>
       <div className="container">
-        <div className="header-wrapper">
+        <div className="header-wrapper" style={{ transform: 'translateX(4px)' }}>
           <div className="main__logo">
             <Link to={"/"} className="logo">
               <img src={logo} alt="logo" />
             </Link>
           </div>
-          <ul className={`main-menu ${menuActive ? "active" : ""}`}>
+          <ul
+            className={`main-menu ${menuActive ? "active" : ""}`}
+            style={{ transform: "translateX(-5px)" }}
+          >
             {menuList.map(({ id, name, path, dropDown, section }) => {
               return (
                 <li key={id} onClick={() => handleSubMenu(id)}>
@@ -135,10 +141,15 @@ const Header = () => {
               );
             })}
           </ul>
-          <div className="menu__components d-flex align-items-center">
+          <div className="menu__components d-flex align-items-center justify-content-between ">
+            <div className="language-switcher-item">
+              <button onClick={toggleLanguage} style={{ transform: "translateX(-10px)", background: 'none', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
+                {currentLanguage === 'en' ? '🇺🇸' : '🇪🇸'}
+              </button>
+            </div>
             <Link
               to="/contact"
-              className="d-flex fw-500 cmn--btn align-items-center gap-2"
+              className="d-flex fw-500 cmn--btn align-items-center gap-3 get__btn"
             >
               <span className="get__text">Let's Talk</span>
               <span>

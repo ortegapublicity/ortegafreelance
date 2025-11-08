@@ -1,3 +1,4 @@
+// This is a test comment to force re-evaluation
 import React, { useEffect } from "react";
 import {
   Facebook,
@@ -6,6 +7,7 @@ import {
   Vimeo,
   Instagram,
 } from "react-bootstrap-icons";
+import { useTranslation } from "react-i18next";
 
 // Importamos Link de react-router-dom, aunque lo usaremos menos aquí
 import { Link } from "react-router-dom"; 
@@ -14,43 +16,44 @@ import personalInfoThumb from "../../assets/img/about/personal-infothumb.png";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-// ✨ MODIFICACIÓN: Añadimos las URLs de las redes sociales a los datos
-const contactInfo = [
-  {
-    id: 1,
-    system: "Email",
-    contact: "raul@ortegafreelance.com",
-    // Nuevo campo para manejar el protocolo (mailto:)
-    href: "mailto:raul@ortegafreelance.com",
-  },
-  {
-    id: 2,
-    system: "Phone",
-    contact: "+(58) 414 041 9317",
-    // Nuevo campo para manejar el protocolo (tel:)
-    href: "tel:+584140419317",
-  },
-  {
-    id: 3,
-    system: "Location",
-    contact: "San Diego, Carabobo, Venezuela",
-    // Este no necesita un href, lo dejamos como texto
-    href: "#", 
-  },
-  {
-    id: 4,
-    system: "Follow",
-    socalContact: [
-      { icon: <Facebook />, url: "https://www.facebook.com/ortegafreelance" },
-      { icon: <Behance />, url: "https://www.behance.net/ortegapublicity/" },
-      { icon: <Linkedin />, url: "https://www.linkedin.com/in/ortegapublicity/" },
-      { icon: <Vimeo />, url: "https://www.vimeo.com/ortegapublicity/" },
-      { icon: <Instagram />, url: "https://www.instagram.com/ortegafreelance/" },
-    ],
-  },
-];
-
 const AboutMe = ({ isTabActive }) => {
+  const { t } = useTranslation();
+
+  const contactInfo = [
+    {
+      id: 1,
+      system: t("aboutme.email"),
+      contact: "raul@ortegafreelance.com",
+      // Nuevo campo para manejar el protocolo (mailto:)
+      href: "mailto:raul@ortegafreelance.com",
+    },
+    {
+      id: 2,
+      system: t("aboutme.phone"),
+      contact: "+(58) 414 041 9317",
+      // Nuevo campo para manejar el protocolo (tel:)
+      href: "tel:+584140419317",
+    },
+    {
+      id: 3,
+      system: t("aboutme.location"),
+      contact: "San Diego, Carabobo, Venezuela",
+      // Este no necesita un href, lo dejamos como texto
+      href: "#", 
+    },
+    {
+      id: 4,
+      system: t("aboutme.follow"),
+      socalContact: [
+        { icon: <Facebook />, url: "https://www.facebook.com/ortegafreelance" },
+        { icon: <Behance />, url: "https://www.behance.net/ortegapublicity/" },
+        { icon: <Linkedin />, url: "https://www.linkedin.com/in/ortegapublicity/" },
+        { icon: <Vimeo />, url: "https://www.vimeo.com/ortegapublicity/" },
+        { icon: <Instagram />, url: "https://www.instagram.com/ortegafreelance/" },
+      ],
+    },
+  ];
+
   useEffect(() => {
     AOS.init({ once: true }); // Usamos once: true para animar solo una vez
   }, []);
@@ -75,17 +78,14 @@ const AboutMe = ({ isTabActive }) => {
                 data-aos="fade-up"
                 data-aos-duration="500"
               >
-                Personal Info
+                {t("aboutme.title")}
               </h2>
               <p
                 className="p-descrip"
                 data-aos="fade-up"
                 data-aos-duration="500"
               >
-                Work with someone who blends design, marketing, 
-                and technology to turn ideas into measurable growth.
-                I bring clarity, creativity, and strategy to every project
-                focused on real results.
+                {t("aboutme.description")}
               </p>
               <div className="about__contactwrap">
                 <div className="row g-4">

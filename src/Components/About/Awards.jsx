@@ -1,36 +1,39 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 
-const awardList = [
-  {
-    id: 1,
-    awardName: "NF Autoparts",
-    contest: "30k + Monthly Sales",
-    year: "2020",
-  },
-  {
-    id: 2,
-    awardName: "Todxs Podemos Ser",
-    contest: "6k+ financed by ONG's",
-    year: "2024",
-  },
-  {
-    id: 3,
-    awardName: "JaviToyz",
-    contest: "10k+ Sales w/ services",
-    year: "2024",
-  },
-  {
-    id: 4,
-    awardName: "Rey Antigüedades",
-    contest: "100k+ Views on reels",
-    year: "2025",
-  },
-];
 const Awards = () => {
+  const { t } = useTranslation();
+
+  const awardList = [
+    {
+      id: 1,
+      awardName: t("awards.award1.awardName"),
+      contest: t("awards.award1.contest"),
+      year: "2020",
+    },
+    {
+      id: 2,
+      awardName: t("awards.award2.awardName"),
+      contest: t("awards.award2.contest"),
+      year: "2024",
+    },
+    {
+      id: 3,
+      awardName: t("awards.award3.awardName"),
+      contest: t("awards.award3.contest"),
+      year: "2024",
+    },
+    {
+      id: 4,
+      awardName: t("awards.award4.awardName"),
+      contest: t("awards.award4.contest"),
+      year: "2025",
+    },
+  ];
 
   useEffect(() => {
     AOS.init();
@@ -48,7 +51,7 @@ const Awards = () => {
             <tbody>
               <tr>
                 <td>
-                  <span className="table__title">Milestones</span>
+                  <span className="table__title">{t("awards.title")}</span>
                 </td>
                 <td className="cusnoe"></td>
                 <td className="text-end">
@@ -56,7 +59,7 @@ const Awards = () => {
                     href="#0"
                     className="d-flex table__view justify-content-end align-items-center base gap-2"
                   >
-                    <span>View My Work</span>
+                    <span>{t("awards.viewMyWork")}</span>
                     <i className="bi bi-arrow-right"></i>
                   </a>
                 </td>

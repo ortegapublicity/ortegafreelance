@@ -1,7 +1,9 @@
 import React from "react";
 import {Envelope, GeoAlt} from "react-bootstrap-icons"
+import { useTranslation } from "react-i18next";
 
 const Metting = () => {
+  const { t } = useTranslation();
   // Tu URL de Calendly, formateada para un embed simple
   const calendlyEmbedUrl = "https://calendly.com/ortegapublicity/meeting?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=0079ff";
 
@@ -19,14 +21,14 @@ const Metting = () => {
                   data-aos="fade-down"
                   data-aos-duration="1000"
                 >
-                  Need a Project?
+                  {t("metting.needProject")}
                 </span>
                 <h2
                   className="fw-500"
                   data-aos="fade-down"
                   data-aos-duration="1600"
                 >
-                  Let's work together. schedule a meeting
+                  {t("metting.scheduleMeeting")}
                 </h2>
               </div>
               
@@ -40,7 +42,7 @@ const Metting = () => {
                   <Envelope className="i"/>
                 </span>
                 <span className="box">
-                  <span className="ptext fz-18 mb-1 d-block"> Email </span>
+                  <span className="ptext fz-18 mb-1 d-block"> {t("metting.emailLabel")} </span>
                   {/* ✨ CORREGIDO: Usar mailto: */}
                   <a href="mailto:raul@ortegafreelance.com"> raul@ortegafreelance.com </a>
                 </span>
@@ -56,7 +58,7 @@ const Metting = () => {
                   <GeoAlt className="i"/>
                 </span>
                 <span className="box">
-                  <span className="ptext fz-18 mb-1 d-block"> Location </span>
+                  <span className="ptext fz-18 mb-1 d-block"> {t("metting.locationLabel")} </span>
                   {/* ✨ CORREGIDO: Removido href="#0" */}
                   <span className="address-text"> San Diego, Carabobo, Venezuela </span>
                 </span>

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Price = ({ image, planName, price, time, fetcher, id, description, result }) => {
+  const { t } = useTranslation();
   return (
     <div
       className="col-lg-4 col-md-6 col-sm-6"
@@ -46,7 +48,7 @@ const Price = ({ image, planName, price, time, fetcher, id, description, result 
           state={{ planName, price }} 
           className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
         >
-          <span>Start My Project Now</span>
+          <span>{t("price.button")}</span>
           <span>
             <i className="bi bi-arrow-right fz-20"></i>
           </span>

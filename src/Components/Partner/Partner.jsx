@@ -5,6 +5,7 @@ import partner3 from "../../assets/img/testimonial/partner3.png";
 import partner4 from "../../assets/img/testimonial/partner4.png";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useTranslation } from "react-i18next";
 
 // Import Swiper styles
 import "swiper/css";
@@ -36,6 +37,7 @@ const partnerList = [
   },
 ];
 const Partner = () => {
+  const { t } = useTranslation();
   return (
     <>
       <div className="sponsor__area pt-120">
@@ -44,7 +46,7 @@ const Partner = () => {
           data-aos="fade-down"
           data-aos-duration="1000"
         >
-          More than 20 companies have trusted me worldwide.
+          {t("partner.title")}
         </h4>
         <div className="swiper sponsor__wrap">
           <Swiper

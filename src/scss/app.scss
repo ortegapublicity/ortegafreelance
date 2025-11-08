@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap');
 
-@import "./abstracts/mixins.scss";
 @import "./abstracts/variables.scss";
+@import "./abstracts/mixins.scss";
 @import "./abstracts/buttons.scss";
 @import "./base/typography.scss";
-@import "./base/animation";
+@import "./base/animation.scss";
 
 // ------------ Shared style
 @import "../Components/Shared/LightBox/lightBox.scss";

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, ScrollRestoration } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
@@ -11,6 +12,7 @@ import Lightbox from "../../Components/Shared/LightBox/LightBox";
 import { Globe } from "react-bootstrap-icons";
 
 const ClientTodxsPodemosSer = () => {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
 
@@ -24,11 +26,12 @@ const ClientTodxsPodemosSer = () => {
   };
   return (
     <>
-
+      <ScrollRestoration />
       <PageHeader
-        heading={"From Digital Presence to Real Impact"}
-        page="Building the TodxsPodemosSer Community"
+        heading={t('clienttodxspodemosser.header.heading')}
+        page={t('clienttodxspodemosser.header.page')}
       />
+
       <section className="protfolio__details pb-120">
         <div className="container">
           <div
@@ -38,26 +41,26 @@ const ClientTodxsPodemosSer = () => {
           >
             <img src={detailbg} alt="img" />
             <div className="prot__detail__contact">
-              <h3>Project Info</h3>
+              <h3>{t('clienttodxspodemosser.projectInfo.title')}</h3>
               <div className="prot__itembox">
                 <div className="prot__left">
                   <div className="items mb__cus30">
-                    <h5>Clients</h5>
-                    <p>Mima Cortez</p>
+                    <h5>{t('clienttodxspodemosser.projectInfo.clients')}</h5>
+                    <p>{t('clienttodxspodemosser.projectInfo.clientName')}</p>
                   </div>
                   <div className="items">
-                    <h5>Date</h5>
-                    <p>August 1, 2020</p>
+                    <h5>{t('clienttodxspodemosser.projectInfo.date')}</h5>
+                    <p>{t('clienttodxspodemosser.projectInfo.dateValue')}</p>
                   </div>
                 </div>
                 <div className="prot__left">
                   <div className="items mb__cus30">
-                    <h5>Category</h5>
-                    <p>Digital Presence</p>
+                    <h5>{t('clienttodxspodemosser.projectInfo.category')}</h5>
+                    <p>{t('clienttodxspodemosser.projectInfo.categoryValue')}</p>
                   </div>
                   <div className="items">
-                    <h5>Location</h5>
-                    <p>Carabobo, Venezuela</p>
+                    <h5>{t('clienttodxspodemosser.projectInfo.location')}</h5>
+                    <p>{t('clienttodxspodemosser.projectInfo.locationValue')}</p>
                   </div>
                 </div>
               </div>
@@ -77,20 +80,10 @@ const ClientTodxsPodemosSer = () => {
               data-aos-duration="1400"
             >
               <p className="fz-16 pra ttext__one">
-                When I began working on www.todxspodemosser.com, the mission was to create 
-                something deeper than a digital campaign: a community. We built a WordPress 
-                website that reflected inclusion, creativity, and purpose. Alongside it, we 
-                created personalized emails, visual content, and paid ads for key events, 
-                allowing us to host our first event in 2022 with ten attendees through a 
-                minimal ad investment.
+                {t('clienttodxspodemosser.description.p1')}
               </p>
               <p className="fz-16 pra">
-                The turning point came when the content creators embraced a unique identity 
-                that connected directly with young audiences between 17 and 24 years old. 
-                Through consistent storytelling, we transformed simple gatherings into 
-                meaningful projects like the Drawing Club, a free creative space that 
-                strengthened both participation and belonging. The digital presence became 
-                the foundation for something real: people connecting through purpose.
+                {t('clienttodxspodemosser.description.p2')}
               </p>
             </div>
             <div
@@ -98,22 +91,14 @@ const ClientTodxsPodemosSer = () => {
               data-aos="fade-up"
               data-aos-duration="1600"
             >
-              <h3 className="text__boxhead">As Simon Sinek once said, “People don’t buy what you do; they buy why you do it.” y once said, A“If it doesn’t sell, it isn’t creative.”</h3>
+              <h3 className="text__boxhead">{t('clienttodxspodemosser.quote')}</h3>
               <p className="fz-16 pra ttext__one">
-               That principle guided every strategy. We documented progress on the website, 
-               shared authentic stories, and presented measurable results to international NGOs, 
-               securing over $6,000 in project funding. Those investments led to two impactful 
-               initiatives before political circumstances in the country shifted the 
-               organization’s partnerships.
+               {t('clienttodxspodemosser.description2.p1')}
               </p>
               <p className="fz-16 pra">
-                Even after that, the movement continued growing organically. With over 50 active 
-                members in each ongoing activity and more than 100 attendees at the last major event, 
-                a creative marketplace at the Alliance Française in Carabobo, the project proved that 
-                authenticity, structure, and data-driven creativity can turn a small idea into 
-                a social movement.
+                {t('clienttodxspodemosser.description2.p2')}
               </p>
-              <h3 className="text__boxhead">Key Takeaways</h3>
+              <h3 className="text__boxhead">{t('clienttodxspodemosser.keyTakeaways.title')}</h3>
               <ul className="challenge__list">
                 <li>
                   Community growth starts with authentic storytelling and purpose.

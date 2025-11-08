@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, ScrollRestoration } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import { imagesList, projectList } from "../../Utlits/projectList";
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
@@ -11,6 +12,7 @@ import Lightbox from "../../Components/Shared/LightBox/LightBox";
 import { Globe } from "react-bootstrap-icons";
 
 const ClientNfAutoparts = () => {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
 
@@ -24,10 +26,10 @@ const ClientNfAutoparts = () => {
   };
   return (
     <>
-
+      <ScrollRestoration />
       <PageHeader
-        heading={"Driving Local Growth Through Digital Vision"}
-        page="The NF Autoparts Case"
+        heading={t('clientnfautoparts.header.heading')}
+        page={t('clientnfautoparts.header.page')}
       />
       <section className="protfolio__details pb-120">
         <div className="container">

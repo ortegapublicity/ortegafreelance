@@ -47,18 +47,18 @@ const AllBlogs = () => {
     <section className="allblogs">
       <div className="container">
         <header className="allblogs__header" data-aos="fade-down" data-aos-duration="1000">
-          <span className="allblogs__eyebrow">Lecturas recientes</span>
-          <h1 className="allblogs__headline">Historias, ideas y aprendizajes</h1>
+          <span className="allblogs__eyebrow">Recent Posts</span>
+          <h1 className="allblogs__headline">Stories, Ideas, and Learnings</h1>
           <p className="allblogs__intro">
-            Explora las ultimas entradas del blog con recomendaciones utiles, procesos creativos
-            y tacticas que ya estan ayudando a otras marcas a crecer. Selecciona un articulo para
-            profundizar en los detalles.
+            Explore the latest blog entries with useful recommendations, creative processes,
+            and tactics that are already helping other brands grow. Select an article to
+            dive deeper into the details.
           </p>
         </header>
 
         {loading && (
           <div className="allblogs__status" role="status">
-            Cargando contenidos...
+            Loading content...
           </div>
         )}
 

@@ -133,23 +133,23 @@ const ServiceDetails = () => {
                 <div className="service__rightbox mb-30">
                   <h3>Service List</h3>
                  {/* ✨ MODIFICACIÓN: Usamos <Link> con rutas relativas */}
-                 <Link to="/Pages/illustration-design" className="link__box mb-15">
+                 <Link to="/Services/illustration-design" className="link__box mb-15">
                     Illustration Design
                     <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/business-branding" className="link__box mb-15">
+                  <Link to="/Services/business-branding" className="link__box mb-15">
                     Business Branding
                     <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/web-design" className="link__box mb-15">
+                  <Link to="/Services/web-design" className="link__box mb-15">
                     Web UI/UX Design
                     <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/paid-media" className="link__box mb-15">
+                  <Link to="/Services/paid-media" className="link__box mb-15">
                     Paid Media
                     <i className="bi bi-chevron-right"></i>
                   </Link>
-                  <Link to="/Pages/video-editing" className="link__box mb-15">
+                  <Link to="/Services/video-editing" className="link__box mb-15">
                     Video Editing
                     <i className="bi bi-chevron-right"></i>
                   </Link>
