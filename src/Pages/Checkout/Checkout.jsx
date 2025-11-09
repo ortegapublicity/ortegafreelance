@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, ScrollRestoration } from 'react-router-dom';
 import PageHeader from '../../Components/Shared/PageHeader/PageHeader';
 import './Checkout.scss';
 // Necesitas tu propia librería/componente de reCAPTCHA. 
@@ -103,9 +103,10 @@ const Checkout = () => {
       alert("Por favor completa todos los campos y verifica el reCAPTCHA.");
     }
   };
-
+  
   return (
     <>
+      <ScrollRestoration />
       <PageHeader mainTitle="Proceso de Pago" sortTitle="Completa tu Compra" />
 
       <section className="checkout__section py-120">

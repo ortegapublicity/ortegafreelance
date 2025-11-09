@@ -26,9 +26,13 @@ export const getContentfulConfig = () => {
     env.REACT_APP_CONTENTFUL_ENVIRONMENT_ID ??
     "master";
 
+  // Token: primero delivery, luego preview, luego otros posibles nombres
   const deliveryToken =
     env.VITE_CONTENTFUL_DELIVERY_TOKEN ??
+    env.VITE_CONTENTFUL_PREVIEW_TOKEN ??
+    env.VITE_CONTENTFUL_ACCESS_TOKEN ??
     env.CONTENTFUL_DELIVERY_TOKEN ??
+    env.CONTENTFUL_PREVIEW_TOKEN ??
     env.CONTENTFUL_ACCESS_TOKEN ??
     env.REACT_APP_CONTENTFUL_DELIVERY_TOKEN ??
     "";
@@ -37,7 +41,7 @@ export const getContentfulConfig = () => {
     env.VITE_CONTENTFUL_BLOG_POST_TYPE ??
     env.CONTENTFUL_BLOG_POST_TYPE ??
     env.REACT_APP_CONTENTFUL_CONTENT_TYPE ??
-    "blogPost";
+    "blogPage"; // asegúrate de que este sea el ID real del Content Type
 
   const locale =
     env.VITE_CONTENTFUL_LOCALE ??
@@ -45,22 +49,45 @@ export const getContentfulConfig = () => {
     env.REACT_APP_CONTENTFUL_LOCALE ??
     DEFAULT_FALLBACK_LOCALE;
 
+  // Si VITE_CONTENTFUL_USE_PREVIEW === "true" usamos la Preview API, si no la Delivery API
+  const host =
+    env.VITE_CONTENTFUL_USE_PREVIEW === "true"
+      ? "preview.contentful.com"
+      : "cdn.contentful.com";
+
   return {
     spaceId,
     environmentId,
     deliveryToken,
     contentType,
     locale,
+    host,
   };
 };
 
-const getLocalizedValue = (value, locale, fallbackLocale = DEFAULT_FALLBACK_LOCALE) => {
+// ✅ Versión que respeta documentos Rich Text (Body, Video embed, etc.)
+const getLocalizedValue = (
+  value,
+  locale,
+  fallbackLocale = DEFAULT_FALLBACK_LOCALE
+) => {
   if (value == null) return value;
   if (Array.isArray(value)) return value;
   if (typeof value !== "object") return value;
+
+  // Si es un link de Contentful, lo devolvemos tal cual
   if (value.sys?.type === "Link") return value;
+
+  // Si ya es un documento Rich Text, NO lo tocamos
+  if (value.nodeType === "document" && Array.isArray(value.content)) {
+    return value;
+  }
+
+  // Si es un objeto con claves por locale (en-US, es-ES, etc.)
   if (Object.prototype.hasOwnProperty.call(value, locale)) return value[locale];
-  if (Object.prototype.hasOwnProperty.call(value, fallbackLocale)) return value[fallbackLocale];
+  if (Object.prototype.hasOwnProperty.call(value, fallbackLocale))
+    return value[fallbackLocale];
+
   const firstKey = Object.keys(value)[0];
   return firstKey ? value[firstKey] : undefined;
 };
@@ -144,7 +171,9 @@ const normalizeEntry = (entry, assetsMap, locale) => {
 };
 
 const isUnknownContentTypeError = (error) =>
-  error?.body?.details?.errors?.some((detail) => detail?.name === "unknownContentType");
+  error?.body?.details?.errors?.some(
+    (detail) => detail?.name === "unknownContentType"
+  );
 
 export const buildFallbackPosts = () =>
   blogsList.map((item, index) => ({
@@ -172,13 +201,14 @@ export const loadContentfulPosts = async (options = {}) => {
     deliveryToken,
     contentType: defaultContentType,
     locale: defaultLocale,
+    host,
   } = config;
 
   if (!spaceId || !deliveryToken) {
     return {
-      posts: [],
+      posts: buildFallbackPosts(),
       error:
-        "Contentful no esta configurado. Define CONTENTFUL_SPACE_ID (o VITE_CONTENTFUL_SPACE_ID) y CONTENTFUL_ACCESS_TOKEN (o VITE_CONTENTFUL_DELIVERY_TOKEN) en tu entorno.",
+        "Contentful no está configurado. Define VITE_CONTENTFUL_SPACE_ID y VITE_CONTENTFUL_DELIVERY_TOKEN (o VITE_CONTENTFUL_PREVIEW_TOKEN) en tu entorno.",
       missingConfig: true,
     };
   }
@@ -190,13 +220,19 @@ export const loadContentfulPosts = async (options = {}) => {
 
   const requestEntries = async ({ skipContentType } = {}) => {
     const url = new URL(
-      `https://cdn.contentful.com/spaces/${spaceId}/environments/${environmentId}/entries`
+      `https://${host || "cdn.contentful.com"}/spaces/${spaceId}/environments/${environmentId}/entries`
     );
+
     if (!skipContentType && contentType) {
       url.searchParams.set("content_type", contentType);
     }
+
     url.searchParams.set("include", include);
     url.searchParams.set("locale", locale);
+
+    // Ordenar por fecha de creación descendente
+    url.searchParams.set("order", "-sys.createdAt");
+
     if (limit) {
       url.searchParams.set("limit", String(limit));
     }
@@ -236,7 +272,7 @@ export const loadContentfulPosts = async (options = {}) => {
       payload = await requestEntries();
     } catch (error) {
       if (isUnknownContentTypeError(error)) {
-        warning = `El Content Type "${contentType}" no existe o no esta publicado. Se muestran todas las entradas disponibles.`;
+        warning = `El Content Type "${contentType}" no existe o no está publicado. Se muestran todas las entradas disponibles.`;
         payload = await requestEntries({ skipContentType: true });
       } else {
         throw error;
@@ -263,7 +299,7 @@ export const loadContentfulPosts = async (options = {}) => {
     const baseMessage =
       error?.message || "No fue posible cargar las entradas de Contentful.";
     return {
-      posts: [],
+      posts: buildFallbackPosts(),
       error: baseMessage,
       missingConfig: false,
     };

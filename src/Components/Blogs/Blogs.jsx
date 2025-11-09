@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Blog from "./Blog";
-import { buildFallbackPosts, loadContentfulPosts } from "../../utils/contentfulPosts";
+import {
+  buildFallbackPosts,
+  loadContentfulPosts,
+} from "../../utils/contentfulPosts";
 
 const Blogs = () => {
   const [posts, setPosts] = useState([]);
@@ -17,13 +20,12 @@ const Blogs = () => {
 
     const fetchPosts = async () => {
       setLoading(true);
-      const { posts: fetchedPosts, error: fetchError } = await loadContentfulPosts({
-        limit: 6,
-      });
+      const { posts: fetchedPosts, error: fetchError } =
+        await loadContentfulPosts({
+          limit: 6,
+        });
 
-      if (!isMounted) {
-        return;
-      }
+      if (!isMounted) return;
 
       setPosts(fetchedPosts ?? []);
       setError(fetchError ?? null);
@@ -32,7 +34,9 @@ const Blogs = () => {
 
     fetchPosts().catch((err) => {
       if (isMounted) {
-        setError(err.message || "No fue posible cargar las entradas de Contentful.");
+        setError(
+          err.message || "No fue posible cargar las entradas de Contentful."
+        );
         setLoading(false);
       }
     });
@@ -66,11 +70,11 @@ const Blogs = () => {
                 <Link
                   className="hover__circle wow fadeInUp"
                   data-wow-duration="1.6s"
-                  to="#"
+                  to="/all-blog"
                 >
                   <span className="box">
                     <i className="bi bi-arrow-up-right"></i>
-                    <span className="textmore">Click For More Works</span>
+                    <span className="textmore">More Blogs</span>
                   </span>
                 </Link>
                 {loading && (
