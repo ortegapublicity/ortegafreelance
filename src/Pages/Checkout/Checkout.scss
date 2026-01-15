@@ -1,0 +1,129 @@
+@use "sass:color";
+
+// ----------------------------------------------
+// Variables (Ajusta estos colores a la paleta de tu sitio)
+// ----------------------------------------------
+$primary-color: #007bff; // Azul principal, similar a Bootstrap
+$border-color: #e9ecef;
+$bg-light: #f8f9fa;
+$shadow-light: rgba(0, 0, 0, 0.05);
+
+// ----------------------------------------------
+// Estilos generales del Checkout
+// ----------------------------------------------
+
+.checkout__section {
+    // Asegura que el contenido tenga suficiente espacio
+    min-height: 80vh; 
+    
+    // Estilos para los formularios
+    .form-control,
+    .form-select {
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        transition: border-color 0.3s;
+        &:focus {
+            border-color: $primary-color;
+            box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25);
+        }
+    }
+
+    // Contenedores de información (Formulario y Resumen)
+    .checkout__form,
+    .checkout__payment {
+        border: 1px solid $border-color;
+        border-radius: 12px !important;
+        background-color: white;
+    }
+
+    // Resumen de la Orden (Sticky)
+    .order-summary {
+        // Hacemos el resumen "pegajoso" para que se mantenga visible al hacer scroll
+        position: sticky;
+        top: 120px; /* Ajusta este valor para que quede debajo de tu header/navbar */
+        padding: 1.5rem;
+        border: 1px solid $border-color;
+        border-radius: 12px;
+        background-color: $bg-light !important;
+        box-shadow: 0 5px 15px $shadow-light !important;
+
+        .text-primary {
+            color: $primary-color !important;
+        }
+    }
+}
+
+// ----------------------------------------------
+// Estilos para la selección de Métodos de Pago
+// ----------------------------------------------
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre cada opción de pago */
+}
+
+.payment-option-item {
+    cursor: pointer;
+    border: 2px solid $border-color;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    
+    // Iconos y texto de la opción
+    label {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+    
+    // Ocultar el radio button nativo
+    input[type="radio"] {
+        display: none;
+    }
+
+    // Estado HOVER y ACTIVE
+    &:hover {
+        border-color: color.adjust($primary-color, $lightness: 20%);
+    }
+
+    &.active {
+        border-color: $primary-color; /* Borde primario para la selección */
+        background-color: color.adjust($primary-color, $lightness: 48%); /* Fondo muy ligero */
+        
+        // Estilo del ícono cuando está activo
+        .payment-icon {
+            color: $primary-color !important;
+        }
+
+        // Indicador de check (opcional, como un círculo verde)
+        &::after {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            background-color: $primary-color;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+    }
+
+    // Contenedor del formulario/instrucciones
+    .card-details-form,
+    .p-3.mt-2.border.rounded {
+        background-color: white;
+        border-color: $border-color !important;
+        padding-top: 20px;
+        margin-top: 15px !important;
+    }
+}

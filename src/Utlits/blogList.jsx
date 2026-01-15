@@ -1,0 +1,45 @@
+import blog1 from "../assets/img/blog/bblog1.png";
+import blog2 from "../assets/img/blog/bblog2.png";
+import blog3 from "../assets/img/blog/bblog3.png";
+import blog4 from "../assets/img/blog/bblog4.png";
+
+export const blogsList = [
+  {
+    id: 1,
+    image: blog1,
+    date: "October 21, 2025",
+    heading: " Brand design that helps the company grow",
+    para: `From my perspective, branding is not just about visuals
+      it’s about defining who you are and why you exist.
+      It starts with uncovering the real mission behind your business`,
+  },
+  {
+    id: 2,
+    image: blog2,
+    date: "October 21, 2025",
+    heading: "   Fresh design ideas & inspiration for 2025",
+    para: `There are many variations of passages of Lorem Ipsum
+      available, but the majority have suffered alteration in
+      some form, by injected humour, or randomised words`,
+  },
+  {
+    id: 3,
+    image: blog3,
+    date: "October 21, 2025",
+    heading: "   The Power of Purpose-Driven Design: The Formula to Scale Your Ad Results from 3x to 6x",
+    para: `There are many variations of passages of Lorem Ipsum
+      available, but the majority have suffered alteration in
+      some form, by injected humour, or randomised words`,
+  },
+  {
+    id: 4,
+    image: blog4,
+    date: "October 19, 2025",
+    heading: "   Brand design that helps the company grow",
+    para: `There are many variations of passages of Lorem Ipsum
+      available, but the majority have suffered alteration in
+      some form, by injected humour, or randomised words`,
+  },
+];
+
+export const blogImages = [blog1, blog2, blog3, blog4];

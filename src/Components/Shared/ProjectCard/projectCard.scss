@@ -1,0 +1,129 @@
+.project__item {
+  /* Avoid breaking a single project card across CSS columns */
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  overflow: hidden;
+  margin-bottom: 30px;
+  padding-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  .thumb {
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    /* keep thumbnails consistent so titles stay under the image */
+    aspect-ratio: 4 / 3;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      overflow: hidden;
+      transition: all 0.4s;
+      border-radius: 10px;
+      display: block;
+    }
+  }
+  .content {
+    /* Make sure content reserves space and titles don't overlap */
+    min-height: 90px;
+    .left__cont {
+      span {
+        font-size: 18px;
+        display: block;
+      }
+      h3 {
+        font-size: 30px;
+        line-height: 1.08;
+        margin: 0;
+        /* clamp title to two lines to prevent overlap */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+      }
+    }
+  }
+  &:hover {
+    .thumb {
+      img {
+        transform: scale(1.025);
+      }
+    }
+    .content {
+      .common__icon {
+        background: var(--base);
+        cursor: pointer;
+        .icon {
+          color: var(--title);
+        }
+      }
+    }
+  }
+  @include breakpoint(max-xxl) {
+    .content {
+      .left__cont {
+        span {
+          font-size: 16px;
+        }
+        h3 {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+  @include breakpoint(max-lg) {
+    .content {
+      .left__cont {
+        h3 {
+          font-size: 22px;
+        }
+      }
+    }
+  }
+  @include breakpoint(max-xs) {
+    .content {
+      .left__cont {
+        span {
+          font-size: 16px;
+        }
+        h3 {
+          font-size: 18px;
+        }
+      }
+      .common__icon {
+        min-width: 45px;
+        height: 45px;
+        .icon {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+
+.common__icon {
+  border-radius: 6px;
+  background-color: rgb(142, 124, 225);
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s;
+  .icon {
+    color: var(--white);
+    transition: all 0.4s;
+    font-size: 20px;
+  }
+  &:hover {
+    background: var(--base);
+    .icon {
+      color: var(--title);
+    }
+  }
+}

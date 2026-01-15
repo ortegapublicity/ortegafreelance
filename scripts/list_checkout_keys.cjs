@@ -1,0 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+const file = path.join(__dirname, '..', 'src', 'Pages', 'Checkout', 'Checkout.jsx');
+const text = fs.readFileSync(file, 'utf8');
+const re = /t\(\'checkout\.([^)\']+)\'\)/g;
+const keys = new Set();
+let m;
+while ((m = re.exec(text)) !== null) keys.add(m[1]);
+console.log('Found keys:', keys.size);
+[...keys].sort().forEach(k => console.log('-', k));

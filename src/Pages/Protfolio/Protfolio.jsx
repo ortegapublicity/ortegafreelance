@@ -1,0 +1,119 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { imagesList, projectList } from "../../Utlits/projectList";
+import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
+import WorkeProcess from "../../Components/WorkeProcess/WorkeProcess";
+import ProjectCard from "../../Components/Shared/ProjectCard/ProjectCard";
+import Lightbox from "../../Components/Shared/LightBox/LightBox";
+import { ScrollRestoration } from "react-router-dom";
+
+const categoryList = [
+  {
+    id: 1,
+    categoryName: "category.all",
+    value: "all",
+  },
+  {
+    id: 2,
+    categoryName: "category.branding",
+    value: "branding",
+  },
+  {
+    id: 3,
+    categoryName: "category.digitalMarketing",
+    value: "Digital_Marketing",
+  },
+  {
+    id: 4,
+    categoryName: "category.adobeSuite",
+    value: "Adobe_Suite",
+  },
+  {
+    id: 5,
+    categoryName: "category.website",
+    value: "website",
+  },
+];
+const Protfolio = () => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentId, setCurrentId] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState("all");
+
+  // ---------- Filer project by category
+  let filterProject = [];
+
+  for (const iterator of projectList) {
+    for (const cet of iterator.category) {
+      if (cet === currentCategory) {
+        filterProject.push(iterator);
+      }
+    }
+  }
+
+  const openLightbox = (index) => {
+    setCurrentId(index);
+    setLightboxOpen(true);
+  };
+
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <PageHeader heading={t("protfolio.header.heading")} page={t("protfolio.header.page")} />
+      <section className="project__section pb-120">
+        <div className="container">
+          <div className="singletab protfolio__filter">
+            <ul
+              className="tablinks"
+              data-aos="fade-down"
+              data-aos-duration="2000"
+            >
+              {categoryList.map(({ id, categoryName, value }) => (
+                <li
+                  key={id}
+                  className={`nav-links ${
+                    currentCategory === value ? "active" : ""
+                  } `}
+                >
+                  <button
+                    className="tablink"
+                    onClick={() => setCurrentCategory(value)}
+                  >
+                    {t(categoryName)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="tabcontents project__wrapone">
+              {filterProject.map(
+                ({ heading, id, image, subHeading, routeList }, index) => (
+                  <ProjectCard
+                    key={id}
+                    image={image}
+                    heading={heading}
+                    subHeading={subHeading}
+                    openLightbox={openLightbox}
+                    index={index}
+                    navigate={routeList}
+                  />
+                )
+              )}
+            </div>
+          </div>
+        </div>
+        {lightboxOpen && (
+          <Lightbox
+            images={imagesList}
+            setLightboxOpen={setLightboxOpen}
+            currentId={currentId}
+          />
+        )}
+      </section>
+      <WorkeProcess />
+      <ScrollRestoration />
+    </>
+  );
+};
+
+export default Protfolio;
