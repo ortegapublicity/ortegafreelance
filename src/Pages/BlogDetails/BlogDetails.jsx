@@ -270,7 +270,6 @@ useEffect(() => {
     : "";
 
   const body = fields?.body ?? null;
-  const videoEmbed = fields?.videoEmbed ?? null;
 
   const headings = useMemo(() => extractHeadings(body), [body]);
   const readingMinutes = useMemo(() => (isRichTextDoc(body) ? estReadingTime(body) : 1), [body]);
@@ -307,19 +306,7 @@ useEffect(() => {
           const id = slugify(text);
           return <h4 id={id} className="text__boxhead bdh4">{children}</h4>;
         },
-        [BLOCKS.PARAGRAPH]: (node, children) => {
-          const text = textFromNode(node);
-          // --- DETECTAR IFRAME EN EL TEXTO ---
-          if (text.includes('<iframe')) {
-            return (
-              <div 
-                className="bd__video-container" 
-                dangerouslySetInnerHTML={{ __html: text }} 
-              />
-            );
-          }
-          return <p className="bd__p">{children}</p>;
-        },
+        [BLOCKS.PARAGRAPH]: (node, children) => <p className="bd__p">{children}</p>,
         [BLOCKS.UL_LIST]: (node, children) => <ul className="bd__ul">{children}</ul>,
         [BLOCKS.OL_LIST]: (node, children) => <ol className="bd__ol">{children}</ol>,
         [BLOCKS.LIST_ITEM]: (node, children) => <li>{children}</li>,
@@ -351,7 +338,6 @@ useEffect(() => {
 
           const f = resolvedEntry.fields ?? resolvedEntry;
           
-        
           // Título real
           const entryTitle = f.title || (i18n.language === "es" ? "Entrada relacionada" : "Related Entry");
           
@@ -506,15 +492,6 @@ useEffect(() => {
             </aside>
 
             <article className="bd__article" data-aos="fade-up" data-aos-duration="1000">
-              
-               {/* --- RENDERIZADO DEL VIDEO (CAMPOS RICH TEXT) --- */}
-              {isRichTextDoc(videoEmbed) && (
-                <div className="bd__video-wrapper">
-                  {documentToReactComponents(videoEmbed, RICHTEXT_OPTIONS)}
-                </div>
-              )}
-
-              {/* --- CONTENIDO PRINCIPAL --- */}
               {isRichTextDoc(body) ? (
                 documentToReactComponents(body, RICHTEXT_OPTIONS)
               ) : body ? (
@@ -584,10 +561,6 @@ useEffect(() => {
         .bd__cardtitle{padding:12px;font-weight:600}
         .bd__ph{height:180px;background:linear-gradient(90deg,#eee 25%,#f5f5f5 37%,#eee 63%);animation:shimmer 1.4s infinite}
         @keyframes shimmer{0%{background-position:-468px 0}100%{background-position:468px 0}}
-        /* VIDEO RESPONSIVO */
-        .bd__video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 12px; margin-bottom: 2rem; }
-        .bd__video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .bd__video-wrapper .bd__p { margin: 0; padding: 0; }
       `}</style>
     </>
   );
