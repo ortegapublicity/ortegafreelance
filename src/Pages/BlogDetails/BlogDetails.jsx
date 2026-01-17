@@ -1,3 +1,5 @@
+// BlogDetail.HireInSouthLayout.jsx (v2 fix: sin duplicar "hash")
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, ScrollRestoration, Link, useLocation } from "react-router-dom";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
@@ -119,11 +121,11 @@ const BlogDetail = () => {
   const cfLocale = LOCALE_MAP[i18n.language] || DEFAULT_FALLBACK_LOCALE;
 
   const { slug } = useParams();
-  const { hash } = useLocation();
+  const { hash } = useLocation(); // <-- solo una vez
 
   const [blog, setBlog] = useState(null);
   const [recommended, setRecommended] = useState([]);
-  const [recCards, setRecCards] = useState([]);
+  const [recCards, setRecCards] = useState([]); // { title, slug, img }
   const [imageUrl, setImageUrl] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -131,95 +133,111 @@ const BlogDetail = () => {
 
   const progress = useReadingProgress();
 
-  useEffect(() => {
-    if (!slug) return;
-    let mounted = true;
+  // Carga del post (según slug + idioma)
 
-    setError("");
-    setLoading(true);
-    setBlog(null);
-    setRecommended([]);
-    setRecCards([]);
-    setImageUrl(null);
+useEffect(() => {
+  if (!slug) return;
+  let mounted = true;
 
-    const run = async () => {
-      try {
-        const currentLang = i18n.language || "en";
-        const contentfulLocale = (LOCALE_MAP && LOCALE_MAP[currentLang]) || DEFAULT_FALLBACK_LOCALE;
-        const fallbackLocale = DEFAULT_FALLBACK_LOCALE;
+  setError("");
+  setLoading(true);
+  setBlog(null);
+  setRecommended([]);
+  setRecCards([]);
+  setImageUrl(null);
 
-        const { posts: postsActive } = await loadContentfulPosts({
-          include: 5,
-          locale: contentfulLocale,
+  const run = async () => {
+    try {
+      // 1) Mapea idioma de i18n a Contentful
+      const currentLang = i18n.language || "en";
+      const contentfulLocale =
+        (LOCALE_MAP && LOCALE_MAP[currentLang]) || DEFAULT_FALLBACK_LOCALE;
+      const fallbackLocale = DEFAULT_FALLBACK_LOCALE;
+
+      // 2) Trae posts en el idioma activo
+      const { posts: postsActive } = await loadContentfulPosts({
+        include: 5, // Aumentamos a 5 para resolver Inline Entries y Assets anidados
+        locale: contentfulLocale,
+      });
+      if (!mounted) return;
+
+      // 3) Intenta match por slug en el idioma activo
+      let matchActive = findBySlug(postsActive, slug);
+
+      // 4) Si no encontró, intenta en el idioma fallback
+      let postsFallback = [];
+      let matchFallback = null;
+      if (!matchActive && contentfulLocale !== fallbackLocale) {
+        const resFallback = await loadContentfulPosts({
+          include: 5, // Aumentamos a 5 aquí también por si se usa el fallback
+          locale: fallbackLocale,
         });
-        if (!mounted) return;
-
-        let matchActive = findBySlug(postsActive, slug);
-        let postsFallback = [];
-        let matchFallback = null;
-
-        if (!matchActive && contentfulLocale !== fallbackLocale) {
-          const resFallback = await loadContentfulPosts({
-            include: 5,
-            locale: fallbackLocale,
-          });
-          postsFallback = resFallback.posts || [];
-          matchFallback = findBySlug(postsFallback, slug);
-        }
-
-        let chosen;
-        if (matchActive) {
-          chosen = matchActive;
-          setAllPosts(postsActive);
-        } else if (matchFallback) {
-          const sameIdActive = postsActive.find((p) => p?.sys?.id === matchFallback?.sys?.id) || null;
-          chosen = sameIdActive || matchFallback;
-          setAllPosts(postsActive.length ? postsActive : postsFallback);
-        } else {
-          setAllPosts(postsActive);
-          setError("No se encontró este blog.");
-          setLoading(false);
-          return;
-        }
-
-        setBlog(chosen);
-
-        const fields = chosen.fields ?? chosen;
-        const rawImage = fields.image ?? fields.featuredImage ?? chosen.image ?? null;
-        let resolvedUrl = rawImage ? resolveAssetUrl(rawImage) : null;
-        if (!resolvedUrl && rawImage?.sys?.id) {
-          resolvedUrl = await fetchAssetUrlById(rawImage.sys.id);
-        }
-        setImageUrl(resolvedUrl || null);
-
-        const recField = fields.recommendedPosts ?? fields.recommended ?? [];
-        if (Array.isArray(recField) && recField.length) {
-          const baseList = postsActive.length ? postsActive : postsFallback;
-          const recPosts = recField
-            .map((ref) => {
-              const id = ref?.sys?.id;
-              if (!id) return null;
-              return baseList.find((p) => p?.sys?.id === id) ?? null;
-            })
-            .filter(Boolean);
-          setRecommended(recPosts);
-        } else {
-          setRecommended([]);
-        }
-      } catch (err) {
-        console.error("Error al cargar blog:", err);
-        setError(err?.message || "¡Lo sentimos! No se pudo cargar el detalle del blog.");
-      } finally {
-        if (mounted) setLoading(false);
+        postsFallback = resFallback.posts || [];
+        matchFallback = findBySlug(postsFallback, slug);
       }
-    };
 
-    run();
-    return () => {
-      mounted = false;
-    };
-  }, [slug, i18n.language]);
+      // 5) Resolver entrada seleccionada + lista para related
+      let chosen;
+      if (matchActive) {
+        chosen = matchActive; // ya en el idioma activo
+        setAllPosts(postsActive);
+      } else if (matchFallback) {
+        // Busca el mismo sys.id en la lista activa para renderizar en idioma activo (si existe)
+        const sameIdActive =
+          postsActive.find((p) => p?.sys?.id === matchFallback?.sys?.id) || null;
+        chosen = sameIdActive || matchFallback;
+        // Lista base para vecinos/recomendados en el idioma activo
+        setAllPosts(postsActive.length ? postsActive : postsFallback);
+      } else {
+        setAllPosts(postsActive);
+        setError("No se encontró este blog.");
+        setLoading(false);
+        return;
+      }
 
+      setBlog(chosen);
+
+      // Imagen principal
+      const fields = chosen.fields ?? chosen;
+      const rawImage = fields.image ?? fields.featuredImage ?? chosen.image ?? null;
+      let resolvedUrl = rawImage ? resolveAssetUrl(rawImage) : null;
+      if (!resolvedUrl && rawImage?.sys?.id) {
+        resolvedUrl = await fetchAssetUrlById(rawImage.sys.id);
+      }
+      setImageUrl(resolvedUrl || null);
+
+      // Recomendados (se resuelven por id dentro de la lista activa para mantener idioma)
+      const recField = fields.recommendedPosts ?? fields.recommended ?? [];
+      if (Array.isArray(recField) && recField.length) {
+        const baseList = postsActive.length ? postsActive : postsFallback;
+        const recPosts = recField
+          .map((ref) => {
+            const id = ref?.sys?.id;
+            if (!id) return null;
+            return baseList.find((p) => p?.sys?.id === id) ?? null;
+          })
+          .filter(Boolean);
+        setRecommended(recPosts);
+      } else {
+        setRecommended([]);
+      }
+    } catch (err) {
+      console.error("Error al cargar blog:", err);
+      setError(err?.message || "¡Lo sentimos! No se pudo cargar el detalle del blog.");
+    } finally {
+      if (mounted) setLoading(false);
+    }
+  };
+
+  run();
+  return () => {
+    mounted = false;
+  };
+  // importante: vuelve a cargar si cambia el idioma de i18n o el slug
+}, [slug, i18n.language]);
+
+
+  // Resolver imágenes de relacionados ASYNC
   useEffect(() => {
     const run = async () => {
       const cards = [];
@@ -227,7 +245,8 @@ const BlogDetail = () => {
         const f = post.fields ?? post;
         const title = f.title ?? post.title ?? (i18n.language === "es" ? "Entrada sin título" : "Untitled Entry");
         const rawSlug = f.slug ?? post.slug ?? (title ? slugify(title) : post.sys?.id ?? "");
-        const finalSlug = typeof rawSlug === "string" && rawSlug.length ? rawSlug : rawSlug?.sys?.id ? slugify(rawSlug.sys.id) : "";
+        const finalSlug =
+          typeof rawSlug === "string" && rawSlug.length ? rawSlug : rawSlug?.sys?.id ? slugify(rawSlug.sys.id) : "";
         let img = resolveAssetUrl(f.image ?? f.featuredImage ?? post.image);
         if (!img) {
           const assetLink = (f.image ?? f.featuredImage)?.sys?.id;
@@ -240,23 +259,30 @@ const BlogDetail = () => {
     if (recommended && recommended.length) run();
   }, [recommended, i18n.language]);
 
+  // Datos del post
   const fields = blog?.fields ?? blog ?? {};
   const title = fields?.title ?? blog?.title ?? t("blog.defaultTitle", "Untitled Entry");
   const rawDate = fields?.date ?? blog?.date ?? blog?.sys?.createdAt ?? "";
+
   const uiLocale = LOCALE_MAP[i18n.language] || "en-US";
-  const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString(uiLocale, { year: "numeric", month: "long", day: "numeric" }) : "";
+  const formattedDate = rawDate
+    ? new Date(rawDate).toLocaleDateString(uiLocale, { year: "numeric", month: "long", day: "numeric" })
+    : "";
+
   const body = fields?.body ?? null;
   const videoEmbed = fields?.videoEmbed ?? null;
 
   const headings = useMemo(() => extractHeadings(body), [body]);
   const readingMinutes = useMemo(() => (isRichTextDoc(body) ? estReadingTime(body) : 1), [body]);
 
+  // Scroll a hash si llega en URL (reutiliza la variable 'hash')
   useEffect(() => {
     if (!hash) return;
     const el = document.getElementById(hash.replace("#", ""));
     if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
   }, [hash]);
 
+  // Render Rich Text con anchors, assets Y ENTRIES
   const RICHTEXT_OPTIONS = useMemo(
     () => ({
       renderMark: {
@@ -283,7 +309,7 @@ const BlogDetail = () => {
         },
         [BLOCKS.PARAGRAPH]: (node, children) => {
           const text = textFromNode(node);
-          // Si el párrafo contiene el iframe de YouTube directamente
+          // --- DETECTAR IFRAME EN EL TEXTO ---
           if (text.includes('<iframe')) {
             return (
               <div 
@@ -311,16 +337,34 @@ const BlogDetail = () => {
             </figure>
           );
         },
+        
+        // --- CORRECCIÓN AQUÍ: Manejo de Entry en Bloque ---
         [BLOCKS.EMBEDDED_ENTRY]: (node) => {
+          // 1. Obtenemos el ID de la referencia
           const targetId = node.data.target?.sys?.id;
+          
+          // 2. Buscamos el post completo en 'allPosts' para tener acceso a 'fields' (slug, imagen, titulo)
+          // Si no está en allPosts, usamos node.data.target como fallback (aunque probablemente esté incompleto)
           const resolvedEntry = allPosts.find(p => p.sys.id === targetId) || node.data.target;
+
           if (!resolvedEntry) return null;
+
           const f = resolvedEntry.fields ?? resolvedEntry;
+          
+        
+          // Título real
           const entryTitle = f.title || (i18n.language === "es" ? "Entrada relacionada" : "Related Entry");
+          
+          // Slug real calculado con el objeto completo
           const entrySlug = computeSlug(resolvedEntry);
+          
+          // Imagen real
           const rawEntryImage = f.image || f.featuredImage;
           const entryImage = resolveAssetUrl(rawEntryImage);
+
+          // Si el slug está vacío, evitamos crear un link roto
           if (!entrySlug) return null; 
+
           return (
             <div className="bd__embedded-card">
               <Link to={`/blog/${entrySlug}`} className="bd__embedded-link">
@@ -337,14 +381,20 @@ const BlogDetail = () => {
             </div>
           );
         },
+
+        // --- CORRECCIÓN AQUÍ: Manejo de Entry Inline ---
         [INLINES.EMBEDDED_ENTRY]: (node) => {
            const targetId = node.data.target?.sys?.id;
            const resolvedEntry = allPosts.find(p => p.sys.id === targetId) || node.data.target;
+           
            if (!resolvedEntry) return null;
+           
            const f = resolvedEntry.fields ?? resolvedEntry;
            const entryTitle = f.title || "Enlace";
            const entrySlug = computeSlug(resolvedEntry);
+           
            if (!entrySlug) return <span>{entryTitle}</span>;
+
            return (
              <Link to={`/blog/${entrySlug}`} className="bd__link bd__inline-entry">
                {entryTitle}
@@ -361,15 +411,18 @@ const BlogDetail = () => {
         },
       },
     }),
-    [title, i18n.language, allPosts]
+    [title, i18n.language, allPosts] // <--- IMPORTANTE: Agregamos allPosts aquí
   );
 
+  // Estados
   if (loading) {
     return (
       <>
         <ScrollRestoration />
         <PageHeader heading={t("blogs.myBlogs", "Blog")} page={t("blogs.myBlogs", "Blog")} />
-        <p className="blogdetail__status text-center py-5">{t("blogs.loadingContentfulPosts", "Loading...")}</p>
+        <p className="blogdetail__status text-center py-5">
+          {t("blogs.loadingContentfulPosts", "Loading...")}
+        </p>
       </>
     );
   }
@@ -390,7 +443,9 @@ const BlogDetail = () => {
         <ScrollRestoration />
         <PageHeader heading={t("blogs.myBlogs", "Blog")} page={t("blogs.myBlogs", "Blog")} />
         <p className="blogdetail__error text-center py-5">
-          {i18n.language === "es" ? "No se encontró información para este blog." : "No information was found for this blog."}
+          {i18n.language === "es"
+            ? "No se encontró información para este blog."
+            : "No information was found for this blog."}
         </p>
       </>
     );
@@ -399,7 +454,11 @@ const BlogDetail = () => {
   return (
     <>
       <ScrollRestoration />
+
+      {/* Barra de progreso */}
       <div className="bd__progress" style={{ width: `${progress}%` }} />
+
+      {/* HERO */}
       <PageHeader heading={title} page={t("blogs.myBlogs", "Blog")} />
 
       <section className="bd__hero mb-16" data-aos="fade-up" data-aos-duration="800">
@@ -417,10 +476,12 @@ const BlogDetail = () => {
         </div>
       </section>
 
+      {/* GRID: Sidebar izquierda + artículo (angosto) */}
       <section className="protfolio__details pb-120">
         <div className="container">
           <div className="bd__grid">
             <aside className="bd__aside">
+              {/* Table of Contents */}
               {headings.length > 0 && (
                 <div className="bd__toc" data-aos="fade-up" data-aos-duration="800">
                   <div className="bd__cardtitle">
@@ -429,7 +490,12 @@ const BlogDetail = () => {
                   <nav>
                     <ul>
                       {headings.map((h) => (
-                        <li key={h.id} className={h.level === BLOCKS.HEADING_3 ? "lvl-3" : h.level === BLOCKS.HEADING_2 ? "lvl-2" : "lvl-1"}>
+                        <li
+                          key={h.id}
+                          className={
+                            h.level === BLOCKS.HEADING_3 ? "lvl-3" : h.level === BLOCKS.HEADING_2 ? "lvl-2" : "lvl-1"
+                          }
+                        >
                           <a href={`#${h.id}`}>{h.text}</a>
                         </li>
                       ))}
@@ -441,7 +507,7 @@ const BlogDetail = () => {
 
             <article className="bd__article" data-aos="fade-up" data-aos-duration="1000">
               
-              {/* --- RENDERIZADO DEL VIDEO (CAMPOS RICH TEXT) --- */}
+               {/* --- RENDERIZADO DEL VIDEO (CAMPOS RICH TEXT) --- */}
               {isRichTextDoc(videoEmbed) && (
                 <div className="bd__video-wrapper">
                   {documentToReactComponents(videoEmbed, RICHTEXT_OPTIONS)}
@@ -461,6 +527,7 @@ const BlogDetail = () => {
             </article>
           </div>
 
+          {/* Artículos relacionados */}
           {(recCards?.length || 0) > 0 && (
             <div className="bd__related" data-aos="fade-up" data-aos-duration="900">
               <h3 className="text__boxhead">
@@ -482,6 +549,7 @@ const BlogDetail = () => {
         </div>
       </section>
 
+      {/* CSS */}
       <style>{`
         .bd__progress{position:fixed;top:0;left:0;height:3px;background:var(--theme,#111);z-index:60;transition:width .15s ease}
         .bd__heroimg img{max-width:720px;width:100%;display:block;margin:0 auto;height:auto;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
@@ -516,7 +584,6 @@ const BlogDetail = () => {
         .bd__cardtitle{padding:12px;font-weight:600}
         .bd__ph{height:180px;background:linear-gradient(90deg,#eee 25%,#f5f5f5 37%,#eee 63%);animation:shimmer 1.4s infinite}
         @keyframes shimmer{0%{background-position:-468px 0}100%{background-position:468px 0}}
-        
         /* VIDEO RESPONSIVO */
         .bd__video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 12px; margin-bottom: 2rem; }
         .bd__video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
