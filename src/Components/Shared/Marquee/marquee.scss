@@ -1,3 +1,5 @@
+@use "../../../scss/abstracts/mixins" as *;
+
 .marquee-wrapper {
   background: var(--base);
 }

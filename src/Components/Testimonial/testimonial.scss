@@ -1,3 +1,5 @@
+@use "../../scss/abstracts/mixins" as *;
+
 .testimonial__section {
   overflow: hidden;
   .project__head {

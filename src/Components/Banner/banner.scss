@@ -1,3 +1,5 @@
+@use "../../scss/abstracts/mixins" as *;
+
 //banner
 .banner__section{
     background: url("/src/assets/img/banner/banner-bg.png");

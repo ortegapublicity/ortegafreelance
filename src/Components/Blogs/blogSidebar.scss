@@ -1,3 +1,4 @@
+@use "../../scss/abstracts/mixins.scss" as *;
 .blog__bright__bar {
   border: 1px solid var(--cusborder);
   padding: 30px 30px;
@@ -131,3 +132,4 @@
   position: sticky;
   top: 120px;
 }
+

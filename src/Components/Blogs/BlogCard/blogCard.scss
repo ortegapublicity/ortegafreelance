@@ -1,3 +1,4 @@
+@use "../../../scss/abstracts/mixins.scss" as *;
 .blog__bitem {
   .thumb {
     overflow: hidden;
@@ -88,3 +89,4 @@
     }
   }
 }
+

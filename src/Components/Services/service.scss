@@ -1,3 +1,5 @@
+@use "../../scss/abstracts/mixins" as *;
+
 .service__unique__item {
   display: flex;
   align-items: center;

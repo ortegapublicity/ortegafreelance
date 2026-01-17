@@ -1,3 +1,4 @@
+@use "../../scss/abstracts/mixins.scss" as *;
 .protfolio__filter {
   .tablinks {
     border: 1px solid var(--cusborder);
@@ -43,3 +44,4 @@
     }
   }
 }
+

@@ -1,3 +1,5 @@
+@use "../../scss/abstracts/mixins" as *;
+
 .project__metting {
   background: url("/src/assets/img/about/about-bg.png") no-repeat center center;
   background-size: cover;

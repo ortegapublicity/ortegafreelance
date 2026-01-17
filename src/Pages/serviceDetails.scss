@@ -1,3 +1,4 @@
+@use "../scss/abstracts/mixins.scss" as *;
 .service__rightbox {
   padding: 30px;
   border: 1px solid var(--cusborder);
@@ -108,3 +109,4 @@
     opacity: 0.651;
   }
 }
+

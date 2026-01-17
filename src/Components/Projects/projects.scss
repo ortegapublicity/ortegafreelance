@@ -1,3 +1,5 @@
+@use "../../scss/abstracts/mixins" as *;
+
 //<<<--- project --->>>>//
 .project__wrapone {
   /* Use grid on desktop for predictable row alignment */

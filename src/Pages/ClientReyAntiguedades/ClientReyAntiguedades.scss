@@ -1,3 +1,4 @@
+@use "../../scss/abstracts/mixins.scss" as *;
 .details__bigthumb {
   width: 100%;
   position: relative;
@@ -165,3 +166,4 @@
     flex-wrap: wrap;
   }
 }
+

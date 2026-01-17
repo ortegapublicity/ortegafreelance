@@ -1,3 +1,4 @@
+@use "../../scss/abstracts/mixins.scss" as *;
 .contact__box {
   .replay__box {
     padding: 60px 60px;
@@ -48,3 +49,4 @@
     }
   }
 }
+
