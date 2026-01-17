@@ -270,7 +270,8 @@ useEffect(() => {
     : "";
 
   const body = fields?.body ?? null;
-
+  const videoEmbed = fields?.videoEmbed ?? null;
+  
   const headings = useMemo(() => extractHeadings(body), [body]);
   const readingMinutes = useMemo(() => (isRichTextDoc(body) ? estReadingTime(body) : 1), [body]);
 
@@ -306,7 +307,19 @@ useEffect(() => {
           const id = slugify(text);
           return <h4 id={id} className="text__boxhead bdh4">{children}</h4>;
         },
-        [BLOCKS.PARAGRAPH]: (node, children) => <p className="bd__p">{children}</p>,
+        [BLOCKS.PARAGRAPH]: (node, children) => {
+          const text = textFromNode(node);
+          // --- DETECTAR IFRAME EN EL TEXTO ---
+          if (text.includes('<iframe')) {
+            return (
+              <div 
+                className="bd__video-container" 
+                dangerouslySetInnerHTML={{ __html: text }} 
+              />
+            );
+          }
+          return <p className="bd__p">{children}</p>;
+        },
         [BLOCKS.UL_LIST]: (node, children) => <ul className="bd__ul">{children}</ul>,
         [BLOCKS.OL_LIST]: (node, children) => <ol className="bd__ol">{children}</ol>,
         [BLOCKS.LIST_ITEM]: (node, children) => <li>{children}</li>,
@@ -492,6 +505,14 @@ useEffect(() => {
             </aside>
 
             <article className="bd__article" data-aos="fade-up" data-aos-duration="1000">
+
+              {/* VIDEO EMBEDDED */}
+              {isRichTextDoc(videoEmbed) && (
+                <div className="bd__video-wrapper">
+                  {documentToReactComponents(videoEmbed, RICHTEXT_OPTIONS)}
+                </div>
+              )}  
+              {/* CONTENIDO RICH TEXT */}
               {isRichTextDoc(body) ? (
                 documentToReactComponents(body, RICHTEXT_OPTIONS)
               ) : body ? (
