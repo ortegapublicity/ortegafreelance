@@ -35,7 +35,9 @@ const Home = () => {
       <Services isHeading={true} />
       <WorkeProcess />
       <Testimonial />
-      <Pricing />
+      <div id="pricing">
+        <Pricing />
+      </div>
       <Blogs />
     </>
   );

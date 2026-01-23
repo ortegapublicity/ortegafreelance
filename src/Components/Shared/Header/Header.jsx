@@ -65,6 +65,12 @@ const menuList = [
   },
   {
     id: 7,
+    path: "/",
+    section: "#pricing",
+    name: "header.pricing",
+  },
+  {
+    id: 8,
     path: "/contact",
     name: "header.contact",
   },
