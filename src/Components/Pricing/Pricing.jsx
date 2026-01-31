@@ -12,6 +12,16 @@ const Pricing = () => {
   const planData = [
     {
       id: 1,
+      planName: t("services.pricing.plan3.name"),
+      price: "$2250",
+      time: t("services.pricing.time.web"),
+      description: t("services.pricing.plan3.description"),
+      result: t("services.pricing.plan3.result"),
+      fetcher: t("services.pricing.plan3.features", { returnObjects: true }),
+      image: premium,
+    },
+    {
+      id: 2,
       planName: t("services.pricing.plan1.name"),
       price: "$1050",
       time: t("services.pricing.time.perQuarter"),
@@ -21,7 +31,7 @@ const Pricing = () => {
       image: basic,
     },
     {
-      id: 2,
+      id: 3,
       planName: t("services.pricing.plan2.name"),
       price: "$1650",
       time: t("services.pricing.time.perQuarter"),
@@ -29,16 +39,6 @@ const Pricing = () => {
       result: t("services.pricing.plan2.result"),
       fetcher: t("services.pricing.plan2.features", { returnObjects: true }),
       image: warranty,
-    },
-    {
-      id: 3,
-      planName: t("services.pricing.plan3.name"),
-      price: "$2250",
-      time: t("services.pricing.time.web"),
-      description: t("services.pricing.plan3.description"),
-      result: t("services.pricing.plan3.result"),
-      fetcher: t("services.pricing.plan3.features", { returnObjects: true }),
-      image: premium,
     },
   ];
 
