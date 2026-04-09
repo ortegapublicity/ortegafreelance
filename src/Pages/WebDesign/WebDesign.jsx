@@ -1,14 +1,14 @@
 import React from "react";
 import { ArrowRight } from "react-bootstrap-icons";
-// Corregí la ruta de los imports a un estándar más común (asumiendo que los componentes están en ../Components/)
 import PageHeader from "../../Components/Shared/PageHeader/PageHeader";
 import Accordion from "../../Components/Accordion/Accordion";
-import { Link } from "react-router-dom";
-// Usaremos un placeholder de imagen por ahora
+import { Link, ScrollRestoration } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
+// Imágenes
 import serDv1 from "../../assets/img/project/ser-webpage.png";
 import detialcontact from "../../assets/img/contact/ser-detialcontact.png";
-import { ScrollRestoration } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import premium from "../../assets/img/project/premium-quality.png"; // Agregado para el ícono del plan
 
 const WebDesign = () => {
   const { t } = useTranslation();
@@ -33,7 +33,6 @@ const WebDesign = () => {
 
   return (
     <>
-      {/* ✨ Texto del encabezado corregido para reflejar el servicio */}
       <PageHeader
         heading={t("webdesign.header.heading")}
         page={t("webdesign.header.page")}
@@ -46,12 +45,13 @@ const WebDesign = () => {
                 <div className="thumb">
                   <img src={serDv1} alt="Web Design Thumb" />
                 </div>
+                
+                {/* About Section */}
                 <div
                   className="text__box mb__cus60"
                   data-aos="fade-up"
                   data-aos-duration="1400"
                 >
-                  {/* ✨ Texto del servicio corregido */}
                   <h3 className="textt36 d-block">
                     {t("webdesign.about.title")}
                   </h3>
@@ -60,31 +60,55 @@ const WebDesign = () => {
                   </p>
                   <p className="fz-16 pra">{t("webdesign.about.p2")}</p>
                 </div>
+
+                {/* Process Section */}
                 <div
                   className="text__box mb__cus60"
                   data-aos="fade-up"
                   data-aos-duration="1400"
                 >
-                  {/* ✨ Texto del servicio corregido */}
                   <h3 className="textt36 d-block">
                     {t("webdesign.process.title")}
                   </h3>
                   <p className="fz-16 pra">{t("webdesign.process.p1")}</p>
-                  <Link
-                    to="/checkout"
-                    state={{
-                      planName: t("services.pricing.plan3.name"),
-                      price: "$2250",
-                    }}
-                    className="cmn--btn d-inline-flex align-items-center justify-content-center gap-2 mt-4"
-                  >
-                    <span>{t("price.button", { defaultValue: "Start Now" })}</span>
-                    <span>
-                      <i className="bi bi-arrow-right fz-20"></i>
-                    </span>
-                  </Link>
+                  
+                  {/* Pricing Card Section */}
+                  <div className="row mt-4">
+                    <div className="col-md-8 col-lg-7">
+                      <div className="process__item price__item h-100" style={{ backgroundColor: '#00cfba', border: 'none', borderRadius: '16px', padding: '30px' }}>
+                        <div className="pri__iconbox" style={{ backgroundColor: '#dcd8d8', borderRadius: '12px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                          <img src={premium} alt="Web Design Plan" style={{ maxWidth: '35px' }} />
+                        </div>
+                        <h4 className="mb-16" style={{ color: '#000', fontWeight: '700' }}>{t("services.pricing.plan3.name")}</h4>
+                        <h2 className="big__title mb-12" style={{ color: '#000' }}>
+                          $2250
+                          <span style={{ fontSize: '16px', color: '#222' }}>/{t("services.pricing.time.web")}</span>
+                        </h2>
+                        <ul className="pri__list mb-16" style={{ listStyle: 'none', padding: 0 }}>
+                          {Array.isArray(t("services.pricing.plan3.features", { returnObjects: true })) &&
+                            t("services.pricing.plan3.features", { returnObjects: true }).map((item, index) => (
+                              <li key={index} className="mb-2" style={{ color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <i className="bi bi-check2-circle"></i> {item}
+                              </li>
+                            ))
+                          }
+                        </ul>
+                        <p className="price__result mb-4" style={{ color: '#000', fontStyle: 'italic', fontSize: '14px' }}>{t("services.pricing.plan3.result")}</p>
+                        <Link
+                          to="/checkout"
+                          state={{ planName: t("services.pricing.plan3.name"), price: "$2250" }}
+                          className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
+                          style={{ backgroundColor: '#fff', color: '#000', border: 'none', borderRadius: '8px', padding: '12px' }}
+                        >
+                          <span>{t("price.button", { defaultValue: "Start Now" })}</span>
+                          <i className="bi bi-arrow-right fz-20"></i>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
+                {/* FAQ / Accordion */}
                 <div className="ser__components">
                   <h2 className="whites mb-5">{t("webdesign.faq.title")}</h2>
                   <div className="accordion" id="accordionExample">
@@ -100,12 +124,12 @@ const WebDesign = () => {
                 </div>
               </div>
             </div>
-            {/* El Service List que actúa como navegación se mantiene igual */}
+
+            {/* Right Column (Service List & Contact) */}
             <div className="col-lg-4">
               <div className="service__right__wrap">
                 <div className="service__rightbox mb-30">
                   <h3>{t("videoediting.servicelist.title")}</h3>
-                  {/* ✨ MODIFICACIÓN: Usamos <Link> con rutas relativas */}
                   <Link
                     to="/services/illustration-design"
                     className="link__box mb-15"
@@ -132,13 +156,13 @@ const WebDesign = () => {
                     {t("videoediting.servicelist.item5")}
                     <i className="bi bi-chevron-right"></i>
                   </Link>
-                  {/* FIN de MODIFICACIÓN */}
                 </div>
+                
                 <div className="service__rightbox">
                   <div className="thumb">
                     <img src={detialcontact} alt="img" />
                     <Link
-                      to="/contact" // Redirige a la ruta /contact
+                      to="/contact"
                       className="cmn--btn"
                     >
                       <span>{t("videoediting.contact.button")}</span>

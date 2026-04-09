@@ -6,6 +6,8 @@ import Accordion from "../../Components/Accordion/Accordion";
 import { Link, ScrollRestoration } from "react-router-dom";
 import serDv1 from "../../assets/img/project/ser-dv1.png"; 
 import detialcontact from "../../assets/img/contact/ser-detialcontact.png";
+import basic from "../../assets/img/project/basic.png";
+import warranty from "../../assets/img/project/warranty.png";
 
 const PaidMedia = () => {
   const { t } = useTranslation();
@@ -86,6 +88,75 @@ const PaidMedia = () => {
                   <h3 className="textt36 d-block">{t("service.paidmedia.process.title")}</h3>
                   <p className="fz-16 pra">{t("service.paidmedia.process.p1")}</p>
                   <p className="fz-16 pra">{t("service.paidmedia.process.p2")}</p>
+
+                  {/* Pricing Cards Section */}
+                  <div className="row g-4 mt-4">
+                    {/* Plan 1 - Digital Advertising ($1050) */}
+                    <div className="col-md-6">
+                      <div className="process__item price__item h-100" style={{ backgroundColor: '#00cfba', border: 'none', borderRadius: '16px', padding: '30px' }}>
+                        <div className="pri__iconbox" style={{ backgroundColor: '#000', borderRadius: '12px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                          <img src={basic} alt="Plan 1" style={{ maxWidth: '35px' }} />
+                        </div>
+                        <h4 className="mb-16" style={{ color: '#000', fontWeight: '700' }}>{t("services.pricing.plan1.name")}</h4>
+                        <h2 className="big__title mb-12" style={{ color: '#000' }}>
+                          $1050
+                          <span style={{ fontSize: '16px', color: '#222' }}>/{t("services.pricing.time.perQuarter")}</span>
+                        </h2>
+                        <ul className="pri__list mb-16" style={{ listStyle: 'none', padding: 0 }}>
+                          {Array.isArray(t("services.pricing.plan1.features", { returnObjects: true })) &&
+                            t("services.pricing.plan1.features", { returnObjects: true }).map((item, index) => (
+                              <li key={index} className="mb-2" style={{ color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <i className="bi bi-check2-circle"></i> {item}
+                              </li>
+                            ))
+                          }
+                        </ul>
+                        <p className="price__result mb-4" style={{ color: '#000', fontStyle: 'italic', fontSize: '14px' }}>{t("services.pricing.plan1.result")}</p>
+                        <Link
+                          to="/checkout"
+                          state={{ planName: t("services.pricing.plan1.name"), price: "$1050" }}
+                          className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
+                          style={{ backgroundColor: '#fff', color: '#000', border: 'none', borderRadius: '8px', padding: '12px' }}
+                        >
+                          <span>{t("price.button", { defaultValue: "Start Now" })}</span>
+                          <i className="bi bi-arrow-right fz-20"></i>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Plan 2 - Complete Digital Marketing ($1650) */}
+                    <div className="col-md-6">
+                      <div className="process__item price__item h-100" style={{ backgroundColor: '#f4f4f4', border: '1px solid #eee', borderRadius: '16px', padding: '30px' }}>
+                        <div className="pri__iconbox" style={{ backgroundColor: '#00cfba', borderRadius: '12px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                          <img src={warranty} alt="Plan 2" style={{ maxWidth: '35px' }} />
+                        </div>
+                        <h4 className="mb-16" style={{ color: '#000', fontWeight: '700' }}>{t("services.pricing.plan2.name")}</h4>
+                        <h2 className="big__title mb-12" style={{ color: '#000' }}>
+                          $1650
+                          <span style={{ fontSize: '16px', color: '#666' }}>/{t("services.pricing.time.perQuarter")}</span>
+                        </h2>
+                        <ul className="pri__list mb-16" style={{ listStyle: 'none', padding: 0 }}>
+                          {Array.isArray(t("services.pricing.plan2.features", { returnObjects: true })) &&
+                            t("services.pricing.plan2.features", { returnObjects: true }).map((item, index) => (
+                              <li key={index} className="mb-2" style={{ color: '#444', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <i className="bi bi-check2-circle text-primary"></i> {item}
+                              </li>
+                            ))
+                          }
+                        </ul>
+                        <p className="price__result mb-4" style={{ color: '#666', fontStyle: 'italic', fontSize: '14px' }}>{t("services.pricing.plan2.result")}</p>
+                        <Link
+                          to="/checkout"
+                          state={{ planName: t("services.pricing.plan2.name"), price: "$1650" }}
+                          className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
+                          style={{ backgroundColor: '#00cfba', color: '#fff', border: 'none', borderRadius: '8px', padding: '12px' }}
+                        >
+                          <span>{t("price.button", { defaultValue: "Start Now" })}</span>
+                          <i className="bi bi-arrow-right fz-20"></i>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div
