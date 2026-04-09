@@ -19,7 +19,8 @@ import WebDesign from "../Pages/WebDesign/WebDesign";
 import PaidMedia from "../Pages/PaidMedia/PaidMedia";
 import VideoEditing from "../Pages/VideoEditing/VideoEditing";
 // ✨ NUEVA IMPORTACIÓN: Componente para la pasarela de pagos
-import Checkout from "../Pages/Checkout/Checkout"; 
+import Checkout from "../Pages/Checkout/Checkout";
+import PaymentSuccess from "../Components/Success/PaymentSuccess"; 
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <Checkout />,
+      },
+      {
+        path: "/success",
+        element: <PaymentSuccess />,
       },
       {
         path: "/all-blog",
