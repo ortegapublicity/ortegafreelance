@@ -70,6 +70,19 @@ const WebDesign = () => {
                     {t("webdesign.process.title")}
                   </h3>
                   <p className="fz-16 pra">{t("webdesign.process.p1")}</p>
+                  <Link
+                    to="/checkout"
+                    state={{
+                      planName: t("services.pricing.plan3.name"),
+                      price: "$2250",
+                    }}
+                    className="cmn--btn d-inline-flex align-items-center justify-content-center gap-2 mt-4"
+                  >
+                    <span>{t("price.button", { defaultValue: "Start Now" })}</span>
+                    <span>
+                      <i className="bi bi-arrow-right fz-20"></i>
+                    </span>
+                  </Link>
                 </div>
 
                 <div className="ser__components">
@@ -148,4 +161,3 @@ const WebDesign = () => {
 };
 
 export default WebDesign;
-
