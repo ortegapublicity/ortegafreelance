@@ -280,7 +280,7 @@ const resources = {
       "awards.award3.awardName": "JaviToyz",
       "awards.award3.contest": "10k+ Sales w/ services",
       "awards.award4.awardName": "Rey Antigüedades",
-      "awards.award4.contest": "800k+ Views on reels",
+      "awards.award4.contest": "10k+ Followers on Instagram",
 
       "banner.currentlyAvailable": "Currently available for freelance",
       "banner.worldwide": "worldwide",
@@ -672,7 +672,7 @@ const resources = {
       "awards.award3.awardName": "JaviToyz",
       "awards.award3.contest": "Más de $10mil Ventas con servicios",
       "awards.award4.awardName": "Rey Antigüedades",
-      "awards.award4.contest": "Más de 800mil Vistas en reels",
+      "awards.award4.contest": "10mil seguidores en Instagram",
 
       "banner.currentlyAvailable": "Actualmente disponible para freelance",
       "banner.worldwide": "en todo el mundo",

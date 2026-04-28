@@ -31,7 +31,7 @@ const Awards = () => {
       id: 4,
       awardName: t("awards.award4.awardName"),
       contest: t("awards.award4.contest"),
-      year: "2025",
+      year: "2026",
     },
   ];
 
