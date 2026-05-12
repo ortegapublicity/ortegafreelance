@@ -1,9 +1,24 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+
 const getInitialLanguage = () => {
   const params = new URLSearchParams(window.location.search);
-  // Si la URL tiene ?lang=es, devuelve 'es'. Si no, devuelve 'en'.
-  return params.get('lang') === 'es' ? 'es' : 'en';
+  
+  // 1. Check localStorage for a saved language preference
+  const savedLang = localStorage.getItem('i18nextLng');
+  if (savedLang) {
+    return savedLang;
+  }
+
+  // 2. Check URL parameter for language
+  const urlLang = params.get('lang');
+  if (urlLang === 'es' || urlLang === 'en') {
+    return urlLang;
+  }
+
+  // 3. Fallback to browser language detection
+  const browserLang = navigator.language.split('-')[0]; // 'es-ES' -> 'es'
+  return browserLang === 'es' ? 'es' : 'en';
 };
 
 // Traducciones
