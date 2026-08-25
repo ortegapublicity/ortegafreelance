@@ -1,0 +1,162 @@
+{
+  "$comment": "Capa de aplicación real del semáforo de 00-CONSTITUCION.md. Orden de evaluacion: deny -> ask -> allow. La primera coincidencia gana. Un deny NO se puede anular con un allow.",
+
+  "permissions": {
+    "defaultMode": "default",
+
+    "$comment_deny": "ROJO ABSOLUTO. Nadie, nunca, en ningun modo. Ni siquiera con bypassPermissions.",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa*)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Write(./.env)",
+      "Write(./.env.*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(curl:* | sh)",
+      "Bash(curl:* | bash)",
+      "Bash(wget:* | sh)",
+      "Bash(* --dangerously-skip-permissions*)",
+      "Bash(stripe * --live*)",
+      "Bash(cat .env*)",
+      "Bash(printenv*)",
+      "Bash(env)",
+      "Bash(export STRIPE_*)",
+      "Bash(export *_SECRET*)",
+      "Bash(export *_KEY*)"
+    ],
+
+    "$comment_ask": "ROJO ESCALABLE. Pregunta SIEMPRE al PO, aunque un agente corra en modo permisivo. Esta es la red de seguridad debajo del criterio de los agentes.",
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh release:*)",
+      "Bash(vercel:*)",
+      "Bash(vercel deploy:*)",
+      "Bash(vercel env:*)",
+      "Bash(netlify deploy:*)",
+      "Bash(npm publish:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(pnpm add:*)",
+      "Bash(yarn add:*)",
+      "Bash(stripe:*)",
+      "Bash(rsync:*)",
+      "Bash(scp:*)",
+      "Bash(ssh:*)",
+      "Bash(doctl:*)",
+      "Bash(aws:*)",
+      "Bash(gcloud:*)",
+      "Bash(git rebase:*)",
+      "Bash(git tag:*)",
+      "Edit(./.claude/**)",
+      "Write(./.claude/settings.json)",
+      "Edit(./package.json)",
+      "Edit(./next.config.*)",
+      "Edit(./vercel.json)",
+      "Edit(./.github/workflows/**)",
+      "Edit(./middleware.*)",
+      "Edit(**/checkout/**)",
+      "Edit(**/stripe/**)",
+      "Edit(**/webhook*/**)",
+      "Edit(./public/robots.txt)",
+      "Edit(**/sitemap*)"
+    ],
+
+    "$comment_allow": "VERDE. Trabajo rutinario. Sin friccion, sin preguntas.",
+    "allow": [
+      "Read(./**)",
+      "Glob(./**)",
+      "Grep(./**)",
+      "Edit(./src/**)",
+      "Edit(./app/**)",
+      "Edit(./components/**)",
+      "Edit(./content/**)",
+      "Edit(./posts/**)",
+      "Edit(./styles/**)",
+      "Edit(./public/images/**)",
+      "Write(./src/**)",
+      "Write(./app/**)",
+      "Write(./content/**)",
+      "Write(./posts/**)",
+      "Write(./.claude/reports/**)",
+      "Write(./.claude/backlog.md)",
+      "Write(./.claude/docs/plantilla-blog.md)",
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run format:*)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx lighthouse:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout -b:*)",
+      "Bash(git branch:*)",
+      "Bash(git stash:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(jq:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "WebFetch(domain:ortegafreelance.com)",
+      "WebFetch(domain:nexolabmarketing.com)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebFetch(domain:animejs.com)",
+      "WebFetch(domain:gsap.com)",
+      "WebFetch(domain:docs.stripe.com)",
+      "WebFetch(domain:developer.paypal.com)",
+      "WebFetch(domain:web.dev)",
+      "WebFetch(domain:code.claude.com)"
+    ]
+  },
+
+  "$comment_hooks": "Backstop mecanico: bloquea escritura de secretos aunque el agente se equivoque.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/guard-secretos.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/log-actividad.sh"
+          }
+        ]
+      }
+    ]
+  },
+
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2",
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "4"
+  }
+}

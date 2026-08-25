@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "copywriting": {
+      "source": "nexu-io/open-design",
+      "sourceType": "github",
+      "skillPath": "skills/copywriting/SKILL.md",
+      "computedHash": "c411dd9c3b88565aeea82b4d1f2c666981e3580a522b54202904ac8c46b49eea"
+    }
+  }
+}
