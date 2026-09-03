@@ -8,7 +8,22 @@
       "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('resend',p.dependencies.resend,'| @netlify/functions',p.devDependencies['@netlify/functions']\\)\")",
       "Bash(mkdir -p /private/tmp/claude-501/-Users-raulortega-Documents-ortegafreelance-web/cc85ce94-9a30-4bfc-b13f-185428927d94/scratchpad/verify)",
       "Bash(npm init *)",
-      "Bash(node -e \"console.log\\('puppeteer-core', require\\('puppeteer-core/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\('puppeteer-core', require\\('puppeteer-core/package.json'\\).version\\)\")",
+      "Bash(netlify status *)",
+      "Bash(gh auth *)",
+      "Read(//private/tmp/**)",
+      "Bash(npm view *)",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/126.0 Safari/537.36\" \"https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap\")",
+      "Bash(awk '/=== ordenes-pendientes.md ===/,/=== auditoria.md/' bkfmr4n7z.txt)",
+      "Read(//Users/raulortega/Documents/Nexolab repositorio/nexo-next/**)",
+      "Bash(wc -l private-pages/septiembre-rodaje-maylin-juliett.html /Users/raulortega/Downloads/NEXOLAB-Septiembre-Rodaje-Maylin-Juliett.html)",
+      "Bash(diff /Users/raulortega/Downloads/NEXOLAB-Septiembre-Rodaje-Maylin-Juliett.html private-pages/septiembre-rodaje-maylin-juliett.html)",
+      "Bash(diff -u /Users/raulortega/Downloads/NEXOLAB-Septiembre-Rodaje-Maylin-Juliett.html private-pages/septiembre-rodaje-maylin-juliett.html)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(cat -n src/app/robots.js)",
+      "Bash(cat -n src/app/sitemap.js)",
+      "Bash(cat -n src/app/layout.jsx)",
+      "Bash(grep -n 'id=\"' src/app/page.jsx)"
     ]
   }
 }
