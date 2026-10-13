@@ -6,22 +6,14 @@ import { useTranslation } from 'react-i18next';
 const serviceList = [
   { 
     id: "01",
-    headingKey: "service.illustration.heading", 
-    subheadingKey: "service.illustration.subheading", 
-    paraKey: "service.illustration.para",
+    headingKey: "service.paidmedia.heading",
+    subheadingKey: "service.paidmedia.subheading",
+    paraKey: "service.paidmedia.para",
     // ✨ NUEVO: Ruta URL pública para el detalle del servicio
-    linkTo: "/services/illustration-design", 
+    linkTo: "/services/paid-media",
   },
   { 
     id: "02",
-    headingKey: "service.branding.heading",
-    subheadingKey: "service.branding.subheading",
-    paraKey: "service.branding.para",
-    // ✨ NUEVO: Ruta URL pública para el detalle del servicio
-    linkTo: "/services/business-branding",
-  },
-  { 
-    id: "03",
     headingKey: "service.uiux.heading",
     subheadingKey: "service.uiux.subheading",
     paraKey: "service.uiux.para",
@@ -29,12 +21,20 @@ const serviceList = [
     linkTo: "/services/web-design",
   },
   { 
-    id: "04",
-    headingKey: "service.paidmedia.heading",
-    subheadingKey: "service.paidmedia.subheading",
-    paraKey: "service.paidmedia.para",
+    id: "03",
+    headingKey: "service.branding.heading",
+    subheadingKey: "service.branding.subheading",
+    paraKey: "service.branding.para",
     // ✨ NUEVO: Ruta URL pública para el detalle del servicio
-    linkTo: "/services/paid-media",
+    linkTo: "/services/business-branding",
+  },
+  { 
+    id: "04",
+    headingKey: "service.illustration.heading", 
+    subheadingKey: "service.illustration.subheading", 
+    paraKey: "service.illustration.para",
+    // ✨ NUEVO: Ruta URL pública para el detalle del servicio
+    linkTo: "/services/illustration-design", 
   },
   { 
     id: "05",

@@ -300,6 +300,7 @@
     position: relative;
     &::before{
         content: attr(data-text);
+        white-space: nowrap;
         position: absolute;
         color: var(--base);
         width: 0px;
@@ -320,3 +321,12 @@
 
 //banner
 
+
+// Escritorio: el titular ("Trafficker y Desarrollador Web") es más largo
+// que el anterior; escala con el ancho para quedar en dos líneas.
+@media (min-width: 992px) {
+  .banner__content h1 {
+    font-size: clamp(56px, 6.2vw, 100px);
+    line-height: 1.08;
+  }
+}

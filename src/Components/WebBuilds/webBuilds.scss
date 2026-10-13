@@ -1,0 +1,142 @@
+@use "../../scss/abstracts/mixins" as *;
+
+.webbuilds__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 50px;
+  @include breakpoint(max-xl) {
+    gap: 22px;
+  }
+  @include breakpoint(max-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.webbuilds__card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bgsection);
+  border: 1px solid var(--cusborder);
+  border-radius: 12px;
+  color: var(--title);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--base);
+    box-shadow: 0 18px 40px rgba(30, 42, 71, 0.14);
+    color: var(--title);
+  }
+  .webbuilds__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px 30px 32px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.1;
+  }
+  p {
+    margin: 0;
+    flex: 1 1 auto;
+    line-height: 1.6;
+  }
+}
+
+.webbuilds__domain {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  opacity: 0.7;
+}
+
+.webbuilds__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    background: var(--base);
+    color: var(--white);
+  }
+}
+
+.webbuilds__visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.webbuilds__note {
+  margin: 36px 0 0;
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+// El CSS global capitaliza cada palabra; aquí el texto va tal cual.
+.webbuilds__card p,
+.webbuilds__result span,
+.webbuilds__domain,
+.webbuilds__tags li,
+.webbuilds__visit,
+.webbuilds__note {
+  text-transform: none;
+}
+
+.webbuilds__thumb {
+  display: block;
+  aspect-ratio: 1.9 / 1;
+  overflow: hidden;
+  background: var(--cmenu);
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+    transition: transform 0.5s;
+  }
+}
+.webbuilds__card:hover .webbuilds__thumb img {
+  transform: scale(1.04);
+}
+
+.webbuilds__result {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--white);
+  svg {
+    flex: 0 0 auto;
+    margin-top: 4px;
+    color: var(--base);
+  }
+}
+
+.webbuilds__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.webbuilds__visit:hover {
+  color: var(--base);
+}
+
+.webbuilds__card .webbuilds__result {
+  flex: 0 0 auto;
+}

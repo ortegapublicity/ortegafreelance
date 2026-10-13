@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { images, images2 } from "../Utlits/marqueeItems";
+import { skillsMarquee, proofMarquee } from "../Utlits/marqueeItems";
+import WebBuilds from "../Components/WebBuilds/WebBuilds";
 import About from "../Components/About/About";
 import Projects from "../Components/Projects/Projects";
 import Metting from "../Components/Metting/Metting";
@@ -26,19 +27,20 @@ const Home = () => {
   return (
     <>
       {isFetching && <Preloader />}
-      <MarqueeWapper direction="left" images={images} />
+      <MarqueeWapper direction="left" items={skillsMarquee} />
       <About />
-      <MarqueeWapper direction="right" images={images2} />
-      <Awards />
-      <Projects />
-      <Metting />
       <Services isHeading={true} />
+      <WebBuilds />
+      <MarqueeWapper direction="right" items={proofMarquee} />
+      <Projects />
       <WorkeProcess />
       <Testimonial />
       <div id="pricing">
         <Pricing />
       </div>
+      <Metting />
       <Blogs />
+      <Awards />
     </>
   );
 };
