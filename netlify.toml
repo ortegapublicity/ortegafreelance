@@ -1,6 +1,27 @@
 [build]
   publish = "dist"
 
+# Contentful servido desde nuestro propio dominio: Safari (navegación privada,
+# bloqueadores) puede cortar las peticiones a dominios de terceros ("Load failed").
+# Deben ir antes de la regla del SPA: Netlify aplica la primera que coincide.
+[[redirects]]
+  from = "/cf-api/*"
+  to = "https://cdn.contentful.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cf-preview/*"
+  to = "https://preview.contentful.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cf-img/*"
+  to = "https://images.ctfassets.net/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

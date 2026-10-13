@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import defaultBlogImage from "../../../assets/img/blog/bblog1.png";
 import {
   resolveAssetUrl,
   slugify,
   getContentfulConfig,
+  contentfulFetch,
 } from "../../../utils/contentfulPosts";
 
 const truncate = (value = "", maxLength = 180) => {
@@ -14,6 +16,7 @@ const truncate = (value = "", maxLength = 180) => {
 };
 
 const BlogCard = ({ blog, index = 0 }) => {
+  const { t, i18n } = useTranslation();
   if (!blog) return null;
 
   const fields = blog.fields ?? blog;
@@ -34,17 +37,12 @@ const BlogCard = ({ blog, index = 0 }) => {
       // si sigue siendo un Link, intentamos resolverlo con llamada al API
       if (!resolvedUrl && rawImage?.sys?.id) {
         try {
-          const { spaceId, environmentId, deliveryToken, host } =
+          const { spaceId, environmentId, deliveryToken } =
             getContentfulConfig();
 
           if (spaceId && environmentId && deliveryToken) {
-            const res = await fetch(
-              `https://${host || "cdn.contentful.com"}/spaces/${spaceId}/environments/${environmentId}/assets/${rawImage.sys.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${deliveryToken}`,
-                },
-              }
+            const res = await contentfulFetch(
+              `/spaces/${spaceId}/environments/${environmentId}/assets/${rawImage.sys.id}`
             );
             if (res.ok) {
               const assetJson = await res.json();
@@ -83,7 +81,7 @@ const BlogCard = ({ blog, index = 0 }) => {
     blog.sys?.createdAt ??
     "";
   const formattedDate = rawDate
-    ? new Date(rawDate).toLocaleDateString("es-ES", {
+    ? new Date(rawDate).toLocaleDateString(i18n.language === "es" ? "es-ES" : "en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -152,7 +150,7 @@ const BlogCard = ({ blog, index = 0 }) => {
           onMouseEnter={(e) => (e.target.style.color = "#2f4f7f")}
           onMouseLeave={(e) => (e.target.style.color = "#4a6fa5")}
         >
-          Leer más
+          {t("blogs.readMore", "Leer más")}
           <span
             className="allblogs__cta-icon"
             style={{

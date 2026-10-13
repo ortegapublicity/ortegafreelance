@@ -90,6 +90,43 @@ const getLocalizedValue = (
   return firstKey ? value[firstKey] : undefined;
 };
 
+// Safari (navegación privada de iOS, bloqueadores, DNS filtrados) puede cortar
+// las peticiones a dominios de terceros y lo reporta como "Load failed". Por eso
+// el navegador pide a nuestro propio dominio y Netlify (netlify.toml) o Vite (dev)
+// reenvían a Contentful. El token va en la query para que la petición sea simple
+// y no necesite preflight CORS; es el token público de entrega, ya incluido en el JS.
+const API_PROXY = {
+  "cdn.contentful.com": "/cf-api",
+  "preview.contentful.com": "/cf-preview",
+};
+
+export const contentfulFetch = async (path, params = {}) => {
+  const { host, deliveryToken } = getContentfulConfig();
+  const apiHost = host || "cdn.contentful.com";
+  const query = new URLSearchParams({ ...params, access_token: deliveryToken });
+  const bases = [API_PROXY[apiHost], `https://${apiHost}`].filter(Boolean);
+
+  let lastError;
+  for (const base of bases) {
+    try {
+      const response = await fetch(`${base}${path}?${query}`);
+      // Sin proxy (p. ej. otro hosting) llega el index.html del SPA: probamos directo.
+      if (!(response.headers.get("content-type") || "").includes("json")) {
+        throw new Error(`Respuesta no JSON desde ${base} (${response.status})`);
+      }
+      return response;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
+};
+
+const proxyImageUrl = (url) => {
+  const match = url?.match(/^(?:https?:)?\/\/images\.ctfassets\.net(\/.*)$/);
+  return match ? `/cf-img${match[1]}` : url;
+};
+
 export const resolveAssetUrl = (asset) => {
   if (!asset) return null;
   if (Array.isArray(asset)) {
@@ -100,20 +137,18 @@ export const resolveAssetUrl = (asset) => {
     return null;
   }
   if (typeof asset === "string") {
-    return asset.startsWith("http") ? asset : `https:${asset}`;
+    return proxyImageUrl(asset.startsWith("http") ? asset : `https:${asset}`);
   }
 
   const url = asset?.fields?.file?.url;
   if (!url) return null;
-  return url.startsWith("http") ? url : `https:${url}`;
+  return proxyImageUrl(url.startsWith("http") ? url : `https:${url}`);
 };
 
 const normalizeAsset = (asset, locale) => {
   const file = getLocalizedValue(asset.fields?.file, locale);
   const url = file?.url
-    ? file.url.startsWith("//")
-      ? `https:${file.url}`
-      : file.url
+    ? proxyImageUrl(file.url.startsWith("//") ? `https:${file.url}` : file.url)
     : "";
 
   return {
@@ -217,29 +252,25 @@ export const loadContentfulPosts = async (options = {}) => {
   const limit = options.limit;
 
   const requestEntries = async ({ skipContentType } = {}) => {
-    const url = new URL(
-      `https://${host || "cdn.contentful.com"}/spaces/${spaceId}/environments/${environmentId}/entries`
-    );
+    const params = {
+      include,
+      locale,
+      // Ordenar por fecha de creación descendente
+      order: "-sys.createdAt",
+    };
 
     if (!skipContentType && contentType) {
-      url.searchParams.set("content_type", contentType);
+      params.content_type = contentType;
     }
-
-    url.searchParams.set("include", include);
-    url.searchParams.set("locale", locale);
-
-    // Ordenar por fecha de creación descendente
-    url.searchParams.set("order", "-sys.createdAt");
 
     if (limit) {
-      url.searchParams.set("limit", String(limit));
+      params.limit = String(limit);
     }
 
-    const response = await fetch(url.toString(), {
-      headers: {
-        Authorization: `Bearer ${deliveryToken}`,
-      },
-    });
+    const response = await contentfulFetch(
+      `/spaces/${spaceId}/environments/${environmentId}/entries`,
+      params
+    );
 
     let body;
     try {

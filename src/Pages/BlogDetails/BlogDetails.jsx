@@ -12,6 +12,7 @@ import {
   resolveAssetUrl,
   slugify,
   getContentfulConfig,
+  contentfulFetch,
   DEFAULT_FALLBACK_LOCALE,
 } from "../../utils/contentfulPosts";
 
@@ -99,11 +100,10 @@ const findBySlug = (list, targetSlug) => {
 // ------------------------------
 const fetchAssetUrlById = async (assetId) => {
   try {
-    const { spaceId, environmentId, deliveryToken, host } = getContentfulConfig();
+    const { spaceId, environmentId, deliveryToken } = getContentfulConfig();
     if (!spaceId || !environmentId || !deliveryToken || !assetId) return null;
-    const res = await fetch(
-      `https://${host || "cdn.contentful.com"}/spaces/${spaceId}/environments/${environmentId}/assets/${assetId}`,
-      { headers: { Authorization: `Bearer ${deliveryToken}` } }
+    const res = await contentfulFetch(
+      `/spaces/${spaceId}/environments/${environmentId}/assets/${assetId}`
     );
     if (!res.ok) return null;
     const json = await res.json();

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import defaultBlogImage from "../../assets/img/blog/bblog1.png";
 import {
   resolveAssetUrl,
   slugify,
   getContentfulConfig,
+  contentfulFetch,
 } from "../../utils/contentfulPosts";
 
 const Blog = ({ post, index = 0 }) => {
+  const { i18n } = useTranslation();
   const [currentId, setCurrentId] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(defaultBlogImage);
@@ -43,7 +46,7 @@ const Blog = ({ post, index = 0 }) => {
     "";
 
   const formattedDate = rawDate
-    ? new Date(rawDate).toLocaleDateString("es-ES", {
+    ? new Date(rawDate).toLocaleDateString(i18n.language === "es" ? "es-ES" : "en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -64,17 +67,12 @@ const Blog = ({ post, index = 0 }) => {
       // Si sigue siendo un Link sin fields, llamamos al endpoint de assets
       if (!resolvedUrl && rawImage?.sys?.id) {
         try {
-          const { spaceId, environmentId, deliveryToken, host } =
+          const { spaceId, environmentId, deliveryToken } =
             getContentfulConfig();
 
           if (spaceId && environmentId && deliveryToken) {
-            const res = await fetch(
-              `https://${host || "cdn.contentful.com"}/spaces/${spaceId}/environments/${environmentId}/assets/${rawImage.sys.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${deliveryToken}`,
-                },
-              }
+            const res = await contentfulFetch(
+              `/spaces/${spaceId}/environments/${environmentId}/assets/${rawImage.sys.id}`
             );
 
             if (res.ok) {

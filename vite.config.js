@@ -21,4 +21,12 @@ build: {
 preview: {
   historyApiFallback: true,
 },
+// Mismo reenvío a Contentful que netlify.toml, para desarrollo local.
+server: {
+  proxy: {
+    '/cf-api': { target: 'https://cdn.contentful.com', changeOrigin: true, rewrite: (p) => p.replace(/^\/cf-api/, '') },
+    '/cf-preview': { target: 'https://preview.contentful.com', changeOrigin: true, rewrite: (p) => p.replace(/^\/cf-preview/, '') },
+    '/cf-img': { target: 'https://images.ctfassets.net', changeOrigin: true, rewrite: (p) => p.replace(/^\/cf-img/, '') },
+  },
+},
 });

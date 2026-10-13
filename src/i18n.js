@@ -5,7 +5,14 @@ const getInitialLanguage = () => {
   const params = new URLSearchParams(window.location.search);
   
   // 1. Check localStorage for a saved language preference
-  const savedLang = localStorage.getItem('i18nextLng');
+  // Safari con el almacenamiento bloqueado (modo privado, "bloquear cookies")
+  // lanza un error al tocar localStorage; sin este try/catch la app no arrancaba.
+  let savedLang = null;
+  try {
+    savedLang = localStorage.getItem('i18nextLng');
+  } catch {
+    savedLang = null;
+  }
   if (savedLang) {
     return savedLang;
   }
@@ -81,6 +88,12 @@ const resources = {
       "webbuilds.mima.result": "Key contacts generated for international projects",
       "webbuilds.visit": "Visit site",
       "webbuilds.note": "This website is structured to publish blog posts with Contentful.",
+      "blogs.myBlogs": "My Blogs",
+      "blogs.recentPosts": "Recent Posts",
+      "blogs.clickForMoreBlogs": "Click for more blogs",
+      "blogs.loadingContentfulPosts": "Loading posts from Contentful...",
+      "blogs.contentfulError": "Posts from Contentful could not be loaded.",
+      "blogs.readMore": "Read more",
 
       "testimonial.subtitle": "Testimonial",
       "testimonial.heading.line1": "Happy Words From Happy",
@@ -1003,6 +1016,7 @@ const resources = {
  "webbuilds.mima.result": "Contactos clave generados para proyectos internacionales",
  "webbuilds.visit": "Visitar sitio",
  "webbuilds.note": "Este sitio está estructurado para publicar blogs con Contentful.",
+ "blogs.readMore": "Leer más",
 
  "footer.getInTouch": "Ponte en Contacto",
  "footer.contactIntro": "Hola, soy Raúl Ortega, Tecnólogo Creativo y Diseñador de Marca Digital con presencia global.",
