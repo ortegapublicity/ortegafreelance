@@ -409,3 +409,60 @@
   }
 }
 //>>>>> Header section <<<<<//
+
+// Escritorio: con 8 enlaces el menú no cabía y el bloque de acciones
+// (idioma, "Hablemos", menú lateral) saltaba a una segunda fila.
+@media (min-width: 992px) {
+  .header-wrapper {
+    flex-wrap: nowrap;
+    gap: clamp(8px, 1.2vw, 24px);
+
+    .main-menu {
+      flex: 1 1 auto;
+      justify-content: center;
+      min-width: 0;
+
+      li a {
+        padding: 40px clamp(8px, 1vw, 29px);
+        font-size: clamp(13px, 1.05vw, 18px);
+        white-space: nowrap;
+      }
+    }
+
+    .main__logo,
+    .menu__components {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+// Anchos intermedios: menú y botón más compactos para no pisar el logo.
+@media (min-width: 992px) and (max-width: 1399px) {
+  .header-wrapper {
+    .main-menu li a {
+      padding: 40px clamp(5px, 0.7vw, 10px);
+      font-size: 12.5px;
+    }
+    .menu__components {
+      gap: 10px;
+      .cmn--btn {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// El contenedor de Bootstrap (960px) no alberga 8 enlaces + acciones:
+// en anchos intermedios el encabezado usa todo el ancho disponible.
+@media (min-width: 992px) and (max-width: 1399px) {
+  .header-section > .container {
+    max-width: 100%;
+    padding-inline: 20px;
+  }
+}
+@media (min-width: 992px) and (max-width: 1119px) {
+  .header-wrapper .menu__components .get__btn {
+    display: none !important;
+  }
+}
