@@ -23,7 +23,16 @@
       "Bash(cat -n src/app/robots.js)",
       "Bash(cat -n src/app/sitemap.js)",
       "Bash(cat -n src/app/layout.jsx)",
-      "Bash(grep -n 'id=\"' src/app/page.jsx)"
+      "Bash(grep -n 'id=\"' src/app/page.jsx)",
+      "Bash(ls src/app/api)",
+      "Bash(grep -rn \"metadata\" src/app/api/checkout/route.js)",
+      "Bash(grep -rn \"metadata\" src/app/api/*/route.js)",
+      "Bash(sed -n '20,62p' src/app/api/webhooks/stripe/route.js)",
+      "Bash(sed -n '90,152p' src/app/api/webhooks/stripe/route.js)",
+      "Bash(sed -n '10,20p' src/app/api/meta-capi/route.js)",
+      "Bash(sed -n '599,670p' src/app/page.jsx)",
+      "Bash(sed -n '14,75p' src/app/page.jsx)",
+      "Bash(grep -n -A3 '^\\\\.ebook-card\\\\b\\\\|^\\\\.ebook-cover\\\\|^\\\\.ebook-info\\\\|^\\\\.ebook-buy\\\\|^\\\\.ebook-meta\\\\|^\\\\.ebooks-grid\\\\|^\\\\.ebook-badge\\\\|^\\\\.section\\\\b\\\\|^\\\\.section {\\\\|^\\\\.btn-primary\\\\b\\\\|^\\\\.btn {\\\\|^\\\\.success-wrap\\\\|^\\\\.success-card' src/app/globals.css)"
     ]
   }
 }
