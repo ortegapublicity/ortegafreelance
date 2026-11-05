@@ -20,9 +20,18 @@ import PaidMedia from "../Pages/PaidMedia/PaidMedia";
 import VideoEditing from "../Pages/VideoEditing/VideoEditing";
 // ✨ NUEVA IMPORTACIÓN: Componente para la pasarela de pagos
 import Checkout from "../Pages/Checkout/Checkout";
-import PaymentSuccess from "../Components/Success/PaymentSuccess"; 
+import PaymentSuccess from "../Components/Success/PaymentSuccess";
+import AdminBlog from "../Pages/AdminBlog/AdminBlog";
 
 export const router = createBrowserRouter([
+  // Fuera de Root a propósito: es una herramienta interna, no debe llevar
+  // el header/nav/footer del sitio público ni aparecer enlazada en ningún
+  // menú. No es autenticación real — solo ofuscación por URL + la frase
+  // secreta que exige la función (BLOG_ADMIN_SECRET).
+  {
+    path: "/admin-blog",
+    element: <AdminBlog />,
+  },
   {
     path: "/",
     element: <Root />,
