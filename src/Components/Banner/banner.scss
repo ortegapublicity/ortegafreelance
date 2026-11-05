@@ -330,3 +330,35 @@
     line-height: 1.08;
   }
 }
+
+// CTAs del hero: el principal agenda la videollamada, el secundario lleva a
+// los planes. En móvil van uno debajo del otro, a todo el ancho.
+.banner__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: -20px 0 40px;
+  .cmn--btn,
+  .banner__ghost {
+    text-align: center;
+  }
+  .banner__ghost {
+    padding: 19px 30px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 120%;
+    border: 1px solid var(--white);
+    border-radius: 5px;
+    color: var(--white);
+    transition: all 0.3s;
+    &:hover {
+      color: var(--base);
+      border-color: var(--base);
+    }
+  }
+  @media (min-width: 576px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}

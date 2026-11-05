@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { skillsMarquee, proofMarquee } from "../Utlits/marqueeItems";
 import WebBuilds from "../Components/WebBuilds/WebBuilds";
@@ -12,21 +12,10 @@ import Pricing from "../Components/Pricing/Pricing";
 import Blogs from "../Components/Blogs/Blogs";
 import MarqueeWapper from "../Components/Shared/Marquee/MarqueeWapper";
 import Awards from "../Components/About/Awards";
-import Preloader from "../Components/Shared/Preloader/Preloader";
-
 
 const Home = () => {
-  const [isFetching, setIsFetching] = useState(true);
-
-  useEffect(() => {
-    setTimeout(function () {
-      setIsFetching(false);
-    }, 1500);
-  }, []);
-
   return (
     <>
-      {isFetching && <Preloader />}
       <MarqueeWapper direction="left" items={skillsMarquee} />
       <About />
       <Services isHeading={true} />

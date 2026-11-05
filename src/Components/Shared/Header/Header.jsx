@@ -4,6 +4,7 @@ import { HashLink } from "react-router-hash-link";
 import { List, ArrowRight } from "react-bootstrap-icons";
 import i18n from "../../../i18n"; // Import i18n
 import { useTranslation } from "react-i18next";
+import { trackCta } from "../../../Utlits/track";
 
 import Drawer from "../Drawer/Drawer";
 import logo from "../../../assets/img/logo/logo.png";
@@ -155,15 +156,17 @@ const Header = () => {
                 {currentLanguage === 'en' ? '🇺🇸' : '🇪🇸'}
               </button>
             </div>
-            <Link
-              to="/contact"
+            <HashLink
+              smooth
+              to="/#agenda"
               className="d-flex fw-500 cmn--btn align-items-center gap-3 get__btn"
+              onClick={() => trackCta("book_call", "header")}
             >
-              <span className="get__text">{t('header.letsTalk')}</span>
+              <span className="get__text">{t('cta.bookCallShort')}</span>
               <span>
                 <ArrowRight className="fz-20" />
               </span>
-            </Link>
+            </HashLink>
             <div
               onClick={handleHeaderToggle}
               className={`header-bar d-lg-none ${menuActive ? "active" : ""}`}

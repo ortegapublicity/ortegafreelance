@@ -1,34 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {Envelope, GeoAlt} from "react-bootstrap-icons"
 import { useTranslation } from "react-i18next";
+import { listenCalendlyBookings } from "../../Utlits/track";
 
 const Metting = () => {
   const { t } = useTranslation();
+  useEffect(() => listenCalendlyBookings(), []);
   // Tu URL de Calendly, formateada para un embed simple
   const calendlyEmbedUrl = "https://calendly.com/ortegapublicity/meeting?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=0079ff";
 
   return (
-    <section className="project__metting overhid pt-120 pb-120">
+    <section id="agenda" className="project__metting overhid pt-120 pb-120">
       <div className="container">
         <div className="row g-4 align-items-center">
-          
+
           {/* Columna Izquierda: Información de Contacto */}
           <div className="col-lg-7">
             <div className="pro__metting__content">
               <div className="project__head">
-                <span
-                  className="common__sub"
-                  data-aos="fade-down"
-                  data-aos-duration="1000"
-                >
-                  {t("metting.needProject")}
-                </span>
                 <h2
                   className="fw-500"
                   data-aos="fade-down"
                   data-aos-duration="1600"
                 >
-                  {t("metting.scheduleMeeting")}
+                  <span className="d-block">{t("metting.title.line1")}</span>
+                  <span className="d-block">{t("metting.title.line2")}</span>
                 </h2>
               </div>
               

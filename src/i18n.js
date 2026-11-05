@@ -345,6 +345,11 @@ const resources = {
       "metting.scheduleMeeting": "Let's work together. schedule a meeting",
       "metting.emailLabel": "Email",
       "metting.locationLabel": "Location",
+      "metting.title.line1": "Book a video call",
+      "metting.title.line2": "and let's talk about your project",
+      "cta.bookCall": "Book a video call",
+      "cta.bookCallShort": "Book a call",
+      "cta.viewPlans": "See plans",
 
       "partner.title": "More than 20 companies have trusted me worldwide.",
       "header.home": "Home",
@@ -765,6 +770,11 @@ const resources = {
       "metting.scheduleMeeting": "Trabajemos juntos. agenda una reunión",
       "metting.emailLabel": "Correo",
       "metting.locationLabel": "Ubicación",
+      "metting.title.line1": "Agenda una videollamada",
+      "metting.title.line2": "y hablemos de tu proyecto",
+      "cta.bookCall": "Agenda una videollamada",
+      "cta.bookCallShort": "Agendar llamada",
+      "cta.viewPlans": "Ver planes",
 
       "form.heading": "Deja un mensaje",
       "form.note": "Tu correo no será publicado. Los campos obligatorios están marcados con *",
