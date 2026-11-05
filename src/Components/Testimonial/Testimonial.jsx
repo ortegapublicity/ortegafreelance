@@ -46,9 +46,6 @@ const Testimonial = () => {
     <section className="testimonial__section pt-120 pb-120" id="testimonial">
       <div className="container">
         <div className="project__head text-center">
-          <span className="common__sub" data-aos="fade-up" data-aos-duration="1000">
-            {t('testimonial.subtitle')}
-          </span>
           <h2 className="fw-500" data-aos="fade-down" data-aos-duration="1000">
             {t('testimonial.heading.line1')}
             <span className="d-block"> {t('testimonial.heading.line2')} </span>

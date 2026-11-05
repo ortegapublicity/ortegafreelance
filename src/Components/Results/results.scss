@@ -1,0 +1,59 @@
+@use "../../scss/abstracts/mixins" as *;
+
+// Resultados de clientes: fondo blanco, una cifra grande por caso y enlace
+// al caso completo. Móvil: una columna; tablet: dos; escritorio: cuatro.
+.results__section {
+  background: #ffffff;
+}
+.results__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 40px;
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.results__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 28px 24px;
+  border: 1px solid var(--cusborder);
+  border-radius: 10px;
+  color: var(--white);
+  transition: border-color 0.3s, transform 0.3s;
+  &:hover {
+    border-color: var(--base);
+    transform: translateY(-3px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.3s;
+    &:hover {
+      transform: none;
+    }
+  }
+}
+.results__figure {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--white);
+}
+.results__label {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--white);
+  flex: 1;
+}
+.results__client {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--blue);
+}

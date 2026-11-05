@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Service from "./Service";
 import Title from "../Shared/Title/Title";
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const serviceList = [
@@ -45,12 +46,20 @@ const serviceList = [
     linkTo: "/services/video-editing",
   },
 ];
-const Services = ({ isHeading }) => {
+// En la home (focus) solo se destacan los dos primeros —publicidad pagada y
+// desarrollo web—; el resto se ofrece como complemento en una línea.
+const FEATURED_COUNT = 2;
+
+const Services = ({ isHeading, focus }) => {
   const { t } = useTranslation();
 
+  // En la home no: pelearía con el scroll de los enlaces a /#agenda.
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (!focus) window.scrollTo(0, 0);
+  }, [focus]);
+
+  const featured = focus ? serviceList.slice(0, FEATURED_COUNT) : serviceList;
+  const complements = focus ? serviceList.slice(FEATURED_COUNT) : [];
 
   return (
     <>
@@ -68,7 +77,7 @@ const Services = ({ isHeading }) => {
           )}
 
           <div className={`service__uniquewrap `}>
-            {serviceList.map((service) => ( 
+            {featured.map((service) => (
               <Service
               key={service.id}
               id={service.id}
@@ -77,10 +86,22 @@ const Services = ({ isHeading }) => {
               subheading={t(service.subheadingKey)}
               para={t(service.paraKey)}
               // ✨ IMPORTANTE: Pasamos la nueva prop de enlace
-              linkTo={service.linkTo} 
+              linkTo={service.linkTo}
               />
             ))}
           </div>
+          {complements.length > 0 && (
+            <p className="service__complements">
+              {t("services.complements")}{" "}
+              {complements.map((service, i) => (
+                <React.Fragment key={service.id}>
+                  {i > 0 && (i === complements.length - 1 ? ` ${t("services.and")} ` : ", ")}
+                  <Link to={service.linkTo}>{t(service.headingKey)}</Link>
+                </React.Fragment>
+              ))}
+              .
+            </p>
+          )}
         </div>
       </section>
     </>

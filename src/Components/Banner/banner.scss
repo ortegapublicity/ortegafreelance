@@ -322,12 +322,19 @@
 //banner
 
 
-// Escritorio: el titular ("Trafficker y Desarrollador Web") es más largo
-// que el anterior; escala con el ancho para quedar en dos líneas.
+// El titular ("Tu publicidad y tu web, / en las mismas manos.") tiene una
+// primera línea de 23 caracteres: escala con el ancho para quedar en dos
+// líneas, también en un móvil de 360 px.
 @media (min-width: 992px) {
   .banner__content h1 {
-    font-size: clamp(56px, 6.2vw, 100px);
+    font-size: clamp(48px, 4.6vw, 84px);
     line-height: 1.08;
+  }
+}
+@media (max-width: 575px) {
+  .banner__content h1 {
+    font-size: clamp(26px, 7.4vw, 34px);
+    line-height: 1.15;
   }
 }
 
@@ -337,7 +344,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin: -20px 0 40px;
+  margin: 0 0 40px;
   .cmn--btn,
   .banner__ghost {
     text-align: center;
@@ -360,5 +367,17 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+  }
+}
+
+.banner__lead {
+  max-width: 560px;
+  margin: -20px 0 32px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--white);
+  @media (max-width: 575px) {
+    margin: -14px 0 24px;
+    font-size: 17px;
   }
 }

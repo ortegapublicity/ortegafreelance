@@ -67,18 +67,13 @@ const Banner = () => {
         <div className="row g-4">
           <div className="col-lg-8">
             <div className="banner__content">
-              <span className="bn__currently">
-                <span className="d-block">
-                  {t("banner.currentlyAvailable")}
-                </span>
-                <span className="d-block">{t("banner.worldwide")}</span>
-              </span>
               <h1>
-                <span className="hone"> {t("banner.creativeVisual")}</span>
-                <span className="d-block designers" data-text={t("banner.designer")}>
-                  {t("banner.designer")}
+                <span className="hone">{t("banner.headline.line1")}</span>
+                <span className="d-block designers" data-text={t("banner.headline.line2")}>
+                  {t("banner.headline.line2")}
                 </span>
               </h1>
+              <p className="banner__lead">{t("banner.lead")}</p>
               <div className="banner__actions">
                 <HashLink
                   smooth

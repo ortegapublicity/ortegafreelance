@@ -3,3 +3,21 @@
 .service__section {
   
 }
+
+// Línea de servicios complementarios bajo los dos destacados (home).
+.service__complements {
+  margin-top: 32px;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--white);
+  a {
+    color: var(--white);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    &:hover {
+      color: var(--base);
+    }
+  }
+}

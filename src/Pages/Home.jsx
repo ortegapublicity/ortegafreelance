@@ -1,26 +1,24 @@
 import React from "react";
 
-import { skillsMarquee, proofMarquee } from "../Utlits/marqueeItems";
-import WebBuilds from "../Components/WebBuilds/WebBuilds";
-import About from "../Components/About/About";
-import Projects from "../Components/Projects/Projects";
-import Metting from "../Components/Metting/Metting";
+import Results from "../Components/Results/Results";
 import Services from "../Components/Services/Services";
+import WebBuilds from "../Components/WebBuilds/WebBuilds";
+import Projects from "../Components/Projects/Projects";
 import WorkeProcess from "../Components/WorkeProcess/WorkeProcess";
 import Testimonial from "../Components/Testimonial/Testimonial";
 import Pricing from "../Components/Pricing/Pricing";
+import Metting from "../Components/Metting/Metting";
 import Blogs from "../Components/Blogs/Blogs";
-import MarqueeWapper from "../Components/Shared/Marquee/MarqueeWapper";
-import Awards from "../Components/About/Awards";
 
+// Orden pensado para convertir: lo que gana el cliente (hero y resultados),
+// qué hago, la prueba, cómo trabajo, precios y la llamada. El hero (Banner)
+// lo pinta Root solo en "/".
 const Home = () => {
   return (
     <>
-      <MarqueeWapper direction="left" items={skillsMarquee} />
-      <About />
-      <Services isHeading={true} />
+      <Results />
+      <Services isHeading={true} focus />
       <WebBuilds />
-      <MarqueeWapper direction="right" items={proofMarquee} />
       <Projects />
       <WorkeProcess />
       <Testimonial />
@@ -29,7 +27,6 @@ const Home = () => {
       </div>
       <Metting />
       <Blogs />
-      <Awards />
     </>
   );
 };
