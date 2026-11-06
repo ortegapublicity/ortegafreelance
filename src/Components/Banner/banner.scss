@@ -9,6 +9,15 @@
     position: relative;
     overflow: hidden;
     background-attachment: fixed;
+    // Safari de iPhone no soporta bien "fixed": estira la imagen a la altura
+    // de toda la página. En móvil y tablet el patrón va en mosaico a su
+    // tamaño natural, igual que en la sección de resultados que sigue.
+    @media (max-width: 991px) {
+        background-attachment: scroll;
+        background-repeat: repeat;
+        background-size: 1920px auto;
+        background-position: top center;
+    }
 }
 .banner__content{
     padding: 140px 0 180px;

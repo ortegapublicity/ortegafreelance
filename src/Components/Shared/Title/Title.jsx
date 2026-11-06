@@ -3,10 +3,12 @@ import React from "react";
 // sortTitle ya no se pinta: la convención del sitio es sin etiquetas
 // (eyebrow) sobre los titulares. Se acepta para no romper a quien lo pasa.
 // Los títulos de sección van en dos líneas: el texto las separa con "\n".
-const Title = ({ mainTitle = "" }) => {
+// animate={false} lo deja visible desde el principio (sin fade al hacer scroll).
+const Title = ({ mainTitle = "", animate = true }) => {
+  const aos = animate ? { "data-aos": "fade-up", "data-aos-duration": "1200" } : {};
   return (
     <div className="project__head text-center">
-      <h2 className="fw-500" data-aos="fade-up" data-aos-duration="1200">
+      <h2 className="fw-500" {...aos}>
         {mainTitle.split("\n").map((line) => (
           <span className="d-block" key={line}>
             {line}

@@ -19,7 +19,8 @@ const Results = () => {
   return (
     <section className="results__section pt-120 pb-120" id="results">
       <div className="container">
-        <Title mainTitle={t("results.title")} />
+        {/* El título se ve al instante; solo las cifras entran al hacer scroll. */}
+        <Title mainTitle={t("results.title")} animate={false} />
         <div className="results__grid">
           {resultList.map(({ id, key, linkTo }) => (
             <Link
