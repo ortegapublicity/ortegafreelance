@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { trackCta } from "../../Utlits/track";
 
 const Price = ({ image, planName, price, time, fetcher, id, description, result }) => {
   // Usamos el namespace por defecto "translation"
@@ -47,6 +48,7 @@ const Price = ({ image, planName, price, time, fetcher, id, description, result 
           to={"/checkout"}
           state={{ planName, price }}
           className="cmn--btn d-flex align-items-center justify-content-center gap-2 w-100"
+          onClick={() => trackCta("start_checkout", "pricing")}
         >
           <span>{t("price.button", { defaultValue: "Start Now" })}</span>
           <span><i className="bi bi-arrow-right fz-20"></i></span>

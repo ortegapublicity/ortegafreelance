@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { useTranslation } from "react-i18next";
+import { trackCta } from "../../Utlits/track";
 
 import {
   Facebook,
@@ -65,21 +67,31 @@ const Banner = () => {
         <div className="row g-4">
           <div className="col-lg-8">
             <div className="banner__content">
-              <Link to={""} className="bn__currently">
-                <span className="d-block">
-                  {t("banner.currentlyAvailable")}
-                </span>
-                <span className="d-flex gap-4 align-items-center">
-                  {t("banner.worldwide")}
-                  <i className="bi bi-arrow-up-right"></i>
-                </span>
-              </Link>
               <h1>
-                <span className="hone"> {t("banner.creativeVisual")}</span>
-                <span className="d-block designers" data-text={t("banner.designer")}>
-                  {t("banner.designer")}
+                <span className="hone">{t("banner.headline.line1")}</span>
+                <span className="d-block designers" data-text={t("banner.headline.line2")}>
+                  {t("banner.headline.line2")}
                 </span>
               </h1>
+              <p className="banner__lead">{t("banner.lead")}</p>
+              <div className="banner__actions">
+                <HashLink
+                  smooth
+                  to="/#agenda"
+                  className="cmn--btn"
+                  onClick={() => trackCta("book_call", "hero")}
+                >
+                  <span>{t("cta.bookCall")}</span>
+                </HashLink>
+                <HashLink
+                  smooth
+                  to="/#pricing"
+                  className="banner__ghost"
+                  onClick={() => trackCta("view_plans", "hero")}
+                >
+                  {t("cta.viewPlans")}
+                </HashLink>
+              </div>
               <div className="video__area">
                 <img src={bnArrow} className="vid__arrow" alt="img" />
                 <div onClick={openLightbox} className="video__80 video-btn">
@@ -105,10 +117,10 @@ const Banner = () => {
       </div>
       <div className="banner__leftinfo">
         <div className="left__infomobile">
-          <Link to={""}>
-            <img src={dial} alt="img" />
-          </Link>
-          <Link to={""}>(+58)-414-041-9317</Link>
+          <a href="tel:+584140419317">
+            <img src={dial} alt="" />
+          </a>
+          <a href="tel:+584140419317">(+58)-414-041-9317</a>
         </div>
         <div className="right__infoscroll">
           <Link className="scroll">

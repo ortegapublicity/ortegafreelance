@@ -66,19 +66,13 @@ const Blogs = () => {
           {/* COLUMNA IZQUIERDA: Títulos (y botón desktop) */}
           <div className="col-xl-4 col-lg-3">
             <div className="project__head">
-              <span
-                className="common__sub"
-                data-aos="fade-down"
-                data-aos-duration="1000"
-              >
-                {t("blogs.myBlogs", "My Blogs")}
-              </span>
               <h2
-                className="fw-500 mt-3"
+                className="fw-500"
                 data-aos="fade-down"
                 data-aos-duration="1500"
               >
-                {t("blogs.recentPosts", "Recent Posts")}
+                <span className="d-block">{t("blogs.title.line1")}</span>
+                <span className="d-block">{t("blogs.title.line2")}</span>
               </h2>
 
               {/* Botón solo para DESKTOP (se oculta en mobile) */}

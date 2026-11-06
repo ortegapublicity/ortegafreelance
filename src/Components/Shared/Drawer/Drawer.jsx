@@ -4,6 +4,8 @@ import logo from "../../../assets/img/logo/logo.png";
 import { useTranslation } from "react-i18next";
 import { socialIcons } from "../../../Utlits/socilIcons";
 import { Link } from "react-router-dom"; // Se mantiene para enlaces de navegación interna
+import { HashLink } from "react-router-hash-link";
+import { trackCta } from "../../../Utlits/track";
 
 const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
   const { t } = useTranslation();
@@ -63,19 +65,22 @@ const Drawer = ({ isSidebarActive, setIsSidebarActive }) => {
             ))}
           </ul>
         </div>
-        <a // 
-          href="https://calendly.com/ortegapublicity/meeting?back=1&month=2025-10" // va a Calendly
-          target="_blank"
-          rel="noopener noreferrer"
+        <HashLink
+          smooth
+          to="/#agenda"
           className="d-flex justify-content-center fw-500 cmn--btn align-items-center gap-2"
+          onClick={() => {
+            trackCta("book_call", "drawer");
+            setIsSidebarActive(false);
+          }}
         >
           <span>
             <i>
               <ChevronRight />
             </i>
           </span>
-          <span className="get__text">{t('header.letsTalk')}</span>
-        </a>
+          <span className="get__text">{t('cta.bookCall')}</span>
+        </HashLink>
       </div>
     </div>
   );
