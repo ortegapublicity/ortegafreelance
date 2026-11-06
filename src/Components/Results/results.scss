@@ -1,9 +1,14 @@
 @use "../../scss/abstracts/mixins" as *;
 
-// Resultados de clientes: fondo blanco, una cifra grande por caso y enlace
-// al caso completo. Móvil: una columna; tablet: dos; escritorio: cuatro.
+// Resultados de clientes: continúa el patrón de logos del hero, en mosaico a
+// su tamaño natural para que no se estire en ningún formato (iPhone incluido).
+// Una cifra grande por caso, sobre tarjeta blanca, con enlace al caso.
+// Móvil: una columna; tablet: dos; escritorio: cuatro.
 .results__section {
-  background: #ffffff;
+  background-image: url("/src/assets/img/banner/banner-bg.png");
+  background-repeat: repeat;
+  background-size: 1920px auto;
+  background-position: top center;
 }
 .results__grid {
   display: grid;
@@ -22,6 +27,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 28px 24px;
+  background: #ffffff;
   border: 1px solid var(--cusborder);
   border-radius: 10px;
   color: var(--white);
