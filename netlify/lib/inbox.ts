@@ -71,7 +71,11 @@ export const formatAddress = (a: Address) => (a.name ? `${a.name} <${a.email}>` 
 
 export const ownAddress = (box: Mailbox): Address => ({ name: MAILBOXES[box].shared ? ORG : `${MAILBOXES[box].name} · ${ORG}`, email: `${box}@${MAIL_DOMAIN}` });
 
-/** A qué buzones va un correo recibido. Lo que llega a una dirección que no existe va al buzón comodín (CATCH_ALL). */
+/**
+ * A qué buzones va un correo recibido. Lo dirigido a una dirección de este dominio que no
+ * existe va al buzón comodín. El webhook de Resend avisa de todo lo que entra en la cuenta,
+ * también de otros dominios: si nada va a este dominio, no va a ningún buzón.
+ */
 export const routeTo = (addresses: Address[]): Mailbox[] => {
   const out = new Set<Mailbox>();
   for (const { email } of addresses) {
@@ -80,7 +84,6 @@ export const routeTo = (addresses: Address[]): Mailbox[] => {
     const box = local.split('+')[0];
     out.add(box in MAILBOXES ? (box as Mailbox) : CATCH_ALL);
   }
-  if (!out.size) out.add(CATCH_ALL);
   return [...out];
 };
 
