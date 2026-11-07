@@ -3,8 +3,26 @@ import "./AdminBlog.scss";
 
 const SECRET_STORAGE_KEY = "admin_blog_secret";
 
+// Netlify devuelve una página HTML cuando la función pasa de tiempo; sin esto
+// la pantalla mostraba «Unexpected token '<'» en vez de un error legible.
+async function readJson(response) {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      error:
+        response.status === 504 || response.status === 502
+          ? "La función tardó demasiado. Inténtalo de nuevo en un momento."
+          : `Respuesta inesperada del servidor (${response.status}).`,
+    };
+  }
+}
+
 const AdminBlog = () => {
   const [secret, setSecret] = useState("");
+  const [mode, setMode] = useState("social"); // social | claude
+  const [articleJson, setArticleJson] = useState("");
   const [postText, setPostText] = useState("");
   const [postUrl, setPostUrl] = useState("");
   const [sourcePlatform, setSourcePlatform] = useState("linkedin");
@@ -39,25 +57,39 @@ const AdminBlog = () => {
     setResult(null);
 
     try {
-      const response = await fetch("/api/generate-article", {
+      let endpoint = "/api/generate-article";
+      let body = { postText, postUrl, sourcePlatform };
+
+      if (mode === "claude") {
+        endpoint = "/api/blog-draft";
+        try {
+          body = JSON.parse(articleJson);
+        } catch {
+          throw new Error("El texto pegado no es un JSON válido. Copia el bloque completo que te dio Claude.");
+        }
+      }
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           "x-admin-secret": secret,
         },
-        body: JSON.stringify({ postText, postUrl, sourcePlatform }),
+        body: JSON.stringify(body),
       });
 
-      const data = await response.json();
+      const data = await readJson(response);
 
-      if (!response.ok) {
-        throw new Error(data?.error || `Error ${response.status}`);
+      if (!response.ok || data?.ok === false) {
+        const details = Array.isArray(data?.details) ? ` ${data.details.join(" ")}` : "";
+        throw new Error((data?.error || `Error ${response.status}`) + details);
       }
 
       setResult(data);
       setStatus("success");
       setPostText("");
       setPostUrl("");
+      setArticleJson("");
     } catch (error) {
       setErrorMessage(error.message || "Error desconocido.");
       setStatus("error");
@@ -68,13 +100,43 @@ const AdminBlog = () => {
     <div className="admin-blog">
       <div className="admin-blog__container">
         <h1>Generar artículo de blog</h1>
-        <p className="admin-blog__intro">
-          Pega el texto de un post de LinkedIn o Instagram con el que
-          interactuaste. La IA escribirá un artículo original desde tu
-          perspectiva, citando 1 o 2 de tus casos de estudio reales, y lo
-          dejará como <strong>borrador</strong> en Contentful — no se publica
-          solo.
-        </p>
+
+        <div className="admin-blog__tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "social"}
+            className={mode === "social" ? "is-active" : ""}
+            onClick={() => setMode("social")}
+          >
+            Desde un post de redes
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "claude"}
+            className={mode === "claude" ? "is-active" : ""}
+            onClick={() => setMode("claude")}
+          >
+            Pegar artículo de Claude
+          </button>
+        </div>
+
+        {mode === "social" ? (
+          <p className="admin-blog__intro">
+            Pega el texto de un post de LinkedIn o Instagram con el que
+            interactuaste. La IA escribirá un artículo original desde tu
+            perspectiva, citando 1 o 2 de tus casos de estudio reales, y lo
+            dejará como <strong>borrador</strong> en Contentful — no se
+            publica solo.
+          </p>
+        ) : (
+          <p className="admin-blog__intro">
+            Pega el JSON que te dio Claude Code con <code>/bitacora</code>. Se
+            crea tal cual como <strong>borrador</strong> en Contentful, sin
+            pasar por otra IA.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="admin-blog__form">
           <label>
@@ -88,6 +150,20 @@ const AdminBlog = () => {
             />
           </label>
 
+          {mode === "claude" ? (
+            <label>
+              Artículo (JSON)
+              <textarea
+                value={articleJson}
+                onChange={(e) => setArticleJson(e.target.value)}
+                required
+                rows={14}
+                spellCheck={false}
+                placeholder='{ "title": "...", "excerpt": "...", "body": [ ... ] }'
+              />
+            </label>
+          ) : (
+          <>
           <label>
             Plataforma de origen
             <select
@@ -121,9 +197,13 @@ const AdminBlog = () => {
               placeholder="Pega aquí el texto completo del post..."
             />
           </label>
+          </>
+          )}
 
           <button type="submit" disabled={status === "loading"}>
-            {status === "loading" ? "Generando..." : "Generar borrador"}
+            {status === "loading"
+              ? mode === "claude" ? "Creando..." : "Generando..."
+              : mode === "claude" ? "Crear borrador" : "Generar borrador"}
           </button>
         </form>
 
@@ -137,10 +217,17 @@ const AdminBlog = () => {
           <div className="admin-blog__alert admin-blog__alert--success">
             <h2>{result.title}</h2>
             <p>{result.excerpt}</p>
-            <p>
-              <strong>Casos citados:</strong>{" "}
-              {result.citedCaseStudies?.join(", ")}
-            </p>
+            {result.citedCaseStudies?.length > 0 && (
+              <p>
+                <strong>Casos citados:</strong>{" "}
+                {result.citedCaseStudies.join(", ")}
+              </p>
+            )}
+            {result.toc?.length > 0 && (
+              <p>
+                <strong>Índice:</strong> {result.toc.join(" · ")}
+              </p>
+            )}
             <a
               href={result.contentful?.editUrl}
               target="_blank"

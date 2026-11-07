@@ -147,6 +147,33 @@ Orden:
 - Hay más detalle en `~/Downloads/handoff-generador-articulos.md`, si existe
   en esta máquina.
 
+### 7b. Bitácora: posts escritos por Claude Code, sin API ni otra IA
+
+Para convertir el trabajo de cada sesión (webs de clientes, integraciones…)
+en un post con la voz de Raúl. **Lo escribe la propia sesión de Claude Code**
+con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
+
+- Disparador: el usuario escribe **`/bitacora`** (o «publica esto en el
+  blog») en cualquier repo. El skill está en `.claude/skills/bitacora/` y
+  enlazado en `~/.claude/skills/bitacora` para que funcione fuera de este repo.
+  En el repo del cliente **solo lee**; todo se escribe aquí.
+- Forma y voz: `.claude/docs/plantilla-blog.md` (modelo: el post de NEXO LAB
+  del 13-10-2026). Los títulos de sección forman el «Índice del artículo» con
+  anclas que pinta `BlogDetails.jsx`.
+- Flujo: JSON en `.claude/blog/borradores/` (en `.gitignore`: el repo es
+  público) → `node .claude/scripts/blog-borrador.mjs <json> --dry-run` → sin
+  `--dry-run` lo envía a **`/api/blog-draft`** (`netlify/functions/blog-draft.js`),
+  que no usa IA y crea el **borrador** en Contentful. Nunca publica.
+- Reglas compartidas local/servidor: `netlify/functions/lib/articleDraft.js`.
+- Autenticación: `BLOG_ADMIN_SECRET`. El script la lee del **Llavero de macOS**
+  (servicio `ortegafreelance-blog-admin`) y nunca la muestra. El usuario la
+  guarda una vez con
+  `security add-generic-password -a "$USER" -s ortegafreelance-blog-admin -w`.
+  En otra máquina sin Llavero: pegar el JSON en `/admin-blog` → pestaña
+  «Pegar artículo de Claude».
+- Permiso de clientes: se nombra solo a los de `src/data/caseStudies.js` o ya
+  publicados en el blog; si no, borrador anónimo y se pregunta.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,
@@ -206,7 +233,9 @@ El plan de Hostinger del usuario aloja otros sitios: **no cancelarlo**.
 
 ## 12. Pendientes
 
-1. Arreglar el tiempo de espera del generador (§7).
+1. Arreglar el tiempo de espera del generador (§7). El parseo seguro en
+   `AdminBlog.jsx` ya está (PR de la bitácora); quedan Flash, reintentos y
+   *background*. La bitácora (§7b) no depende de esto.
 2. Crear en GTM la etiqueta `add_payment_info` y publicar el contenedor.
 3. Página de gracias tras PayPal para medir `purchase` real.
 4. Medición de 14 días a partir del 2026-11-21 (§5).

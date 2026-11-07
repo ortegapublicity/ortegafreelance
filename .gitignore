@@ -56,3 +56,7 @@ Thumbs.db
 
 # Local Netlify folder
 .netlify
+
+# Borradores del skill /bitacora: pueden llevar datos de clientes aún sin
+# permiso de publicación y este repo es público. Viven solo en local.
+.claude/blog/
