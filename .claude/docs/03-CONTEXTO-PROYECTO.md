@@ -182,14 +182,27 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
      commits nuevos no llama a Claude.
   2. Llama a `claude -p --tools ""`: sin herramientas, solo texto, desde
      `/tmp`. Usa la sesión claude.ai del usuario (plan Pro), sin API key.
-  3. Valida el JSON, pide una corrección si hace falta y lo envía como
-     borrador. Máximo un post por noche; si no hay material, «ESPERAR».
-  4. Avisa con una notificación de macOS. Registro en
-     `~/Library/Logs/bitacora-nocturna.log`.
+  3. Valida el JSON, pide una corrección si hace falta, genera las portadas
+     y lo envía como borrador. Máximo un post por noche; si no hay material,
+     «ESPERAR».
+  4. Avisa con una notificación de macOS que dice dónde están las imágenes.
+     Registro en `~/Library/Logs/bitacora-nocturna.log`.
   - Probar: `node .claude/scripts/bitacora-nocturna.mjs --force --dry-run`.
   - Pausar: `launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora`.
   - Si sale «401 / no coincide»: la frase del Llavero es distinta a la de
     Netlify; el usuario la vuelve a guardar con `-U`.
+- **Portadas ES y EN** (1680×945, estilo del arte de NEXO LAB): el JSON del
+  borrador lleva `cover` (título en inglés, 3–5 pasos con icono, tecnologías)
+  y `node .claude/scripts/portada-blog.mjs <borrador.json>` las exporta con
+  Chrome headless desde `.claude/scripts/portada-blog.html`.
+  - Salida: `contenido-blog/<borrador>/portada-es.jpg`, `portada-en.jpg` y
+    `LEEME.txt` (con el enlace de Contentful). Fuera de git.
+  - **`contenido-blog/INDICE.md`** lista cada borrador con su enlace de
+    Contentful y el de su carpeta de imágenes. Al entregar un borrador, dar
+    **siempre** el enlace `file://` de la carpeta de imágenes.
+  - Raúl sube las portadas a mano como imagen destacada.
+- Contentful: `contentful-management` v12 solo tiene la API «plain»
+  (`client.entry.create`…); `client.getSpace()` ya no existe (PR #12).
 
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
@@ -202,6 +215,11 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 bloquean `.env.example`.
 
 ## 9. Trampas de esta máquina
+
+- **Cada deploy de producción cuesta 15 créditos de Netlify** (29 deploys se
+  comieron 435 de 476 créditos en un periodo). `netlify.toml` tiene un
+  `ignore`: si el commit solo cambia `.claude/`, `*.md` o `contenido-blog/`,
+  Netlify cancela la build. Agrupa los cambios de código en menos PRs.
 
 - **El repo está en iCloud** (`~/Documents`):
   - Si un `node`/`vite` se cuelga sin usar CPU, iCloud desalojó
