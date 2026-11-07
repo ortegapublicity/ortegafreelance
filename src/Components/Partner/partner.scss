@@ -2,25 +2,51 @@
 .sponsor__area {
   .sponsor__title {
     text-align: center;
-    margin: 0 auto 60px;
+    margin: 0 auto 48px;
   }
   @include breakpoint(max-xxl) {
     margin: 0 auto 40px;
   }
-  .swiper-wrapper {
-    justify-content: space-between;
-  }
 }
-.sponsor__slide {
-  text-align: center;
-  position: relative;
-  img {
-    transition: all 0.4s;
-  }
-  &:hover {
-    img {
-      filter: brightness(2);
-    }
+
+// Cuadrícula de logos: 2 columnas en móvil, 4 desde tablet.
+.sponsor__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px 24px;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 44px 40px;
   }
 }
 
+.sponsor__slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  // Caja común: los logos anchos quedan limitados por el ancho y los
+  // cuadrados (Todxs) por el alto, así todos pesan parecido a la vista.
+  img {
+    display: block;
+    width: 100%;
+    max-width: 150px;
+    height: 34px;
+    object-fit: contain;
+    // Silueta uniforme: todos los logos en el mismo tono gris oscuro.
+    filter: brightness(0);
+    opacity: 0.55;
+    transition: opacity 0.3s;
+    @media (min-width: 768px) {
+      max-width: 180px;
+      height: 42px;
+    }
+  }
+  &:hover img {
+    opacity: 0.9;
+  }
+}

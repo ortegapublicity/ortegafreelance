@@ -54,6 +54,13 @@ const ClientTodxsWeb = () => {
             <p>{k("start.p1")}</p>
             <p>{k("start.p2")}</p>
           </div>
+
+          {/* Respalda la cifra «+$6.000» de la home (Results.jsx), que antes
+              enlazaba a la página vieja de Todxs Podemos Ser. */}
+          <div className="caseweb__text" id="antes">
+            <h2>{k("before.title")}</h2>
+            <p>{k("before.p")}</p>
+          </div>
         </div>
       </section>
 

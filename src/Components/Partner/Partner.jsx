@@ -1,75 +1,46 @@
 import React from "react";
-import partner1 from "../../assets/img/testimonial/partner1.png";
-import partner2 from "../../assets/img/testimonial/partner2.png";
-import partner3 from "../../assets/img/testimonial/partner3.png";
-import partner4 from "../../assets/img/testimonial/partner4.png";
-
-import { Swiper, SwiperSlide } from "swiper/react";
 import { useTranslation } from "react-i18next";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import paisita from "../../assets/img/clients/paisita.png";
+import nexolab from "../../assets/img/clients/nexolab.png";
+import lights from "../../assets/img/clients/lights.png";
+import brandtop from "../../assets/img/clients/brandtop.png";
+import nfAutoparts from "../../assets/img/clients/nfautoparts.png";
+import javitoyz from "../../assets/img/clients/javitoyz.png";
+import reyAntiguedades from "../../assets/img/clients/reyantiguedades.png";
+import todxs from "../../assets/img/clients/todxs.png";
 
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
-
-const partnerList = [
-  {
-    id: 1,
-    image: partner1,
-  },
-  {
-    id: 2,
-    image: partner2,
-  },
-  {
-    id: 3,
-    image: partner3,
-  },
-  {
-    id: 4,
-    image: partner4,
-  },
-  {
-    id: 5,
-    image: partner1,
-  },
+// Logos de clientes reales. Se pintan todos como silueta del mismo tono
+// (ver partner.scss) para que la franja se lea uniforme sobre blanco: el de
+// Nexolab, por ejemplo, tiene letras blancas pensadas para fondo oscuro.
+// Antes era un carrusel de 5 por fila que en el móvil dejaba los logos
+// diminutos; ahora es una cuadrícula (2 columnas en móvil, 4 en escritorio).
+const clients = [
+  { name: "El Paisita", logo: paisita },
+  { name: "NEXO LAB", logo: nexolab },
+  { name: "Lights English Academy", logo: lights },
+  { name: "Brandtop", logo: brandtop },
+  { name: "NF Autoparts", logo: nfAutoparts },
+  { name: "JaviToyz", logo: javitoyz },
+  { name: "Rey Antigüedades", logo: reyAntiguedades },
+  { name: "Todxs Podemos Ser", logo: todxs },
 ];
+
 const Partner = () => {
   const { t } = useTranslation();
   return (
-    <>
-      <div className="sponsor__area pt-120">
-        <h4
-          className="sponsor__title"
-          data-aos="fade-down"
-          data-aos-duration="1000"
-        >
-          {t("partner.title")}
-        </h4>
-        <div className="swiper sponsor__wrap">
-          <Swiper
-            spaceBetween={50}
-            slidesPerView={5}
-            loop={true}
-            modules={[Pagination, Autoplay, Navigation]}
-          >
-            {partnerList.map(({ id, image }) => {
-              return (
-                <SwiperSlide key={id}>
-                  <div className="swiper-wrapper">
-                    <div key={id} className="sponsor__slide swiper-slide">
-                      <img src={image} alt="img" />
-                    </div>
-                  </div>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </div>
-      </div>
-    </>
+    <div className="sponsor__area pt-120">
+      <h4 className="sponsor__title" data-aos="fade-down" data-aos-duration="1000">
+        {t("partner.title")}
+      </h4>
+      <ul className="sponsor__grid">
+        {clients.map(({ name, logo }) => (
+          <li key={name} className="sponsor__slide">
+            <img src={logo} alt={name} loading="lazy" />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
