@@ -60,3 +60,5 @@ Thumbs.db
 # Borradores del skill /bitacora: pueden llevar datos de clientes aún sin
 # permiso de publicación y este repo es público. Viven solo en local.
 .claude/blog/
+# Portadas de la bitácora (se suben a mano a Contentful).
+contenido-blog/

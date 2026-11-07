@@ -1,5 +1,11 @@
 [build]
   publish = "dist"
+  # Cada deploy de producción cuesta 15 créditos. Si un commit solo cambia
+  # documentación o configuración de agentes (.claude/, *.md, contenido-blog/),
+  # Netlify cancela la build: «git diff --quiet» sale con 0 cuando no hay más
+  # cambios. Ojo: la web en vivo no cambia con esos commits, a propósito.
+  # Sin build anterior con la que comparar, construye siempre.
+  ignore = "[ -n \"$CACHED_COMMIT_REF\" ] && [ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude).claude' ':(exclude)contenido-blog' ':(exclude)*.md'"
 
 [functions]
   directory = "netlify/functions"

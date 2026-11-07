@@ -69,13 +69,24 @@ $BLOG_REPO/.claude/blog/borradores/AAAA-MM-DD-<slug-corto>.json
 (Esa carpeta está en `.gitignore`: el repo es público y el borrador aún no
 está aprobado.) Recorre el autochequeo de la plantilla y corrige antes de seguir.
 
-## 5. Valida y envía
+## 5. Portadas, validación y envío
+
+Incluye en el JSON el objeto `cover` (sección «Portada» de la plantilla).
 
 ```bash
 cd "$BLOG_REPO"
 node .claude/scripts/blog-borrador.mjs .claude/blog/borradores/<archivo>.json --dry-run
+node .claude/scripts/portada-blog.mjs .claude/blog/borradores/<archivo>.json
 node .claude/scripts/blog-borrador.mjs .claude/blog/borradores/<archivo>.json
 ```
+
+- El segundo genera `portada-es.jpg` y `portada-en.jpg` en
+  `contenido-blog/<archivo>/` e imprime «Imágenes: file://…». Mira las dos
+  imágenes (Read) antes de seguir: si un texto se sale o se pisa, acorta las
+  etiquetas y repite.
+- Después de enviar, añade el enlace de Contentful al `LEEME.txt` de esa
+  carpeta y una línea a `contenido-blog/INDICE.md`:
+  `- AAAA-MM-DD · título · enlace Contentful · file://carpeta`
 
 - El primero valida y muestra el índice. Si falla, corrige el JSON.
 - El segundo crea el **borrador** en Contentful. Nunca publica.
@@ -94,9 +105,11 @@ Responde corto:
 
 - Título y el índice (los títulos de sección).
 - Enlace «Revisar y publicar» de Contentful que devolvió el script.
+- **Siempre** el enlace a la carpeta de imágenes (`file://…/contenido-blog/<archivo>`),
+  con los nombres `portada-es.jpg` y `portada-en.jpg`.
 - Si el cliente fue anónimo: la pregunta de permiso para nombrarlo.
-- Recordatorio: publicar es un clic de Raúl en Contentful (añadir imagen
-  destacada si la plantilla del post la usa).
+- Recordatorio: publicar es un clic de Raúl en Contentful, después de subir
+  la portada como imagen destacada.
 
 No publiques, no hagas commit del borrador y no lo compartas fuera.
 
@@ -104,7 +117,7 @@ No publiques, no hagas commit del borrador y no lo compartas fuera.
 
 Cada noche a las 23:00 `.claude/scripts/bitacora-nocturna.mjs` hace este mismo
 trabajo sin conversación: arma el resumen del `git log`, se lo pasa a
-`claude -p` sin herramientas con esta plantilla y envía el borrador. Si Raúl
-pregunta por un borrador nocturno, mira `~/Library/Logs/bitacora-nocturna.log`
-y `.claude/blog/borradores/`. Detalle en `03-CONTEXTO-PROYECTO.md` §7b.
-
+`claude -p` sin herramientas con esta plantilla, genera las portadas y envía
+el borrador. Si Raúl pregunta por un borrador nocturno, mira
+`contenido-blog/INDICE.md`, `~/Library/Logs/bitacora-nocturna.log` y
+`.claude/blog/borradores/`. Detalle en `03-CONTEXTO-PROYECTO.md` §7b.

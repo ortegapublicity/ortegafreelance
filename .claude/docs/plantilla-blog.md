@@ -82,7 +82,16 @@
     { "type": "quote", "text": "Opcional" },
     { "type": "heading", "level": 3, "text": "Conclusión" },
     { "type": "paragraph", "text": "…" }
-  ]
+  ],
+  "cover": {
+    "title_en": "English title",
+    "steps": [
+      { "icon": "correo", "es": "RECIBIR", "en": "RECEIVE" },
+      { "icon": "archivo", "es": "ARCHIVAR", "en": "ARCHIVE" },
+      { "icon": "check", "es": "RESPONDER", "en": "REPLY" }
+    ],
+    "chips": [{ "step": 1, "text": "Resend" }]
+  }
 }
 ```
 
@@ -99,3 +108,26 @@ el servidor).
 - [ ] Sección de medición
 - [ ] Sin cifras inventadas, sin datos privados, sin emojis, sin CTA de venta
 - [ ] 500–900 palabras
+- [ ] `cover` con título en inglés, 3–5 pasos y las tecnologías reales
+
+## Portada (ES y EN)
+
+Cada post lleva dos portadas de 1680×945 con el estilo del arte de NEXO LAB:
+escena azul marino a la izquierda con **la ruta del proceso** que cuenta el
+post (nodos numerados con icono y etiqueta) y panel turquesa a la derecha con
+el título. Una en español y otra en inglés.
+
+- Plantilla: `.claude/scripts/portada-blog.html`. Generador:
+  `node .claude/scripts/portada-blog.mjs <borrador.json>`.
+- Datos en `cover`: `title_en`; `steps` de 3 a 5 pasos `{icon, es, en}`
+  (etiquetas de 14 caracteres como máximo, en mayúsculas o no, da igual);
+  `chips` de 0 a 3 tecnologías `{step, text}` (12 caracteres como máximo).
+- Iconos: anuncio, pagina, pago, descarga, correo, calendario, grafico,
+  codigo, movil, rayo, escudo, archivo, usuario, buscar, carrito, editar,
+  check.
+- Los pasos son el recorrido del lector o del dato (anuncio → ficha → pago →
+  descarga), no la lista de tareas. Verbos o sustantivos cortos.
+- Salida: `contenido-blog/<borrador>/portada-es.jpg`, `portada-en.jpg` y
+  `LEEME.txt` con el enlace de Contentful. Raúl las sube a mano como imagen
+  destacada. `contenido-blog/INDICE.md` lista todos los borradores con su
+  enlace de Contentful y el de su carpeta de imágenes.

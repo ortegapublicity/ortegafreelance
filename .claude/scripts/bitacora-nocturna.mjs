@@ -22,11 +22,12 @@
 // Registro: ~/Library/Logs/bitacora-nocturna.log
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { validateArticleDraft, draftSummary } from "../../netlify/functions/lib/articleDraft.js";
+import { ICONS, renderCovers, validateCover } from "./portada-blog.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const STATE = join(BLOG_REPO, ".claude/blog"); // en .gitignore: el repo es público
@@ -35,6 +36,7 @@ const ACTIVITY = join(STATE, "actividad");
 const STAMP_DRAFT = join(STATE, "ultimo-borrador");
 const STAMP_RUN = join(STATE, "ultima-ejecucion");
 const SCAN_ROOT = join(homedir(), "Documents");
+const INDEX = join(BLOG_REPO, "contenido-blog/INDICE.md"); // fuera de git: enlaces de cada borrador
 
 // Repos que nunca se leen: el clon viejo y roto de la web, y la base de leads.
 const EXCLUDE = new Set([
@@ -184,7 +186,8 @@ ${activity}
 ESPERAR: <motivo en una frase>
 - Si hay material, responde con una primera línea
 CLIENTE: <nombrado|anonimo|propio> · <proyecto>
-y después el artículo como un único bloque \`\`\`json con title, excerpt y body, según el formato de la plantilla. Nada más.
+y después el artículo como un único bloque \`\`\`json con title, excerpt, body y cover, según el formato de la plantilla. Nada más.
+- "cover" son los datos de la portada (ver la sección Portada de la plantilla): title_en (el título en inglés), steps (3 a 5 pasos del proceso que cuenta el post, cada uno con icon, es y en, etiquetas de 14 caracteres como máximo) y chips (0 a 3 tecnologías reales, con step y text de 12 caracteres como máximo). Iconos permitidos: ${ICONS.join(", ")}.
 - No inventes cifras, resultados ni testimonios: si el historial no los trae, di qué se va a medir.
 - Nunca incluyas nombres de variables de entorno, claves, correos, teléfonos, IDs, rutas de paneles internos ni nombres de repos.`;
 }
@@ -229,6 +232,23 @@ function parseReply(text) {
   }
 }
 
+function checkAll(article) {
+  const a = article ? validateArticleDraft(article) : { ok: false, errors: ["No llegó el artículo."] };
+  const coverErrors = article ? validateCover(article.cover) : [];
+  const errors = [...(a.ok ? [] : a.errors), ...coverErrors];
+  return errors.length ? { ok: false, errors } : { ok: true, article: { ...a.article, cover: article.cover } };
+}
+
+function addToIndex(line) {
+  try {
+    mkdirSync(dirname(INDEX), { recursive: true });
+    if (!existsSync(INDEX)) writeFileSync(INDEX, "# Borradores de la bitácora\n\nFecha · título · Contentful · imágenes\n\n");
+    appendFileSync(INDEX, line + "\n");
+  } catch (e) {
+    log("No pude actualizar el índice:", e.message);
+  }
+}
+
 function slugify(s) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50) || "post";
@@ -260,7 +280,7 @@ async function main() {
     return;
   }
 
-  let check = parsed.article ? validateArticleDraft(parsed.article) : { ok: false, errors: [parsed.error] };
+  let check = parsed.article ? checkAll(parsed.article) : { ok: false, errors: [parsed.error] };
   if (!check.ok) {
     log("Primera versión rechazada, pido corrección:", check.errors.join(" | "));
     ({ text } = runClaude(
@@ -268,7 +288,7 @@ async function main() {
       sessionId
     ));
     parsed = parseReply(text);
-    check = parsed.article ? validateArticleDraft(parsed.article) : { ok: false, errors: [parsed.error] };
+    check = parsed.article ? checkAll(parsed.article) : { ok: false, errors: [parsed.error] };
   }
   if (!check.ok) {
     log("El artículo no pasó la validación tras la corrección:", check.errors.join(" | "));
@@ -283,6 +303,16 @@ async function main() {
   const { words, toc } = draftSummary(article);
   log(`Borrador guardado: ${file} (${words} palabras, ${toc.length} secciones, cliente: ${parsed.client || "?"})`);
 
+  // Portadas ES/EN. Si fallan, el borrador se envía igual y se avisa.
+  let imagesUrl = "";
+  try {
+    const { outDir } = renderCovers(file);
+    imagesUrl = pathToFileURL(outDir).href;
+    log(`Imágenes: ${imagesUrl}`);
+  } catch (e) {
+    log("No se pudieron generar las portadas:", e.message);
+  }
+
   if (dryRun) {
     log("--dry-run: no se envía a Contentful.");
     return;
@@ -296,13 +326,23 @@ async function main() {
   if (send.status !== 0) {
     const why = send.status === 77 ? "falta la frase en el Llavero" : send.status === 1 && /401/.test(output) ? "la frase del Llavero no coincide con la de Netlify" : "error al enviar";
     notify("Bitácora", `Artículo escrito pero no enviado: ${why}. Está en .claude/blog/borradores.`);
+    addToIndex(`- ${today} · ${article.title} · NO ENVIADO (${why}) · ${imagesUrl || "sin imágenes"}`);
     process.exitCode = 1;
     return;
   }
 
   writeFileSync(STAMP_DRAFT, new Date().toISOString());
+  const editUrl = (output.match(/Revisar y publicar: (\S+)/) || [])[1] || "";
+  if (imagesUrl) {
+    try {
+      appendFileSync(join(fileURLToPath(imagesUrl), "LEEME.txt"), `Contentful: ${editUrl}\n`);
+    } catch {}
+  }
+  addToIndex(`- ${today} · ${article.title} · ${editUrl} · ${imagesUrl || "sin imágenes"}`);
+  log(`Índice: ${pathToFileURL(INDEX).href}`);
   const anon = /anonimo/i.test(parsed.client) ? " Cliente sin nombre: decide si lo nombras." : "";
-  notify("Bitácora: borrador listo", `${article.title}.${anon}`);
+  const where = imagesUrl ? ` Imágenes: contenido-blog/${basename(fileURLToPath(imagesUrl))}` : " Sin portadas (mira el registro).";
+  notify("Bitácora: borrador listo", `${article.title}.${where}${anon}`);
 }
 
 main().catch((e) => {
