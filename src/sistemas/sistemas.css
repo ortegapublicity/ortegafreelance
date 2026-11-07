@@ -1,0 +1,138 @@
+/* Panel /sistemas/: correo @ortegafreelance.com. Hoja propia, fuera del SCSS
+   de la web: esta página no carga React ni Bootstrap. Colores de la marca
+   (src/scss/abstracts/variables.scss): azul tinta #1e2a47 y turquesa #26d1c4. */
+:root {
+  --ink: #1e2a47;
+  --accent: #26d1c4;
+  --accent-soft: #e3f8f6;
+  --blue: #4a6fa5;
+  --muted: #5f6b7a;
+  --line: #e0e0e0;
+  --soft: #f4f6fa;
+  --white: #ffffff;
+  --danger: #ed5050;
+  --body: 'Inter', system-ui, sans-serif;
+  --display: 'Inter', system-ui, sans-serif;
+  --gutter: 16px;
+  --shadow: 0 1px 2px rgb(30 42 71 / 6%), 0 12px 32px -12px rgb(30 42 71 / 22%);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; color: var(--ink); font: 400 1rem/1.55 var(--body); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--blue); }
+h1, h2 { font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.muted { color: var(--muted); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
+  min-height: 46px; padding: 0.7em 1.3em; border: 1px solid var(--accent); border-radius: 5px;
+  background: var(--accent); color: var(--ink); font: 600 0.98rem/1 var(--body); text-decoration: none; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.btn.ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn.ghost:hover { border-color: var(--ink); background: var(--ink); color: var(--white); }
+
+.field { display: grid; gap: 6px; }
+.field input, .field textarea, .field select { width: 100%; padding: 10px 14px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: var(--white); color: var(--ink); }
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.sys { background: var(--white); }
+.sys [hidden] { display: none !important; }
+.sys .field { margin: 0; font-weight: 700; font-size: 0.92rem; }
+.sys .field input, .sys .field textarea, .sys .field select { font-weight: 400; min-height: 46px; }
+.sys .field small { font-weight: 400; color: var(--muted); }
+.sys-stack { display: grid; gap: 14px; }
+.sys-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.sys-small { font-size: 0.875rem; }
+.sys .btn.sys-sm { min-height: 38px; padding: 0 1em; font-size: 0.88rem; }
+.sys .btn.sys-block { width: 100%; }
+.sys-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 800 1rem/1 var(--display); letter-spacing: -0.01em; color: var(--ink); }
+
+.sys-login { min-height: 100dvh; display: grid; place-items: center; padding: 24px var(--gutter); background: var(--soft); }
+.sys-login-card { width: min(100%, 420px); display: grid; gap: 22px; padding: 32px 26px; background: var(--white); border-radius: 12px; box-shadow: var(--shadow); }
+.sys-login h1 { font-size: clamp(1.35rem, 6.2vw, 2rem); margin: 0; }
+.sys-login h1 span { display: block; }
+.sys-login h1 span + span { color: var(--blue); }
+
+.sys-app { height: 100dvh; display: grid; grid-template: 'top top top' 64px 'nav list read' 1fr / 230px minmax(300px, 380px) 1fr; }
+.sys-top { grid-area: top; display: flex; align-items: center; gap: 14px; padding: 0 18px; border-bottom: 1px solid var(--line); }
+.sys-tag { padding: 4px 10px; border-radius: 999px; background: var(--soft); font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+.sys-search { width: 100%; max-width: 420px; min-height: 40px; margin-left: auto; padding: 8px 14px; border: 2px solid transparent; border-radius: 999px; background: var(--soft); font: inherit; font-size: 0.92rem; color: var(--ink); }
+.sys-search:focus { outline: none; border-color: var(--accent); }
+.sys-me { font-size: 0.88rem; color: var(--muted); white-space: nowrap; }
+.sys-icon { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--soft); font-size: 1.05rem; cursor: pointer; flex: none; color: var(--ink); }
+.sys-only-m { display: none; }
+
+.sys-nav { grid-area: nav; display: flex; flex-direction: column; gap: 18px; padding: 18px 14px; border-right: 1px solid var(--line); overflow: auto; }
+.sys-boxes, .sys-folders { display: grid; gap: 2px; }
+.sys-boxes button, .sys-folders button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 9px 12px; border: 0; border-radius: 10px; background: transparent; font: 600 0.92rem/1.2 var(--body); color: var(--ink); text-align: left; cursor: pointer; }
+.sys-boxes button small { display: block; font-weight: 400; color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+.sys-boxes button:hover, .sys-folders button:hover { background: var(--soft); }
+.sys-boxes button[aria-current='true'], .sys-folders button[aria-current='true'] { background: var(--accent-soft); color: var(--ink); }
+.sys-badge { min-width: 22px; padding: 2px 7px; border-radius: 999px; background: var(--accent); color: var(--ink); font-size: 0.75rem; font-weight: 800; text-align: center; }
+.sys-folders { padding-top: 14px; border-top: 1px solid var(--line); }
+.sys-foot { margin: auto 0 0; font-size: 0.78rem; }
+
+.sys-list { grid-area: list; display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+.sys-list-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.sys-list ul { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+.sys-list li button { display: grid; gap: 3px; width: 100%; padding: 12px 16px; border: 0; border-bottom: 1px solid var(--line); background: var(--white); text-align: left; font: 400 0.9rem/1.35 var(--body); color: var(--ink); cursor: pointer; }
+.sys-list li button:hover { background: var(--soft); }
+.sys-list li button[aria-current='true'] { background: var(--accent-soft); }
+.sys-list .l1 { display: flex; justify-content: space-between; gap: 10px; }
+.sys-list .who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sys-list .when { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
+.sys-list .subj, .sys-list .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sys-list .snip { color: var(--muted); font-size: 0.84rem; }
+.sys-list .unread .who, .sys-list .unread .subj { font-weight: 800; }
+.sys-list .unread .who::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
+.sys-list .none { padding: 28px 16px; color: var(--muted); font-size: 0.9rem; }
+
+.sys-read { grid-area: read; overflow: auto; padding: 22px clamp(18px, 3vw, 40px); }
+.sys-empty { height: 100%; display: grid; place-content: center; text-align: center; }
+.sys-empty p { margin: 2px 0; }
+.sys-read-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+.sys-spacer { flex: 1; }
+.sys-read h2 { font-size: 1.6rem; margin: 0 0 10px; overflow-wrap: anywhere; }
+.sys-meta { display: grid; gap: 2px; font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; }
+.sys-meta b { color: var(--ink); }
+.sys-warn, .sys-images { padding: 10px 14px; border-radius: 12px; font-size: 0.86rem; margin-bottom: 12px; }
+.sys-warn { background: #fff4d6; color: #7a5600; }
+.sys-images { background: var(--soft); }
+.sys-images button { border: 0; background: none; color: var(--blue); font-weight: 700; cursor: pointer; padding: 0; }
+.sys-read iframe { width: 100%; min-height: 200px; border: 0; display: block; }
+.sys-atts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.sys-atts a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--soft); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+
+.sys-compose { width: min(100% - 24px, 720px); max-height: calc(100dvh - 24px); overflow: auto; padding: 24px 22px; border: 0; border-radius: 12px; box-shadow: 0 30px 80px -20px rgb(30 42 71 / 45%); color: var(--ink); }
+.sys-compose::backdrop { background: rgb(30 42 71 / 45%); backdrop-filter: blur(3px); }
+.sys-compose h2 { font-size: 1.4rem; margin: 0; }
+.sys-sig { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); font: 400 0.82rem/1.5 var(--body); color: var(--muted); white-space: pre-wrap; }
+
+.toast { position: fixed; left: 50%; bottom: 18px; z-index: 1000; transform: translate(-50%, 20px); opacity: 0; width: max-content; max-width: calc(100% - 32px); padding: 14px 18px; border-radius: 16px; background: var(--ink); color: var(--white); font-weight: 600; box-shadow: var(--shadow); pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.err { background: var(--danger); }
+
+@media (max-width: 900px) {
+  .sys-app { grid-template: 'top' 60px 'main' 1fr / 1fr; }
+  .sys-only-m { display: inline-block; }
+  .sys-tag, .sys-me { display: none; }
+  .sys-search { max-width: none; min-width: 0; }
+  .sys-top { gap: 10px; padding: 0 12px; }
+  .sys-top .sys-brand span + span { display: none; }
+  .sys-nav { grid-area: main; position: fixed; inset: 60px 0 0; z-index: 50; background: var(--white); transform: translateX(-100%); transition: transform 0.2s ease; }
+  .sys-app.nav-open .sys-nav { transform: none; }
+  .sys-list, .sys-read { grid-area: main; border: 0; }
+  .sys-app:not(.reading) .sys-read { display: none; }
+  .sys-app.reading .sys-list { display: none; }
+}
+
+/* La firma se ve como llegará: HTML, no texto plano. */
+.sys-sig { white-space: normal; background: var(--white); border: 1px dashed var(--line); }
+.sys-brand img { width: 132px; height: auto; }
+@media (max-width: 900px) { .sys-top .sys-brand img { width: 104px; } }
