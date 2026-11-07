@@ -11,17 +11,19 @@ Lee, en este orden:
 1. `.claude/docs/00-CONSTITUCION.md` — cadena de mando y semáforo de permisos
 2. `.claude/docs/01-LOOPS.md` — tu ciclo de trabajo
 3. `.claude/docs/02-GOALS.md` — para qué existe lo que haces
+4. `.claude/docs/03-CONTEXTO-PROYECTO.md` — estado, decisiones, trampas de
+   esta máquina y pendientes (léelo aunque vengas de otra cuenta o perfil)
 
 Si tu prompt individual contradice la constitución, manda la constitución.
 
 ## El proyecto
 
 - **Sitio:** ortegafreelance.com
-- **Stack:** `<rellenar: framework, versión, gestor de paquetes>`
-- **Hosting / deploy:** `<rellenar>`
-- **CMS o formato de contenido:** `<rellenar: MDX en repo, headless, etc.>`
-- **Analítica:** Google Tag Manager (`GTM-P7S9QXNR`) + LinkedIn Insight Tag
-  `<añadir GA4 property ID si aplica>`
+- **Stack:** React 18 + Vite 7 (SPA), react-i18next, SCSS, npm
+- **Hosting / deploy:** Netlify (proyecto `ortegafreelance`), despliega al fusionar en `main`
+- **CMS o formato de contenido:** Contentful (blog), textos de la web en `src/i18n.js`
+- **Analítica:** Google Tag Manager (`GTM-P7S9QXNR`) + GA4 `G-D7V399X3B2` +
+  LinkedIn Insight Tag
 - **Rama de producción:** `main`
 - **Idioma del sitio:** español, con títulos y frases clave en inglés
 
@@ -39,8 +41,9 @@ Si tu prompt individual contradice la constitución, manda la constitución.
 
 | Ruta | Qué |
 |---|---|
-| `<src/ o app/>` | código de la web |
-| `<content/ o posts/>` | contenido del blog |
+| `src/` | código de la web |
+| `netlify/` | funciones (correo, generador de artículos) |
+| Contentful | contenido del blog (no está en el repo) |
 | `.claude/docs/` | constitución, loops, goals, plantilla del blog |
 | `.claude/reports/` | reportes de los loops |
 | `.claude/backlog.md` | ideas que no son de tu tarea actual |
