@@ -17,6 +17,30 @@
     margin-bottom: 8px;
   }
 
+  &__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 12px;
+
+    button {
+      flex: 1 1 200px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #b5b5b5;
+      font: inherit;
+      cursor: pointer;
+
+      &.is-active {
+        background: #f2f2f2;
+        border-color: #f2f2f2;
+        color: #0f0f10;
+      }
+    }
+  }
+
   &__intro {
     color: #b5b5b5;
     margin-bottom: 32px;
