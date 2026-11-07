@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Bitácora nocturna (ver .claude/docs/03-CONTEXTO-PROYECTO.md §7b).
+  Instalar: copiar a ~/Library/LaunchAgents/ cambiando las rutas de /Users/raulortega si
+  el usuario es otro, y luego
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist
+  Quitar:
+    launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora
+  Si el Mac está dormido a la hora, launchd la ejecuta al despertar.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ortegafreelance.bitacora</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/opt/node@20/bin/node</string>
+    <string>/Users/raulortega/Documents/ortegafreelance-web/.claude/scripts/bitacora-nocturna.mjs</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/raulortega/Documents/ortegafreelance-web</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/opt/node@20/bin:/Users/raulortega/.local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>23</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/raulortega/Library/Logs/bitacora-nocturna.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/raulortega/Library/Logs/bitacora-nocturna.log</string>
+</dict>
+</plist>
