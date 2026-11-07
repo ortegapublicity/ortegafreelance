@@ -320,16 +320,6 @@ const resources = {
       "illustrationdesign.faq.q3": "Can you animate my illustrations?",
       "illustrationdesign.faq.a3": "Yes, static or motion graphics can be developed, adding movement and emotion to your visual storytelling.",
 
-      "awards.title": "Milestones",
-      "awards.viewMyWork": "View My Work",
-      "awards.award1.awardName": "NF Autoparts",
-      "awards.award1.contest": "$30k + Monthly Sales",
-      "awards.award2.awardName": "Todxs Podemos Ser",
-      "awards.award2.contest": "$6k+ financed by ONG's",
-      "awards.award3.awardName": "JaviToyz",
-      "awards.award3.contest": "10k+ Sales w/ services",
-      "awards.award4.awardName": "Rey Antigüedades",
-      "awards.award4.contest": "10k+ Followers on Instagram",
 
       "banner.currentlyAvailable": "Currently available for freelance",
       "banner.worldwide": "worldwide",
@@ -737,16 +727,6 @@ const resources = {
       "illustrationdesign.faq.q3": "¿Puedes animar mis ilustraciones?",
       "illustrationdesign.faq.a3": "Sí, se pueden desarrollar gráficos estáticos o en movimiento, agregando movimiento y emoción a tu narración visual.",
 
-      "awards.title": "Hitos",
-      "awards.viewMyWork": "Ver mi trabajo",
-      "awards.award1.awardName": "NF Autoparts",
-      "awards.award1.contest": "Más de $30mil Ventas Mensuales",
-      "awards.award2.awardName": "Todxs Podemos Ser",
-      "awards.award2.contest": "Más de $6mil financiados por ONG's",
-      "awards.award3.awardName": "JaviToyz",
-      "awards.award3.contest": "Más de $10mil Ventas con servicios",
-      "awards.award4.awardName": "Rey Antigüedades",
-      "awards.award4.contest": "10mil seguidores en Instagram",
 
       "banner.currentlyAvailable": "Actualmente disponible para freelance",
       "banner.worldwide": "en todo el mundo",
