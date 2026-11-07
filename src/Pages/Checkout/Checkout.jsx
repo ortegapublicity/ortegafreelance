@@ -43,15 +43,20 @@ const Checkout = () => {
   // Selecciona el link basado en el precio final. Si no coincide, usa el de 1050 por seguridad.
   const currentPaypalLink = paypalLinks[finalPrice] || paypalLinks[1050];
 
-  // Tracking
+  // Tracking: evento de comercio electrónico estándar de GA4. Se dispara al
+  // pulsar "pagar", que abre PayPal o el BNC en otra pestaña: es intención de
+  // pago, no pago confirmado, por eso no se envía como `purchase`.
   const trackPurchaseEvent = () => {
     window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
     window.dataLayer.push({
-      'event': 'purchase_completed',
-      'transactionValue': finalPrice,
-      'transactionCurrency': 'USD',
-      'productName': selectedPlanName,
-      'paymentMethod': selectedPaymentMethod
+      event: 'add_payment_info',
+      ecommerce: {
+        currency: 'USD',
+        value: finalPrice,
+        payment_type: selectedPaymentMethod,
+        items: [{ item_name: selectedPlanName, price: finalPrice, quantity: 1 }],
+      },
     });
   };
 

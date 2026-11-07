@@ -89,7 +89,6 @@ const About = () => {
           </div>
         </div>
       </section>
-      {/* <Awards /> */}
     </>
   );
 };
