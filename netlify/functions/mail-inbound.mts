@@ -57,6 +57,8 @@ export default handle(async (req) => {
     const to = parseList(mail.to);
     const cc = parseList(mail.cc ?? []);
     const recipients = [...to, ...cc, ...parseList(mail.bcc ?? []), ...parseList(mail.received_for ?? [])];
+    const mailboxes = routeTo(recipients);
+    if (!mailboxes.length) return json({ ok: true, ignored: 'otro_dominio' });
     const id = newId('m');
     const attachments: MailAttachment[] = (mail.attachments ?? [])
       // Las imágenes incrustadas ya vienen dentro del HTML.
@@ -83,7 +85,7 @@ export default handle(async (req) => {
       id,
       resendId,
       direction: 'in',
-      mailboxes: routeTo(recipients),
+      mailboxes,
       from: parseAddress(mail.headers?.from ?? mail.from) ?? parseAddress(mail.from) ?? { name: '', email: mail.from },
       to,
       cc,
