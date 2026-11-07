@@ -10,7 +10,7 @@ const resultList = [
   { id: "nf", key: "results.nf", linkTo: "/client-nfautoparts" },
   { id: "rey", key: "results.rey", linkTo: "/client-reyantiguedades" },
   { id: "javi", key: "results.javi", linkTo: "/client-javitoyz" },
-  { id: "tps", key: "results.tps", linkTo: "/client-todxspodemosser" },
+  { id: "tps", key: "results.tps", linkTo: "/client-todxspodemosser-web" },
 ];
 
 const Results = () => {

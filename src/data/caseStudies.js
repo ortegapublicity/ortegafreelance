@@ -149,7 +149,7 @@ export const caseStudies = [
     date: "2020-08-01",
     category: "Presencia Digital",
     location: "Carabobo, Venezuela",
-    url: "/client-todxspodemosser",
+    url: "/client-todxspodemosser-web",
     tags: [
       "comunidad",
       "impacto social",

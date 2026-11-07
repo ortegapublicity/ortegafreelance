@@ -215,6 +215,24 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - Como es una SPA, **todas las rutas** (blog incluido) comparten esta
   vista previa. Una por post exigiría una Edge Function.
 
+### 7d. Casos de estudio y logos de clientes
+
+- Todas las páginas de caso usan la estética de «Todxs Podemos Ser · Web»:
+  componente `src/Components/Shared/CaseStudy/CaseStudy.jsx` + estilos
+  `.caseweb` en `src/Pages/ClientTodxsWeb/clientTodxsWeb.scss`. Cada página
+  (`ClientBrandtop`, `ClientLightsEnglishAcademy`, `ClientNfAutoparts`,
+  `ClientReyAntiguedades`, `ProtfolioDetails` = JaviToyz) solo pasa su
+  configuración; los textos siguen en `src/i18n.js`. Caso nuevo → copiar una
+  de esas páginas.
+- La página vieja de Todxs Podemos Ser (2020) se retiró: `/client-todxspodemosser`
+  redirige al caso web, y su cifra «+$6.000 de ONG» se respalda en el bloque
+  «Antes de esta web» de ese caso.
+- La home elige sus proyectos por ruta (`HOME_ROUTES` en `Projects.jsx`), no
+  por posición en `projectList`.
+- Franja «Más de 20 empresas…» (`Components/Partner`): logos limpios en
+  `src/assets/img/clients/`, pintados como silueta gris (filtro CSS). Para
+  añadir uno: PNG con fondo transparente, recortado al borde.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,

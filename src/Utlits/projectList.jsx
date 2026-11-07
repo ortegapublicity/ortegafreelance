@@ -1,6 +1,5 @@
 import pro1 from "../assets/img/project/pro1.png";
 import pro2 from "../assets/img/project/pro2.png";
-import pro3 from "../assets/img/project/pro3.png";
 import pro4 from "../assets/img/project/pro4.png";
 import pro5 from "../assets/img/project/pro5.png";
 import pro6 from "../assets/img/project/pro6.png";
@@ -15,14 +14,6 @@ export const projectList = [
       subHeading: "projects.listjavi",
       category:["branding", "website", "all"],
       routeList: "/client-javitoyz",
-    },
-    {
-      id: 2,
-      image: pro3,
-      heading: "Todxs Podemos Ser",
-      subHeading: "projects.listtodxspodemosser",
-      category:["Digital_Marketing", "website", "all"],
-      routeList: "/client-todxspodemosser",
     },
     {
       id: 3,
@@ -67,4 +58,4 @@ export const projectList = [
   ];
 
 
-  export const imagesList = [pro1, pro3, pro5, pro2, pro4, pro6, proTpsWeb]
+  export const imagesList = [pro1, pro5, pro2, pro4, pro6, proTpsWeb]

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Root from "../Layouts/Root";
 import Home from "../Pages/Home";
 import AllServices from "../Pages/AllServices";
@@ -10,7 +10,6 @@ import Protfolio from "../Pages/Protfolio/Protfolio";
 import ProtfolioDetails from "../Pages/ProtfolioDetails/ProtfolioDetails";
 import ClientReyAntiguedades from "../Pages/ClientReyAntiguedades/ClientReyAntiguedades";
 import ClientNfAutoparts from "../Pages/ClientNfAutoparts/ClientNfAutoparts";
-import ClientTodxsPodemosSer from "../Pages/ClientTodxsPodemosSer/ClientTodxsPodemosSer";
 import ClientTodxsWeb from "../Pages/ClientTodxsWeb/ClientTodxsWeb";
 import ClientBrandtop from "../Pages/ClientBrandtop/ClientBrandtop";
 import ClientLightsEnglishAdacemy from "../Pages/ClientLightsEnglishAcademy/ClientLightsEnglishAcademy";
@@ -110,7 +109,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/client-todxspodemosser",
-        element: <ClientTodxsPodemosSer/>,
+        // La página vieja se retiró: sus enlaces llevan al caso nuevo.
+        element: <Navigate to="/client-todxspodemosser-web" replace />,
       },
       {
         path: "/client-todxspodemosser-web",

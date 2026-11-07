@@ -7,6 +7,8 @@ import ProjectCard from "../Shared/ProjectCard/ProjectCard";
 import { imagesList, projectList } from "../../Utlits/projectList";
 import { Link } from "react-router-dom";
 
+const HOME_ROUTES = ["/client-todxspodemosser-web", "/client-nfautoparts"];
+
 const Projects = () => {
   const [currentId, setCurrentId] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -26,16 +28,17 @@ const Projects = () => {
           sortTitle={t("projects.sortTitle")}
         />
         <div className=" project__wrapone">
-          {/* En la home: el caso más reciente (la web nueva de TPS) y NF Autoparts. */}
-          {[projectList[6], projectList[3]].map(
-            ({ heading, id, image, subHeading, routeList }, index) => (
+          {/* En la home: el caso más reciente (la web nueva de TPS) y NF Autoparts.
+              Se buscan por ruta, no por posición: la lista puede cambiar de orden. */}
+          {HOME_ROUTES.map((route) => projectList.find((p) => p.routeList === route)).filter(Boolean).map(
+            ({ heading, id, image, subHeading, routeList }) => (
               <ProjectCard
                 key={id}
                 image={image}
                 heading={heading}
                 subHeading={subHeading}
                 openLightbox={openLightbox}
-                index={index}
+                index={projectList.findIndex((p) => p.id === id)}
                 navigate={routeList}
               />
             )
