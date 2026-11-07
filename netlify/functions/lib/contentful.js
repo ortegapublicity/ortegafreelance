@@ -20,26 +20,30 @@ export async function createDraftBlogEntry({ title, richTextBody }) {
     );
   }
 
-  const client = createClient({
-    accessToken: managementToken,
-  });
-
-  const space = await client.getSpace(spaceId);
-  const environment = await space.getEnvironment(environmentId);
+  // contentful-management v12: createClient() devuelve directamente la API
+  // "plain" (client.entry.create…), ya no existe client.getSpace(). Con la
+  // API antigua la función fallaba con «client.getSpace is not a function».
+  const client = createClient(
+    { accessToken: managementToken },
+    { defaults: { spaceId, environmentId } }
+  );
 
   // El content type tiene localización activada (ver Content model). Escribimos
   // en el locale por defecto del espacio para no romper la validación de
   // Contentful, que exige un valor en ese locale como mínimo.
-  const locales = await environment.getLocales();
+  const locales = await client.locale.getMany({});
   const defaultLocale =
     locales.items.find((l) => l.default)?.code || "en-US";
 
-  const entry = await environment.createEntry(contentTypeId, {
-    fields: {
-      title: { [defaultLocale]: title },
-      body: { [defaultLocale]: richTextBody },
-    },
-  });
+  const entry = await client.entry.create(
+    { contentTypeId },
+    {
+      fields: {
+        title: { [defaultLocale]: title },
+        body: { [defaultLocale]: richTextBody },
+      },
+    }
+  );
 
   return {
     entryId: entry.sys.id,
