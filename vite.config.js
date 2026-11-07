@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import { fileURLToPath } from 'node:url'
 // const path = require('path')
 
 // https://vitejs.dev/config/
@@ -16,7 +17,16 @@ export default defineConfig({
   optimizeDeps: {
     include: ['contentful'],
   },
-build: {   
+// Dos páginas: la web (SPA de React) y el panel de correo /sistemas/, que es
+// HTML y TypeScript sin React. Netlify sirve dist/sistemas/index.html antes
+// de la regla del SPA porque el archivo existe.
+build: {
+  rollupOptions: {
+    input: {
+      main: fileURLToPath(new URL('./index.html', import.meta.url)),
+      sistemas: fileURLToPath(new URL('./sistemas/index.html', import.meta.url)),
+    },
+  },
 },
 preview: {
   historyApiFallback: true,

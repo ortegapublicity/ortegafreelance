@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sistemas · Ortega Freelance</title>
+    <link rel="icon" href="/src/assets/img/logo/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <!-- Panel de correo: buzones @ortegafreelance.com. Página aparte de la SPA,
+       sin GTM ni LinkedIn: aquí no se mide nada. Escritorio primero; en el
+       móvil se usa columna a columna. -->
+  <body class="sys">
+    <!-- Acceso -->
+    <main class="sys-login" data-login hidden>
+      <div class="sys-login-card">
+        <a class="sys-brand" href="/"><img src="/src/assets/img/logo/logo.png" alt="Ortega Freelance" width="132" height="32" /></a>
+        <h1><span>Tu correo</span><span>@ortegafreelance.com</span></h1>
+        <form class="sys-stack" data-step="email">
+          <label class="field">Tu correo personal<input name="email" type="email" autocomplete="email" required /></label>
+          <button class="btn sys-block" type="submit">Enviarme un código</button>
+          <p class="sys-small muted" style="margin:0">Solo para el equipo. El código llega a tu correo personal, no al buzón @ortegafreelance.com.</p>
+        </form>
+        <form class="sys-stack" data-step="code" hidden>
+          <label class="field">Código de 6 dígitos<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required /></label>
+          <button class="btn sys-block" type="submit">Entrar</button>
+          <button class="btn ghost sys-block" type="button" data-back>Usar otro correo</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- Panel -->
+    <div class="sys-app" data-app hidden>
+      <header class="sys-top">
+        <button class="sys-icon sys-only-m" type="button" data-nav-toggle aria-label="Buzones">☰</button>
+        <a class="sys-brand" href="/"><img src="/src/assets/img/logo/logo.png" alt="Ortega Freelance" width="132" height="32" /></a>
+        <span class="sys-tag">Sistemas</span>
+        <input class="sys-search" type="search" placeholder="Buscar en este buzón" data-search />
+        <span class="sys-me" data-me></span>
+        <button class="btn ghost sys-sm" type="button" data-logout>Salir</button>
+      </header>
+
+      <nav class="sys-nav" data-nav>
+        <button class="btn sys-block" type="button" data-compose>Redactar</button>
+        <div class="sys-boxes" data-boxes></div>
+        <div class="sys-folders" data-folders>
+          <button type="button" data-folder="in">Recibidos</button>
+          <button type="button" data-folder="sent">Enviados</button>
+          <button type="button" data-folder="trash">Papelera</button>
+        </div>
+        <p class="sys-foot muted">Cada correo queda guardado aquí, con sus adjuntos.</p>
+      </nav>
+
+      <section class="sys-list" data-list-pane>
+        <div class="sys-list-head"><b data-list-title>Recibidos</b><button class="sys-icon" type="button" data-refresh aria-label="Actualizar">↻</button></div>
+        <ul data-list></ul>
+      </section>
+
+      <section class="sys-read" data-read-pane>
+        <div class="sys-empty" data-empty>
+          <p><b>Selecciona un correo</b></p>
+          <p class="sys-small muted">o escribe uno nuevo con «Redactar».</p>
+        </div>
+        <article data-message hidden>
+          <div class="sys-read-actions">
+            <button class="sys-icon sys-only-m" type="button" data-back-list aria-label="Volver">←</button>
+            <button class="btn sys-sm" type="button" data-act="responder">Responder</button>
+            <button class="btn ghost sys-sm" type="button" data-act="todos">Responder a todos</button>
+            <button class="btn ghost sys-sm" type="button" data-act="reenviar">Reenviar</button>
+            <span class="sys-spacer"></span>
+            <button class="btn ghost sys-sm" type="button" data-act="unread">No leído</button>
+            <button class="btn ghost sys-sm" type="button" data-act="trash">Papelera</button>
+          </div>
+          <h2 data-subject></h2>
+          <div class="sys-meta" data-meta></div>
+          <div class="sys-warn" data-auth-warn hidden></div>
+          <div class="sys-images" data-images hidden>Imágenes externas ocultas para proteger tu privacidad. <button type="button" data-show-images>Mostrarlas</button></div>
+          <iframe data-frame title="Contenido del correo" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+          <div class="sys-atts" data-atts></div>
+        </article>
+      </section>
+    </div>
+
+    <!-- Redactar -->
+    <dialog class="sys-compose" data-compose-dialog>
+      <form class="sys-stack" data-compose-form>
+        <div class="sys-row" style="justify-content:space-between"><h2 data-compose-title>Nuevo correo</h2><button class="sys-icon" type="button" data-compose-close aria-label="Cerrar">×</button></div>
+        <label class="field">De<select name="de" data-from></select></label>
+        <label class="field">Para<input name="para" type="text" placeholder="nombre@correo.com, otra@correo.com" required /></label>
+        <label class="field">Cc <small>(opcional)</small><input name="cc" type="text" /></label>
+        <label class="field">Asunto<input name="asunto" maxlength="200" /></label>
+        <label class="field">Mensaje<textarea name="cuerpo" rows="10"></textarea></label>
+        <pre class="sys-sig" data-sig></pre>
+        <label class="field">Adjuntos <small>(hasta 4 MB en total)</small><input name="files" type="file" multiple /></label>
+        <p class="sys-small muted" data-ref-note hidden style="margin:0"></p>
+        <div class="sys-row"><button class="btn" type="submit">Enviar</button><button class="btn ghost" type="button" data-compose-close>Descartar</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/sistemas/inbox.ts"></script>
+  </body>
+</html>
