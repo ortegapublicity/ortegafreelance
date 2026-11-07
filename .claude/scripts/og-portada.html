@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Imagen para compartir</title>
+<!--
+  Imagen de vista previa (og:image) de ortegafreelance.com: la que muestran
+  WhatsApp, LinkedIn, Facebook… al compartir el enlace. 1200×630.
+  Regenerar:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+      --hide-scrollbars --window-size=1200,630 --virtual-time-budget=8000 \
+      --screenshot=/tmp/og.png "file://$PWD/.claude/scripts/og-portada.html"
+    sips -s format jpeg -s formatOptions 84 /tmp/og.png --out public/og/portada.jpg
+  y sube el ?v= de og:image en index.html (WhatsApp guarda la imagen en caché).
+  La cara va cerca del centro: WhatsApp a veces recorta a un cuadrado central.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1e2a47; --muted: #5f6b7a; --blue: #4a6fa5; --soft: #f4f6fa; --line: #e6e9ef; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #fff; font-family: "Inter", sans-serif; }
+  .art { position: relative; width: 1200px; height: 630px; }
+  .text { position: absolute; left: 64px; top: 0; bottom: 0; width: 560px;
+    display: flex; flex-direction: column; justify-content: center; }
+  h1 { font-weight: 800; font-size: 52px; white-space: nowrap; line-height: 1.04; letter-spacing: -0.035em; color: var(--ink); }
+  h1 span { display: block; }
+  h1 .accent { color: var(--blue); }
+  .lead { margin-top: 22px; font-size: 24px; line-height: 1.45; color: var(--muted); max-width: 500px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .chip { padding: 9px 18px; border-radius: 999px; background: var(--soft); border: 1px solid var(--line);
+    font-weight: 600; font-size: 19px; color: var(--ink); }
+  .sign { margin-top: 34px; display: flex; align-items: center; gap: 14px; font-size: 21px; color: var(--muted); }
+  .sign b { color: var(--ink); font-weight: 700; }
+  .sign i { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  .halo { position: absolute; left: 630px; top: 70px; width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, #e9eef6 0%, var(--soft) 60%, #fff 100%); }
+  .ring { position: absolute; left: 600px; top: 40px; width: 480px; height: 480px; border-radius: 50%;
+    border: 3px solid var(--blue); opacity: .18; }
+  .photo { position: absolute; left: 600px; bottom: 0; height: 560px; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: var(--blue); }
+</style>
+</head>
+<body>
+<div class="art">
+  <div class="halo"></div>
+  <div class="ring"></div>
+  <img class="photo" src="../../src/assets/img/banner/banner-man.png" alt="">
+  <div class="text">
+    <h1><span>Tu publicidad y tu web,</span><span class="accent">en las mismas manos.</span></h1>
+    <p class="lead">Campañas que traen clientes y la web que los convierte en ventas.</p>
+    <div class="chips">
+      <span class="chip">Meta Ads</span><span class="chip">Google Ads</span><span class="chip">Desarrollo web</span>
+    </div>
+    <p class="sign"><b>Raúl Ortega</b><i></i>ortegafreelance.com</p>
+  </div>
+  <div class="bar"></div>
+</div>
+</body>
+</html>

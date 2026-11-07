@@ -204,6 +204,17 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - Contentful: `contentful-management` v12 solo tiene la API «plain»
   (`client.entry.create`…); `client.getSpace()` ya no existe (PR #12).
 
+### 7c. Vista previa al compartir (WhatsApp, LinkedIn…)
+
+- Etiquetas Open Graph y Twitter en `index.html` (los rastreadores no
+  ejecutan React). Imagen: `public/og/portada.jpg` (1200×630, < 300 KB, que es
+  el límite práctico de WhatsApp), generada desde `.claude/scripts/og-portada.html`
+  con la foto del hero y el titular de la home.
+- Si se cambia la imagen, subir el `?v=` de `og:image`: WhatsApp guarda la
+  vista previa en caché.
+- Como es una SPA, **todas las rutas** (blog incluido) comparten esta
+  vista previa. Una por post exigiría una Edge Function.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,
