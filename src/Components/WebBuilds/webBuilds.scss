@@ -2,14 +2,12 @@
 
 .webbuilds__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 50px;
-  @include breakpoint(max-xl) {
-    gap: 22px;
-  }
-  @include breakpoint(max-lg) {
-    grid-template-columns: 1fr;
+  // Cuatro plataformas: una columna en el móvil, dos por fila desde tablet.
+  grid-template-columns: 1fr;
+  gap: 24px;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
   }
 }
 
@@ -17,9 +15,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--bgsection);
-  border: 1px solid var(--cusborder);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   color: var(--title);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   &:hover {
@@ -37,7 +36,9 @@
   }
   h3 {
     margin: 0;
-    font-size: 30px;
+    font-size: clamp(1.4rem, 2vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
     line-height: 1.1;
   }
   p {

@@ -1,11 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, CheckCircleFill } from "react-bootstrap-icons";
 
 import Title from "../Shared/Title/Title";
 import nexolabImg from "../../assets/img/webbuilds/nexolab.jpg";
 import todxsImg from "../../assets/img/webbuilds/todxs.jpg";
 import mimaImg from "../../assets/img/webbuilds/mima.jpg";
+import ubimascotaImg from "../../assets/img/webbuilds/ubimascota.jpg";
 
 const builds = [
   {
@@ -17,17 +19,26 @@ const builds = [
     tags: ["Node.js", "Stripe", "Resend", "Vercel", "GitHub"],
   },
   {
+    id: "ubimascota",
+    name: "Ubimascota",
+    domain: "ubimascota.com",
+    image: ubimascotaImg,
+    descKey: "webbuilds.ubimascota.desc",
+    resultKey: "webbuilds.ubimascota.result",
+    tags: ["Astro", "Netlify", "Resend", "Decap CMS"],
+  },
+  {
     id: "todxs",
     name: "Todxs Podemos Ser",
     domain: "todxspodemosser.com",
     image: todxsImg,
     descKey: "webbuilds.todxs.desc",
     resultKey: "webbuilds.todxs.result",
-    resultLink: {
-      url: "https://todxspodemosser.com/reddecreadorxsartivistas/",
-      labelKey: "webbuilds.todxs.resultLink",
+    caseLink: {
+      to: "/client-todxspodemosser-web",
+      labelKey: "webbuilds.todxs.caseLink",
     },
-    tags: ["WordPress"],
+    tags: ["Astro", "Netlify", "Decap CMS", "Resend"],
   },
   {
     id: "mima",
@@ -36,7 +47,7 @@ const builds = [
     image: mimaImg,
     descKey: "webbuilds.mima.desc",
     resultKey: "webbuilds.mima.result",
-    tags: ["Resend"],
+    tags: ["React", "Netlify", "Resend"],
   },
 ];
 
@@ -52,7 +63,7 @@ const WebBuilds = () => {
         />
         <div className="webbuilds__grid">
           {builds.map(
-            ({ id, name, domain, image, descKey, resultKey, resultLink, tags }) => (
+            ({ id, name, domain, image, descKey, resultKey, caseLink, tags }) => (
               <article
                 key={id}
                 className="webbuilds__card"
@@ -96,16 +107,11 @@ const WebBuilds = () => {
                       {t("webbuilds.visit")}
                       <ArrowUpRight aria-hidden="true" />
                     </a>
-                    {resultLink && (
-                      <a
-                        className="webbuilds__visit"
-                        href={resultLink.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t(resultLink.labelKey)}
+                    {caseLink && (
+                      <Link className="webbuilds__visit" to={caseLink.to}>
+                        {t(caseLink.labelKey)}
                         <ArrowUpRight aria-hidden="true" />
-                      </a>
+                      </Link>
                     )}
                   </div>
                 </div>

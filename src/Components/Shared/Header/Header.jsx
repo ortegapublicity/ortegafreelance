@@ -9,26 +9,23 @@ import { trackCta } from "../../../Utlits/track";
 import Drawer from "../Drawer/Drawer";
 import logo from "../../../assets/img/logo/logo.png";
 
+// Menú corto, en el orden de la home. Inicio es el logo y Contacto es el
+// botón de agendar llamada.
 const menuList = [
   {
     id: 1,
     path: "/",
-    name: "header.home",
+    section: "#results",
+    name: "header.results",
   },
   {
     id: 2,
     path: "/",
-    section: "#about",
-    name: "header.about",
+    section: "#pricing",
+    name: "header.pricing",
   },
   {
     id: 3,
-    path: "/",
-    section: "#projects",
-    name: "header.work",
-  },
-  {
-    id: 4,
     path: "/",
     section: "#services",
     name: "header.services",
@@ -46,34 +43,15 @@ const menuList = [
     ],
   },
   {
+    id: 4,
+    path: "/",
+    section: "#projects",
+    name: "header.work",
+  },
+  {
     id: 5,
-    path: "/",
-    section: "#testimonial",
-    name: "header.testimonial",
-  },
-  {
-    id: 6,
-    path: "/",
-    section: "#blog",
+    path: "/all-blog",
     name: "header.blog",
-    dropDown: [
-      {
-        id: 1,
-        path: "/all-blog",
-        name: "header.blog",
-      },
-    ],
-  },
-  {
-    id: 7,
-    path: "/",
-    section: "#pricing",
-    name: "header.pricing",
-  },
-  {
-    id: 8,
-    path: "/contact",
-    name: "header.contact",
   },
 ];
 

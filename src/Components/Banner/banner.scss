@@ -1,376 +1,70 @@
 @use "../../scss/abstracts/mixins" as *;
 
-//banner
-.banner__section{
-    background: url("/src/assets/img/banner/banner-bg.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    position: relative;
-    overflow: hidden;
-    background-attachment: fixed;
-    // Safari de iPhone no soporta bien "fixed": estira la imagen a la altura
-    // de toda la página. En móvil y tablet el patrón va en mosaico a su
-    // tamaño natural, igual que en la sección de resultados que sigue.
-    @media (max-width: 991px) {
-        background-attachment: scroll;
-        background-repeat: repeat;
-        background-size: 1920px auto;
-        background-position: top center;
-    }
-}
-.banner__content{
-    padding: 140px 0 180px;
-    .bn__currently{
-        font-size: 24px;
-        margin-bottom: 50px;
-        border-bottom: 1px solid var(--white);
-        color: var(--white);
-        display: inline-block;
-        padding-bottom: 16px;
-        &:hover{
-            color: var(--base);
-            border-color: var(--base);
-        }
-    }
-    h1{
-        font-size: 116px;
-        margin-bottom: 50px;
-    }
-    .video__area{
-        gap: 24px;
-        align-items: center;
-        display: flex;
-        .proces{
-            font-size: 20px;
-            color: var(--white);
-            width: 67px;
-        }
-    }
-    @include breakpoint(max-xxxl){
-        @include breakpoint(xl){
-            padding-left: 40px;
-        }
-    }
-    @include breakpoint(max-xxl){
-        .bn__currently{
-            font-size: 24px;
-            margin-bottom: 50px;
-            padding-bottom: 16px;
-        }
-        h1{
-            font-size: 86px;
-            margin-bottom: 50px;
-        }
-        .video__area{
-            gap: 24px;
-            .proces{
-                font-size: 20px;
-                width: 67px;
-            }
-        }
-    }
-    @include breakpoint(max-xl){
-        padding: 120px 0 150px;
-    }
-    @include breakpoint(max-lg){
-        padding: 90px 0 100px;
-        .bn__currently{
-            font-size: 24px;
-            margin-bottom: 40px;
-            padding-bottom: 10px;
-        }
-        h1{
-            font-size: 68px;
-            margin-bottom: 50px;
-        }
-        .video__area{
-            gap: 24px;
-            .proces{
-                font-size: 20px;
-                width: 67px;
-            }
-        }
-    }
-    @include breakpoint(max-md){
-        padding: 80px 0 85px;
-        .bn__currently{
-            font-size: 20px;
-            margin-bottom: 35px;
-            padding-bottom: 10px;
-        }
-        h1{
-            font-size: 48px;
-            margin-bottom: 40px;
-        }
-        .video__area{
-            gap: 24px;
-            .proces{
-                font-size: 20px;
-                width: 67px;
-            }
-        }
-    }
-    @include breakpoint(max-sm){
-        padding: 60px 0 65px;
-        .bn__currently{
-            font-size: 16px;
-            margin-bottom: 35px;
-            padding-bottom: 10px;
-        }
-        h1{
-            font-size: 38px;
-            margin-bottom: 30px;
-        }
-        .video__area{
-            gap: 24px;
-            .proces{
-                font-size: 20px;
-                width: 67px;
-            }
-        }
-    }
-    @include breakpoint(max-sm){
-        padding: 60px 0 60px;
-        .bn__currently{
-            margin-bottom: 28px;
-        }
-        h1{
-            font-size: 34px;
-            margin-bottom: 30px;
-        }
-        .video__area{
-            gap: 24px;
-            .video__80{
-                width: 50px;
-                height: 50px;
-                cursor: pointer;
-            }
-            .proces{
-                font-size: 16px;
-            }
-        }
-    }
-}
-.banner__thumb{
-    position: absolute;
-    left: calc(50% - -120px);
-    bottom: 0;
-    @include breakpoint(max-xxl){
-        left: calc(50% - -80px);
-        max-width: 500px;
-        img{
-            width: 100%;
-        }
-    }
-}
-.banner__leftinfo{
-    position: absolute;
-    left: -85px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: grid;
-    gap: 220px;
-    @include breakpoint(max-xxxl){
-        left: -40px;
-    }
-    @include breakpoint(max-xxl){
-        left: -60px;
-    }
-    @include breakpoint(max-xl){
-        left: -59px;
-        @media screen and (max-width: 1023px) {
-            display: none;
-        }
-    }
-}
-.left__infomobile{
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-top: 200px;
-    a{
-        font-size: 20px;
-        color: var(--white);
-        img{
-            transform: rotate(-90deg);
-        }
-    }
-    transform: rotate(90deg);
-    justify-content: center;
-    @include breakpoint(max-xxxl){
-        gap: 16px;
-        a{
-            font-size: 16px;
-            img{
-                width: 16px;
-            }
-        }
-    }
-}
-.right__infoscroll{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 110px;
-    transform: rotate(90deg);
-    margin-bottom: 200px;
-    .scroll__bar{
-        transform: rotate(-90deg);
-    }
-    .scroll{
-        font-size: 18px;
-        color: var(--pra);
-        text-transform: uppercase;
-    }
-    @include breakpoint(max-xxxl){
-        gap: 50px;
-        .scroll{
-            font-size: 15px;
-        }
-        .scroll__bar{
-            img{
-                width: 20px;
-                object-fit: contain;
-            }
-        }
-    }
-}
-.banner__rightinfo{
-    right: 0px;
-    gap: 150px;
-    top: 55%;
-    display: grid;
-    position: absolute;
-    transform: translateY(-50%);
-    .right__infoscroll{
-        margin-bottom: 0;
-    }
-    .banner__xlsocial{
-        .banner__soci{
-            gap: 14px;
-            li{
-                a{
-                    width: 46px;
-                    height: 46px;
-                    border-radius: 50%;
-                    background-color: rgb(224, 224, 224);
-                    display: flex;  
-                    align-items: center;
-                    justify-content: center;
-                    i{
-                        color: var(--white);
-                        transition: all 0.4s;
-                    }
-                    &:hover{
-                        i{
-                            color: var(--base);
-                        }
-                    }
-                }
-            }
-        } 
-    }
-    @include breakpoint(max-xxl){
-        margin-right: -30px;
-        .banner__xlsocial{
-            .banner__soci{
-                gap: 10px;
-                li{
-                    a{
-                        width: 38px;
-                        height: 38px;
-                        i{
-                            font-size: 14px;
-                        }
-                    }
-                }
-            } 
-        }
-    }
-    @include breakpoint(max-lg){
-       display: none;
-    }
-}
-.vid__arrow{
-    animation: cir5 2s linear infinite;
+// Hero: fondo blanco, la promesa en dos líneas (la segunda en azul), una
+// frase y los dos botones. La foto va en una tarjeta redondeada a la derecha
+// en escritorio y debajo del texto en el móvil.
+//
+// El titular tiene una primera línea de 23 caracteres ("Tu publicidad y tu
+// web,"): los tamaños están calculados para que quede en dos líneas desde un
+// móvil de 360 px hasta pantallas grandes.
+
+// Root envuelve el header y el hero con esta clase en "/".
+.banner__section {
+  background: #ffffff;
 }
 
-//animation text
-.hone {
+.banner__hero {
+  padding: clamp(32px, 6vw, 88px) 0 clamp(48px, 7vw, 104px);
+}
+
+.banner__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 5vw, 56px);
+  align-items: center;
+  @media (min-width: 992px) {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.banner__content {
+  h1 {
+    margin: 0 0 20px;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 6.9vw, 3.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
     color: #1e2a47;
-}
-
-.designers{
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: var(--white);
-    color: transparent;
-    transition: all 0.5s;
-    position: relative;
-    &::before{
-        content: attr(data-text);
-        white-space: nowrap;
-        position: absolute;
-        color: var(--base);
-        width: 0px;
-        overflow: hidden;
-        animation: pulse-width 3s ease-in infinite;
-        -webkit-text-stroke-width: 1px;
-        -webkit-text-stroke-color: var(--base);
+    text-transform: none;
+    @media (min-width: 992px) {
+      font-size: clamp(2.6rem, 3.9vw, 3.6rem);
     }
-}
-
-@keyframes pulse-width {
-    50% {
-        width: 100%;
-    }
-}
-
-//animation text
-
-//banner
-
-
-// El titular ("Tu publicidad y tu web, / en las mismas manos.") tiene una
-// primera línea de 23 caracteres: escala con el ancho para quedar en dos
-// líneas, también en un móvil de 360 px.
-@media (min-width: 992px) {
-  .banner__content h1 {
-    font-size: clamp(48px, 4.6vw, 84px);
-    line-height: 1.08;
-  }
-}
-@media (max-width: 575px) {
-  .banner__content h1 {
-    font-size: clamp(26px, 7.4vw, 34px);
-    line-height: 1.15;
   }
 }
 
-// CTAs del hero: el principal agenda la videollamada, el secundario lleva a
-// los planes. En móvil van uno debajo del otro, a todo el ancho.
+.banner__accent {
+  color: var(--blue);
+}
+
+.banner__lead {
+  max-width: 34em;
+  margin: 0 0 28px;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
+  color: #5f6b7a;
+}
+
+// En el móvil los botones van uno debajo del otro, a todo el ancho.
 .banner__actions {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin: 0 0 40px;
+  gap: 12px;
+  margin: 0 0 22px;
   .cmn--btn,
   .banner__ghost {
     text-align: center;
-  }
-  .banner__ghost {
-    padding: 19px 30px 20px;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 120%;
-    border: 1px solid var(--white);
-    border-radius: 5px;
-    color: var(--white);
-    transition: all 0.3s;
-    &:hover {
-      color: var(--base);
-      border-color: var(--base);
-    }
   }
   @media (min-width: 576px) {
     flex-direction: row;
@@ -379,14 +73,53 @@
   }
 }
 
-.banner__lead {
-  max-width: 560px;
-  margin: -20px 0 32px;
-  font-size: 20px;
-  line-height: 1.5;
-  color: var(--white);
-  @media (max-width: 575px) {
-    margin: -14px 0 24px;
-    font-size: 17px;
+.banner__ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border: 2px solid #1e2a47;
+  border-radius: 999px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #1e2a47;
+  transition: background 0.2s, color 0.2s;
+  &:hover {
+    background: #1e2a47;
+    color: #ffffff;
+  }
+}
+
+.banner__phone {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #5f6b7a;
+  &:hover {
+    color: #1e2a47;
+  }
+}
+
+.banner__photo {
+  position: relative;
+  width: min(100%, 440px);
+  margin: 0 auto;
+  aspect-ratio: 504 / 560;
+  overflow: hidden;
+  border-radius: 28px;
+  background: linear-gradient(160deg, #e3f8f6 0%, #e9f0ff 100%);
+  box-shadow: 0 1px 2px rgb(30 42 71 / 6%), 0 24px 48px -24px rgb(30 42 71 / 30%);
+  img {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 991px) {
+    width: min(100%, 340px);
   }
 }

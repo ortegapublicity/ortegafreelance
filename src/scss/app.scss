@@ -55,6 +55,7 @@
 // ----------- Protfolio
 @use "../Pages/Protfolio/protfolio.scss" as *;
 @use "../Pages/ProtfolioDetails/protfolioDetails.scss" as *;
+@use "../Pages/ClientTodxsWeb/clientTodxsWeb.scss" as *;
 // ----------- Protfolio
 
 
@@ -62,4 +63,7 @@
 
 @use "../Components/Shared/Footer/footer.scss" as *;
 
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+// Al final: la capa de estética limpia gana a la plantilla.
+@use "./base/clean.scss" as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');

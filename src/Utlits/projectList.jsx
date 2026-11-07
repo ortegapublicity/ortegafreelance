@@ -4,6 +4,7 @@ import pro3 from "../assets/img/project/pro3.png";
 import pro4 from "../assets/img/project/pro4.png";
 import pro5 from "../assets/img/project/pro5.png";
 import pro6 from "../assets/img/project/pro6.png";
+import proTpsWeb from "../assets/img/project/pro-tpsweb.jpg";
 
 
 export const projectList = [
@@ -55,7 +56,15 @@ export const projectList = [
       category:["branding", "Digital_Marketing", "all"],
       routeList: "/client-reyantiguedades"
     },
+    {
+      id: 7,
+      image: proTpsWeb,
+      heading: "Todxs Podemos Ser · Web",
+      subHeading: "projects.listtodxsweb",
+      category:["website", "all"],
+      routeList: "/client-todxspodemosser-web",
+    },
   ];
 
 
-  export const imagesList = [pro1, pro3, pro5, pro2, pro4, pro6]
+  export const imagesList = [pro1, pro3, pro5, pro2, pro4, pro6, proTpsWeb]

@@ -1,0 +1,174 @@
+@use "../abstracts/mixins" as *;
+
+// Estética limpia, la misma familia que todxspodemosser.com y ubimascota.com:
+// fondo blanco, titulares en Inter muy gruesos y apretados con la segunda
+// línea en azul, botones redondeados y mucho aire. Se carga al final de
+// app.scss para ganar a los estilos de la plantilla sin tocarlos uno a uno.
+
+:root {
+  --ink: #1e2a47;
+  --muted-ink: #5f6b7a;
+  --line: #e6e9ef;
+  --soft: #f4f6fa;
+  --radius-card: 20px;
+  --shadow-card: 0 1px 2px rgb(30 42 71 / 6%), 0 12px 32px -14px rgb(30 42 71 / 22%);
+}
+
+body {
+  background-color: #ffffff;
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Inter", sans-serif;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+// Títulos de sección: dos líneas, la segunda en azul (Title.jsx las parte).
+.project__head {
+  max-width: 920px;
+  margin: 0 auto clamp(36px, 5vw, 56px);
+  h2 {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-transform: none;
+    span + span {
+      color: var(--blue);
+    }
+  }
+}
+
+// Botón principal: píldora turquesa con texto oscuro (contraste AA).
+.cmn--btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-transform: none;
+  color: var(--ink);
+  &::before {
+    background: var(--ink);
+  }
+  &:hover span {
+    color: #ffffff;
+  }
+}
+
+// Secciones de la home en blanco, separadas por aire y no por fondos grises.
+.results__section,
+.service__section,
+.webbuilds__section,
+.project__section,
+.project__metting,
+.pricing__section,
+.testimonial__section,
+.blog__section,
+.process__section {
+  background: #ffffff;
+}
+
+.pt-120 {
+  padding-top: clamp(64px, 9vw, 112px) !important;
+}
+.pb-120 {
+  padding-bottom: clamp(64px, 9vw, 112px) !important;
+}
+
+// Los logros van pegados a la foto principal: el hero ya deja su aire abajo.
+.results__section.pt-120 {
+  padding-top: clamp(8px, 2vw, 24px) !important;
+}
+
+// Menú: un solo botón. Sin la caja gris del cajón lateral; en el móvil
+// queda la hamburguesa que abre el menú.
+.remove__click {
+  display: none !important;
+}
+
+// La plantilla fija Exo 2 en todos los <span> y pone en Mayúscula Cada
+// Palabra de los enlaces: aquí cada texto hereda la letra de su bloque y se
+// escribe como está en las traducciones.
+span {
+  font-family: inherit;
+}
+h5,
+h6 {
+  font-family: "Inter", sans-serif;
+  text-transform: none;
+}
+a {
+  text-transform: none;
+}
+
+// Flechas de los servicios y de las tarjetas: turquesa de la marca, redondas.
+.common__icon {
+  background-color: var(--base);
+  border-radius: 50%;
+  color: var(--ink);
+  svg {
+    color: var(--ink);
+  }
+}
+
+// Planes: tarjetas blancas con sombra suave; el plan destacado en azul tinta.
+.price__item {
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--shadow-card);
+  h4 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .big__title {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+}
+.price__item.pri__active {
+  background: var(--ink);
+  border-color: var(--ink) !important;
+  color: #ffffff;
+  // h4 lleva la clase .white de la plantilla (que es azul tinta, con !important).
+  h4.white {
+    color: #ffffff !important;
+  }
+  h4,
+  .big__title,
+  .big__title span,
+  .price__result,
+  .pri__list li {
+    color: #ffffff;
+  }
+  .price__description {
+    color: #c9d2e3;
+  }
+  .pri__iconbox {
+    background: var(--base);
+  }
+  .big__title {
+    border-color: rgb(255 255 255 / 18%);
+  }
+  .pri__list li::before {
+    background: var(--base);
+  }
+  .cmn--btn {
+    background: var(--base);
+    span {
+      color: var(--ink);
+    }
+  }
+}
