@@ -1,0 +1,108 @@
+.admin-blog {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+  background: #0f0f10;
+  color: #f2f2f2;
+  font-family: system-ui, -apple-system, sans-serif;
+
+  &__container {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+
+  &__intro {
+    color: #b5b5b5;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: #d0d0d0;
+    }
+
+    input,
+    textarea,
+    select {
+      background: #1b1b1d;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: #7c5cff;
+      }
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: none;
+      background: #7c5cff;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      &:not(:disabled):hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  &__alert {
+    margin-top: 28px;
+    padding: 18px;
+    border-radius: 10px;
+    line-height: 1.5;
+
+    &--error {
+      background: rgba(255, 70, 70, 0.1);
+      border: 1px solid rgba(255, 70, 70, 0.4);
+      color: #ff9a9a;
+    }
+
+    &--success {
+      background: rgba(60, 200, 120, 0.1);
+      border: 1px solid rgba(60, 200, 120, 0.4);
+
+      h2 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #7c5cff;
+        font-weight: 600;
+      }
+    }
+  }
+}

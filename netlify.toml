@@ -1,6 +1,10 @@
 [build]
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Contentful servido desde nuestro propio dominio: Safari (navegación privada,
 # bloqueadores) puede cortar las peticiones a dominios de terceros ("Load failed").
 # Deben ir antes de la regla del SPA: Netlify aplica la primera que coincide.
