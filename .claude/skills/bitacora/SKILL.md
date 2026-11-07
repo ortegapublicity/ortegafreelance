@@ -99,3 +99,12 @@ Responde corto:
   destacada si la plantilla del post la usa).
 
 No publiques, no hagas commit del borrador y no lo compartas fuera.
+
+## Modo nocturno (automático)
+
+Cada noche a las 23:00 `.claude/scripts/bitacora-nocturna.mjs` hace este mismo
+trabajo sin conversación: arma el resumen del `git log`, se lo pasa a
+`claude -p` sin herramientas con esta plantilla y envía el borrador. Si Raúl
+pregunta por un borrador nocturno, mira `~/Library/Logs/bitacora-nocturna.log`
+y `.claude/blog/borradores/`. Detalle en `03-CONTEXTO-PROYECTO.md` §7b.
+

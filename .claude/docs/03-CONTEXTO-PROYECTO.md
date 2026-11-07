@@ -173,6 +173,23 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   «Pegar artículo de Claude».
 - Permiso de clientes: se nombra solo a los de `src/data/caseStudies.js` o ya
   publicados en el blog; si no, borrador anónimo y se pregunta.
+- **Automático cada noche (23:00)**: launchd
+  (`~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist`, copia en
+  `.claude/scripts/`) ejecuta `.claude/scripts/bitacora-nocturna.mjs`:
+  1. Lee el `git log` (solo lectura) de los repos de `~/Documents` desde el
+     último borrador enviado (7 días por defecto, 14 como máximo). Excluye
+     `ortegafreelance` (clon viejo) y `Base de datos online` (leads). Sin
+     commits nuevos no llama a Claude.
+  2. Llama a `claude -p --tools ""`: sin herramientas, solo texto, desde
+     `/tmp`. Usa la sesión claude.ai del usuario (plan Pro), sin API key.
+  3. Valida el JSON, pide una corrección si hace falta y lo envía como
+     borrador. Máximo un post por noche; si no hay material, «ESPERAR».
+  4. Avisa con una notificación de macOS. Registro en
+     `~/Library/Logs/bitacora-nocturna.log`.
+  - Probar: `node .claude/scripts/bitacora-nocturna.mjs --force --dry-run`.
+  - Pausar: `launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora`.
+  - Si sale «401 / no coincide»: la frase del Llavero es distinta a la de
+    Netlify; el usuario la vuelve a guardar con `-U`.
 
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
