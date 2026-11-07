@@ -1,14 +1,10 @@
 @use "../../scss/abstracts/mixins" as *;
 
-// Resultados de clientes: continúa el patrón de logos del hero, en mosaico a
-// su tamaño natural para que no se estire en ningún formato (iPhone incluido).
-// Una cifra grande por caso, sobre tarjeta blanca, con enlace al caso.
+// Resultados de clientes, justo debajo de la foto: una cifra grande por caso,
+// en tarjeta blanca con sombra suave y enlace al caso.
 // Móvil: una columna; tablet: dos; escritorio: cuatro.
 .results__section {
-  background-image: url("/src/assets/img/banner/banner-bg.png");
-  background-repeat: repeat;
-  background-size: 1920px auto;
-  background-position: top center;
+  background: #ffffff;
 }
 .results__grid {
   display: grid;
@@ -28,8 +24,9 @@
   gap: 8px;
   padding: 28px 24px;
   background: #ffffff;
-  border: 1px solid var(--cusborder);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   color: var(--white);
   transition: border-color 0.3s, transform 0.3s;
   &:hover {
@@ -44,9 +41,10 @@
   }
 }
 .results__figure {
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--white);
 }
 .results__label {

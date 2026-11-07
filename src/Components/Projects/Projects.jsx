@@ -26,17 +26,10 @@ const Projects = () => {
           sortTitle={t("projects.sortTitle")}
         />
         <div className=" project__wrapone">
-    {
-        [
-            // 1. DESESTRUCTURA (spread) el array de slice(0, 1) en el nuevo array
-            ...projectList.slice(1, 2), 
-
-            // 2. DESESTRUCTURA (spread) el array de slice(3, 4) en el nuevo array
-            ...projectList.slice(3, 4), 
-        ]
-        // Se ejecuta el .map() sobre el array final [P1, P4]
-        .map(({ heading, id, image, subHeading, routeList }, index) => (
-            <ProjectCard
+          {/* En la home: el caso más reciente (la web nueva de TPS) y NF Autoparts. */}
+          {[projectList[6], projectList[3]].map(
+            ({ heading, id, image, subHeading, routeList }, index) => (
+              <ProjectCard
                 key={id}
                 image={image}
                 heading={heading}
@@ -44,9 +37,10 @@ const Projects = () => {
                 openLightbox={openLightbox}
                 index={index}
                 navigate={routeList}
-            />
-        ))
-  } 
+              />
+            )
+          )}
+
 </div>
 
         <div className="custom__hover">

@@ -11,6 +11,7 @@ import ProtfolioDetails from "../Pages/ProtfolioDetails/ProtfolioDetails";
 import ClientReyAntiguedades from "../Pages/ClientReyAntiguedades/ClientReyAntiguedades";
 import ClientNfAutoparts from "../Pages/ClientNfAutoparts/ClientNfAutoparts";
 import ClientTodxsPodemosSer from "../Pages/ClientTodxsPodemosSer/ClientTodxsPodemosSer";
+import ClientTodxsWeb from "../Pages/ClientTodxsWeb/ClientTodxsWeb";
 import ClientBrandtop from "../Pages/ClientBrandtop/ClientBrandtop";
 import ClientLightsEnglishAdacemy from "../Pages/ClientLightsEnglishAcademy/ClientLightsEnglishAcademy";
 import IllustrationDesign from "../Pages/IllustrationDesign/IllustrationDesign"; 
@@ -110,6 +111,10 @@ export const router = createBrowserRouter([
       {
         path: "/client-todxspodemosser",
         element: <ClientTodxsPodemosSer/>,
+      },
+      {
+        path: "/client-todxspodemosser-web",
+        element: <ClientTodxsWeb/>,
       },
       {
         path: "/client-brandtop",

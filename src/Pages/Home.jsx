@@ -10,22 +10,22 @@ import Pricing from "../Components/Pricing/Pricing";
 import Metting from "../Components/Metting/Metting";
 import Blogs from "../Components/Blogs/Blogs";
 
-// Orden pensado para convertir: lo que gana el cliente (hero y resultados),
-// qué hago, la prueba, cómo trabajo, precios y la llamada. El hero (Banner)
-// lo pinta Root solo en "/".
+// Lo importante delante: la foto y la promesa (Banner, lo pinta Root solo en
+// "/"), los logros, la videollamada y los planes. Después, para quien quiere
+// más contexto: servicios, lo que he construido, casos, proceso y opiniones.
 const Home = () => {
   return (
     <>
       <Results />
+      <Metting />
+      <div id="pricing">
+        <Pricing />
+      </div>
       <Services isHeading={true} focus />
       <WebBuilds />
       <Projects />
       <WorkeProcess />
       <Testimonial />
-      <div id="pricing">
-        <Pricing />
-      </div>
-      <Metting />
       <Blogs />
     </>
   );
