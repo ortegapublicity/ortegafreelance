@@ -91,9 +91,19 @@
       { "icon": "check", "es": "RESPONDER", "en": "REPLY" }
     ],
     "chips": [{ "step": 1, "text": "Resend" }]
+  },
+  "en": {
+    "title": "…",
+    "excerpt": "…",
+    "body": [ "…los mismos bloques y secciones, traducidos…" ]
   }
 }
 ```
+
+- Lo de arriba (`title`, `excerpt`, `body`) es el **español**, que va al idioma
+  `es-ES` de Contentful. `en` es la **versión en inglés** completa, que va a
+  `en-US` (el idioma principal de Contentful). Traducción natural, inglés de
+  negocio, con las mismas secciones.
 
 Lo valida `netlify/functions/lib/articleDraft.js` (mismas reglas en local y en
 el servidor).
@@ -108,7 +118,8 @@ el servidor).
 - [ ] Sección de medición
 - [ ] Sin cifras inventadas, sin datos privados, sin emojis, sin CTA de venta
 - [ ] 500–900 palabras
-- [ ] `cover` con título en inglés, 3–5 pasos y las tecnologías reales
+- [ ] `en` con la versión completa en inglés y las mismas secciones
+- [ ] `cover` con 3–5 pasos y las tecnologías reales
 
 ## Portada (ES y EN)
 
@@ -128,6 +139,6 @@ el título. Una en español y otra en inglés.
 - Los pasos son el recorrido del lector o del dato (anuncio → ficha → pago →
   descarga), no la lista de tareas. Verbos o sustantivos cortos.
 - Salida: `contenido-blog/<borrador>/portada-es.jpg`, `portada-en.jpg` y
-  `LEEME.txt` con el enlace de Contentful. Raúl las sube a mano como imagen
-  destacada. `contenido-blog/INDICE.md` lista todos los borradores con su
+  `LEEME.txt` con el enlace de Contentful. `blog-borrador.mjs` las **sube
+  solo** a Contentful como imagen destacada (la ES en es-ES y la EN en en-US). `contenido-blog/INDICE.md` lista todos los borradores con su
   enlace de Contentful y el de su carpeta de imágenes.

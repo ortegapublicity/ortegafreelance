@@ -186,7 +186,8 @@ ${activity}
 ESPERAR: <motivo en una frase>
 - Si hay material, responde con una primera línea
 CLIENTE: <nombrado|anonimo|propio> · <proyecto>
-y después el artículo como un único bloque \`\`\`json con title, excerpt, body y cover, según el formato de la plantilla. Nada más.
+y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover y en, según el formato de la plantilla. Nada más.
+- "en" es la versión completa en inglés: { title, excerpt, body } con la misma estructura de bloques y los mismos títulos de sección traducidos. Traduce con naturalidad (inglés de negocio, segunda persona), no palabra por palabra.
 - "cover" son los datos de la portada (ver la sección Portada de la plantilla): title_en (el título en inglés), steps (3 a 5 pasos del proceso que cuenta el post, cada uno con icon, es y en, etiquetas de 14 caracteres como máximo) y chips (0 a 3 tecnologías reales, con step y text de 12 caracteres como máximo). Iconos permitidos: ${ICONS.join(", ")}.
 - No inventes cifras, resultados ni testimonios: si el historial no los trae, di qué se va a medir.
 - Nunca incluyas nombres de variables de entorno, claves, correos, teléfonos, IDs, rutas de paneles internos ni nombres de repos.`;
@@ -234,9 +235,12 @@ function parseReply(text) {
 
 function checkAll(article) {
   const a = article ? validateArticleDraft(article) : { ok: false, errors: ["No llegó el artículo."] };
+  const e = article?.en ? validateArticleDraft(article.en) : { ok: false, errors: ['Falta "en" (la versión en inglés).'] };
   const coverErrors = article ? validateCover(article.cover) : [];
-  const errors = [...(a.ok ? [] : a.errors), ...coverErrors];
-  return errors.length ? { ok: false, errors } : { ok: true, article: { ...a.article, cover: article.cover } };
+  const errors = [...(a.ok ? [] : a.errors), ...(e.ok ? [] : e.errors.map((x) => `[en] ${x}`)), ...coverErrors];
+  return errors.length
+    ? { ok: false, errors }
+    : { ok: true, article: { ...a.article, cover: article.cover, en: e.article } };
 }
 
 function addToIndex(line) {
