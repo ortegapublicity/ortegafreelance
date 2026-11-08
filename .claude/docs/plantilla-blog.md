@@ -85,13 +85,9 @@
   ],
   "cover": {
     "title_en": "English title",
-    "steps": [
-      { "icon": "correo", "es": "RECIBIR", "en": "RECEIVE" },
-      { "icon": "archivo", "es": "ARCHIVAR", "en": "ARCHIVE" },
-      { "icon": "check", "es": "RESPONDER", "en": "REPLY" }
-    ],
-    "chips": [{ "step": 1, "text": "Resend" }]
+    "svg": "<defs>…</defs><rect width=\"1008\" height=\"945\" fill=\"url(#bg)\"/>…"
   },
+  "recommended": ["idPostPublicado1", "idPostPublicado2"],
   "en": {
     "title": "…",
     "excerpt": "…",
@@ -119,26 +115,52 @@ el servidor).
 - [ ] Sin cifras inventadas, sin datos privados, sin emojis, sin CTA de venta
 - [ ] 500–900 palabras
 - [ ] `en` con la versión completa en inglés y las mismas secciones
-- [ ] `cover` con 3–5 pasos y las tecnologías reales
+- [ ] `cover.svg` con una ilustración del tema (no la ruta de nodos)
+- [ ] `recommended` con 2 posts publicados relacionados
 
 ## Portada (ES y EN)
 
-Cada post lleva dos portadas de 1680×945 con el estilo del arte de NEXO LAB:
-escena azul marino a la izquierda con **la ruta del proceso** que cuenta el
-post (nodos numerados con icono y etiqueta) y panel turquesa a la derecha con
-el título. Una en español y otra en inglés.
+Cada post lleva dos portadas de 1680×945, una en español y otra en inglés.
 
+**Lo fijo (identidad):** panel derecho turquesa `#00b0a2` con el **isotipo
+de Ortega Freelance en mosaico** muy tenue (el del favicon) y el **título en
+blanco** (Exo 2). Es lo que se repite en todas las portadas publicadas.
+
+**Lo que cambia según el tema:** la escena de la izquierda. Es una
+**ilustración propia de cada post** (`cover.svg`), como en las portadas
+antiguas (petróleo para Venezuela, embudo y fábricas para el post de China…).
+No se repite la ruta de círculos azul, morado, naranja y verde del post de
+NEXO LAB: esa fue la ilustración de ese tema, no una plantilla.
+
+- `cover.svg`: el contenido de un `<svg viewBox="0 0 1008 945">`, sin la
+  etiqueta `<svg>`. Estilo plano y moderno, fondo propio a sangre, objetos
+  reconocibles del tema y paleta de fondo variable. Acentos de marca:
+  `#3a7bff`, `#7b2cbf`, `#ff6b35`, `#ffd60a`, `#26d1c4`.
+  - Sin texto ni números dentro, porque sirve para los dos idiomas.
+  - Prohibido: `<script>`, `<style>`, `<image>`, `<foreignObject>`, `<a>`,
+    `on…=` y URLs (solo `href="#id"` propios). Máximo 60.000 caracteres.
+    `portada-blog.mjs` lo rechaza si no cumple.
+- `cover.title_en`: el título en inglés (si hay `en.title`, manda ese).
+- Respaldo, solo si no hay `svg`: `steps` de 3 a 5 pasos `{icon, es, en}` y
+  `chips`, que pintan la ruta de nodos. Evítalo.
+- Ejemplos aprobados: las portadas del post de la home (navegador, preloader
+  tachado, calendario) y del CMS de Todxs Podemos Ser (panel de
+  administración, panel de quien escribe, cola de revisión).
 - Plantilla: `.claude/scripts/portada-blog.html`. Generador:
-  `node .claude/scripts/portada-blog.mjs <borrador.json>`.
-- Datos en `cover`: `title_en`; `steps` de 3 a 5 pasos `{icon, es, en}`
-  (etiquetas de 14 caracteres como máximo, en mayúsculas o no, da igual);
-  `chips` de 0 a 3 tecnologías `{step, text}` (12 caracteres como máximo).
-- Iconos: anuncio, pagina, pago, descarga, correo, calendario, grafico,
-  codigo, movil, rayo, escudo, archivo, usuario, buscar, carrito, editar,
-  check.
-- Los pasos son el recorrido del lector o del dato (anuncio → ficha → pago →
-  descarga), no la lista de tareas. Verbos o sustantivos cortos.
+  `node .claude/scripts/portada-blog.mjs <borrador.json>`. Mira siempre las
+  dos imágenes antes de enviar.
 - Salida: `contenido-blog/<borrador>/portada-es.jpg`, `portada-en.jpg` y
-  `LEEME.txt` con el enlace de Contentful. `blog-borrador.mjs` las **sube
-  solo** a Contentful como imagen destacada (la ES en es-ES y la EN en en-US). `contenido-blog/INDICE.md` lista todos los borradores con su
-  enlace de Contentful y el de su carpeta de imágenes.
+  `LEEME.txt`. `blog-borrador.mjs` las **sube solo** a Contentful como imagen
+  destacada (la ES en es-ES y la EN en en-US). `contenido-blog/INDICE.md`
+  lista todos los borradores con su enlace de Contentful y el de su carpeta
+  de imágenes.
+
+## Recommended posts
+
+El borrador lleva `recommended`: los IDs de **2 posts publicados**
+relacionados con el tema. Van al campo «Recommended posts» en los dos idiomas
+(English (United States) y Spanish (Spain)).
+
+- Lista de publicados: `node .claude/scripts/blog-borrador.mjs --listar`.
+- Si `recommended` falta o no trae IDs publicados, el servidor pone los dos
+  posts publicados más recientes.

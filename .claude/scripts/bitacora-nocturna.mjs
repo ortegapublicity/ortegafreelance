@@ -160,7 +160,21 @@ function previousTitles() {
     .filter(Boolean);
 }
 
-function buildPrompt(activity) {
+// Posts publicados (id y títulos) para elegir los «Recommended posts». Si
+// falla, el servidor pone los dos más recientes.
+function publishedPosts() {
+  const r = spawnSync(process.execPath, [join(BLOG_REPO, ".claude/scripts/blog-borrador.mjs"), "--listar", "--json"], {
+    encoding: "utf8",
+    timeout: 60000,
+  });
+  try {
+    return r.status === 0 ? JSON.parse(r.stdout) : [];
+  } catch {
+    return [];
+  }
+}
+
+function buildPrompt(activity, posts = []) {
   const plantilla = readFileSync(join(BLOG_REPO, ".claude/docs/plantilla-blog.md"), "utf8");
   const titles = previousTitles();
   return `Eres el escritor de la bitácora de Raúl Ortega para el blog de ortegafreelance.com. Esta ejecución es automática y nocturna: nadie puede responder preguntas, así que decide tú y no preguntes nada.
@@ -173,6 +187,9 @@ ${plantilla}
 # CLIENTES QUE SE PUEDEN NOMBRAR
 ${allowedClients().join(", ")}
 Su propia web (ortegafreelance.com) también. Cualquier otro cliente va SIN nombre: describe el sector y lo que vende. Los nombres de repo no dan permiso.
+
+# POSTS PUBLICADOS (para "recommended": elige 2 por id, los más relacionados con el tema)
+${posts.length ? posts.slice(0, 40).map((p) => `- ${p.id} · ${p.es}`).join("\n") : "- (lista no disponible: omite \"recommended\")"}
 
 # POSTS YA ESCRITOS (no repitas tema ni enfoque)
 ${titles.length ? titles.map((t) => `- ${t}`).join("\n") : "- (ninguno)"}
@@ -188,7 +205,8 @@ ESPERAR: <motivo en una frase>
 CLIENTE: <nombrado|anonimo|propio> · <proyecto>
 y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover y en, según el formato de la plantilla. Nada más.
 - "en" es la versión completa en inglés: { title, excerpt, body } con la misma estructura de bloques y los mismos títulos de sección traducidos. Traduce con naturalidad (inglés de negocio, segunda persona), no palabra por palabra.
-- "cover" son los datos de la portada (ver la sección Portada de la plantilla): title_en (el título en inglés), steps (3 a 5 pasos del proceso que cuenta el post, cada uno con icon, es y en, etiquetas de 14 caracteres como máximo) y chips (0 a 3 tecnologías reales, con step y text de 12 caracteres como máximo). Iconos permitidos: ${ICONS.join(", ")}.
+- "recommended": lista con los ids de 2 posts publicados de la lista de arriba, los más relacionados con el tema.
+- "cover" son los datos de la portada (ver la sección Portada de la plantilla): title_en (el título en inglés) y svg, una ILUSTRACIÓN PROPIA del tema del post: el contenido de un <svg viewBox="0 0 1008 945"> SIN la etiqueta <svg> (empieza con <defs> o con un <rect> de fondo que cubra 1008×945). Estilo plano y moderno, con profundidad suave (sombras con feDropShadow, brillos con feGaussianBlur), fondo propio a sangre y objetos reconocibles del tema (pantallas, paneles, documentos, gráficos, personas en silueta, objetos del sector). Varía la composición y la paleta de fondo según el tema; acentos de la marca: #3a7bff, #7b2cbf, #ff6b35, #ffd60a, #26d1c4. Sin texto ni números dentro (la portada se usa en dos idiomas). Prohibido: <script>, <style>, <image>, <foreignObject>, <a>, atributos on…= y URLs; solo href="#id" propios. Máximo 60.000 caracteres. NO copies la ruta de nodos numerados.
 - No inventes cifras, resultados ni testimonios: si el historial no los trae, di qué se va a medir.
 - Nunca incluyas nombres de variables de entorno, claves, correos, teléfonos, IDs, rutas de paneles internos ni nombres de repos.`;
 }
@@ -240,7 +258,15 @@ function checkAll(article) {
   const errors = [...(a.ok ? [] : a.errors), ...(e.ok ? [] : e.errors.map((x) => `[en] ${x}`)), ...coverErrors];
   return errors.length
     ? { ok: false, errors }
-    : { ok: true, article: { ...a.article, cover: article.cover, en: e.article } };
+    : {
+        ok: true,
+        article: {
+          ...a.article,
+          cover: article.cover,
+          ...(Array.isArray(article.recommended) ? { recommended: article.recommended.slice(0, 3) } : {}),
+          en: e.article,
+        },
+      };
 }
 
 function addToIndex(line) {
@@ -277,7 +303,9 @@ async function main() {
   writeFileSync(join(ACTIVITY, `${today}.md`), activity);
   log(`Actividad desde ${since}: ${activity.length} caracteres. Pidiendo el artículo a Claude…`);
 
-  let { text, sessionId } = runClaude(buildPrompt(activity));
+  const posts = publishedPosts();
+  log(`Posts publicados para recomendar: ${posts.length}`);
+  let { text, sessionId } = runClaude(buildPrompt(activity, posts));
   let parsed = parseReply(text);
   if (parsed.wait) {
     log(`Claude decidió esperar: ${parsed.wait}`);

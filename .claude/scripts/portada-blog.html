@@ -24,10 +24,16 @@
   .scene { width: 1008px; height: 945px; position: relative;
     background: radial-gradient(ellipse at 30% 40%, #1b4a8f 0%, var(--navy2) 38%, var(--navy) 100%); }
   .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .panel { width: 672px; height: 945px; position: relative; background: #2bb5a6;
+  /* Lo fijo de todas las portadas: turquesa #00b0a2, el isotipo de Ortega
+     Freelance en mosaico muy tenue y el título en blanco. */
+  .panel { width: 672px; height: 945px; position: relative; background: #00b0a2;
     display: flex; align-items: center; padding: 0 64px; }
-  .panel svg.tex { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .28; mix-blend-mode: soft-light; }
-  .panel h1 { position: relative; width: 100%; min-width: 0; font-family: "Exo 2", sans-serif; font-weight: 700;
+  .panel .mosaic { position: absolute; inset: 0; background: #ffffff; opacity: .09;
+    /* __ISOTIPO__ lo sustituye portada-blog.mjs por el favicon en data URI:
+       Chrome no acepta una imagen local (file://) como máscara. */
+    -webkit-mask-image: url("__ISOTIPO__"); mask-image: url("__ISOTIPO__");
+    -webkit-mask-size: 30px 30px; mask-size: 30px 30px; -webkit-mask-repeat: space; mask-repeat: space; }
+  .panel h1 { position: relative; width: 100%; min-width: 0; text-wrap: balance; font-family: "Exo 2", sans-serif; font-weight: 700;
     font-size: 66px; line-height: 1.16; letter-spacing: .2px; color: #effffc;
     text-shadow: 0 2px 0 rgba(10, 60, 56, .18); }
   .lbl { font-family: "Poppins", sans-serif; font-weight: 600; letter-spacing: 2.5px; }
@@ -39,11 +45,7 @@
     <svg id="s" viewBox="0 0 1008 945" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
   <div class="panel">
-    <svg class="tex" xmlns="http://www.w3.org/2000/svg">
-      <filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".05 .06" numOctaves="3" seed="7"/>
-        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.25"/></filter>
-      <rect width="100%" height="100%" filter="url(#n)"/>
-    </svg>
+    <div class="mosaic"></div>
     <h1 id="title"></h1>
   </div>
 </div>
@@ -71,6 +73,12 @@ const svg = document.getElementById("s");
 const add = (tag, attrs, parent = svg, text) => { const e = document.createElementNS(NS, tag);
   for (const k in attrs) e.setAttribute(k, attrs[k]); if (text) e.textContent = text; parent.appendChild(e); return e; };
 
+// Escena: la ilustración propia del post (DATA.svg, dibujada por Claude
+// según el tema y ya saneada por portada-blog.mjs). Si no la hay, se pinta
+// la ruta de nodos de respaldo.
+if (DATA.svg) {
+  svg.innerHTML = DATA.svg;
+} else {
 const defs = add("defs", {});
 const glow = add("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
 add("feGaussianBlur", { stdDeviation: 6, result: "b" }, glow);
@@ -180,6 +188,8 @@ N.forEach(([x, y], i) => {
 
 // 6) Marca de código al fondo
 add("text", { x: 40, y: 150, "font-family": "monospace", "font-weight": 700, "font-size": 120, fill: "#8fb6ff", "fill-opacity": .13 }, svg, "</>");
+
+} // fin de la escena de respaldo
 
 // Ajuste del título al panel cuando las fuentes ya cargaron
 document.fonts.ready.then(() => {
