@@ -7,7 +7,9 @@
 //   es: { title, excerpt, body: [bloques] },
 //   en: { title, excerpt, body: [bloques] },
 //   covers?: { es: assetId, en: assetId },   // de /api/blog-asset
-//   entryId?: "…"                            // actualiza ese borrador
+//   entryId?: "…",                           // actualiza ese borrador
+//   recommended?: ["entryId", …],            // posts publicados a recomendar
+//   onlyCovers?: true                        // con entryId + covers: solo cambia las portadas
 // }
 //
 // Lo usan .claude/scripts/blog-borrador.mjs (skill /bitacora y la tarea
@@ -29,6 +31,21 @@ export default async (req) => {
   if (parsed.error) return parsed.error;
   const payload = parsed.data;
 
+  const { covers, entryId, recommended, onlyCovers } = payload || {};
+
+  // Solo portadas: cambia la imagen destacada de un borrador y nada más.
+  if (onlyCovers === true) {
+    if (!ID_RE.test(entryId || "") || !ID_RE.test(covers?.es || "") || (covers?.en && !ID_RE.test(covers.en))) {
+      return jsonResponse(422, { error: "onlyCovers necesita entryId y covers.es (y covers.en)." });
+    }
+    try {
+      const contentful = await saveBlogDraft({ entryId, covers, onlyCovers: true, es: {}, en: {} });
+      return jsonResponse(200, { ok: true, contentful });
+    } catch (error) {
+      return jsonResponse(502, { error: `Falló al cambiar las portadas: ${contentfulErrorMessage(error)}` });
+    }
+  }
+
   if (!payload?.es || !payload?.en) {
     return jsonResponse(422, {
       error: 'El artículo necesita las dos versiones: { "es": {…}, "en": {…} }.',
@@ -42,7 +59,9 @@ export default async (req) => {
     if (check.ok) versions[lang] = check.article;
     else errors.push(...check.errors.map((e) => `[${lang}] ${e}`));
   }
-  const { covers, entryId } = payload;
+  if (recommended !== undefined && (!Array.isArray(recommended) || recommended.length > 3 || !recommended.every((id) => ID_RE.test(id)))) {
+    errors.push("recommended debe ser una lista de hasta 3 IDs de entradas.");
+  }
   if (covers && (!ID_RE.test(covers.es || "") || (covers.en && !ID_RE.test(covers.en)))) {
     errors.push("covers.es / covers.en deben ser IDs de asset de Contentful.");
   }
@@ -57,6 +76,7 @@ export default async (req) => {
       en: { ...versions.en, richTextBody: blocksToRichText(versions.en.body) },
       covers,
       entryId,
+      recommended,
     });
     return jsonResponse(200, {
       ok: true,

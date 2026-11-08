@@ -196,10 +196,17 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   - Pausar: `launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora`.
   - Si sale «401 / no coincide»: la frase del Llavero es distinta a la de
     Netlify; el usuario la vuelve a guardar con `-U`.
-- **Portadas ES y EN** (1680×945, estilo del arte de NEXO LAB): el JSON del
-  borrador lleva `cover` (título en inglés, 3–5 pasos con icono, tecnologías)
-  y `node .claude/scripts/portada-blog.mjs <borrador.json>` las exporta con
+- **Portadas ES y EN** (1680×945). Lo fijo: panel turquesa `#00b0a2` con el
+  isotipo en mosaico tenue y el título en blanco. Lo que cambia: la escena de
+  la izquierda, una ilustración SVG propia de cada tema (`cover.svg`) que
+  dibuja Claude. La ruta de círculos de NEXO LAB NO es la plantilla: fue la
+  ilustración de ese post (corrección del usuario, 2026-11-08).
+  `node .claude/scripts/portada-blog.mjs <borrador.json>` las exporta con
   Chrome headless desde `.claude/scripts/portada-blog.html`.
+- **Recommended posts**: el borrador lleva `recommended` (2 IDs de posts
+  publicados, elegidos por tema; lista con `blog-borrador.mjs --listar`) y
+  van a «Recommended posts» en en-US y es-ES. Sin elección, el servidor pone
+  los dos más recientes. Endpoint de la lista: `/api/blog-posts`.
   - Salida: `contenido-blog/<borrador>/portada-es.jpg`, `portada-en.jpg` y
     `LEEME.txt` (con el enlace de Contentful). Fuera de git.
   - **`contenido-blog/INDICE.md`** lista cada borrador con su enlace de

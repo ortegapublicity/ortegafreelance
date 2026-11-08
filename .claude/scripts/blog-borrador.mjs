@@ -2,15 +2,20 @@
 // Envía un borrador de la bitácora a Contentful: español en es-ES, inglés en
 // en-US y las portadas ES/EN como imagen destacada. Nunca publica.
 //
-//   node .claude/scripts/blog-borrador.mjs <borrador.json> [--dry-run] [--entry ID] [--no-images] [--base URL]
+//   node .claude/scripts/blog-borrador.mjs <borrador.json> [--dry-run] [--entry ID] [--no-images] [--solo-portadas] [--base URL]
+//   node .claude/scripts/blog-borrador.mjs --listar [--json]
 //
+// --listar        lista los posts publicados (id y títulos) para elegir los
+//                 «recommended» del borrador.
+// --solo-portadas vuelve a subir las portadas y cambia SOLO la imagen
+//                 destacada del borrador ya enviado (no toca textos).
 // --dry-run    valida y muestra los índices sin enviar nada.
 // --entry ID   actualiza ese borrador de Contentful en vez de crear otro.
 // --no-images  no sube las portadas.
 // --base URL   por defecto https://ortegafreelance.com (local: http://localhost:8888)
 //
 // Formato del borrador (ver .claude/docs/plantilla-blog.md):
-//   { title, excerpt, body, cover, en: { title, excerpt, body } }
+//   { title, excerpt, body, cover, recommended: [ids], en: { title, excerpt, body } }
 // Portadas: contenido-blog/<borrador>/portada-es.jpg y portada-en.jpg
 // (las genera portada-blog.mjs). Lo enviado se recuerda en
 // <borrador>.contentful.json: reenviar actualiza la misma entrada y no
@@ -37,8 +42,39 @@ const dryRun = flag("--dry-run");
 const noImages = flag("--no-images");
 const base = (option("--base") || "https://ortegafreelance.com").replace(/\/$/, "");
 const forcedEntry = option("--entry");
+const onlyCovers = flag("--solo-portadas");
 const optionValues = new Set([option("--base"), option("--entry")].filter(Boolean));
 const file = args.find((a) => !a.startsWith("--") && !optionValues.has(a));
+
+function readSecret() {
+  try {
+    return execFileSync("security", ["find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    console.error(
+      `\nNo encontré la frase de administración en el Llavero (servicio "${KEYCHAIN_SERVICE}").\n` +
+        `Raúl la guarda una sola vez con:\n  security add-generic-password -a "$USER" -s ${KEYCHAIN_SERVICE} -w`
+    );
+    process.exit(77);
+  }
+}
+
+if (flag("--listar")) {
+  const res = await fetch(`${base}/api/blog-posts`, {
+    method: "POST",
+    headers: { "x-admin-secret": readSecret() },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.ok) {
+    console.error(`Error ${res.status}: ${data.error || "no pude listar los posts"}`);
+    process.exit(1);
+  }
+  if (flag("--json")) console.log(JSON.stringify(data.posts));
+  else for (const p of data.posts) console.log(`${p.id} · ${p.es}${p.en && p.en !== p.es ? ` / ${p.en}` : ""}`);
+  process.exit(0);
+}
 
 if (!file) {
   console.error("Uso: node .claude/scripts/blog-borrador.mjs <borrador.json> [--dry-run] [--entry ID] [--no-images] [--base URL]");
@@ -88,19 +124,7 @@ try {
 }
 if (forcedEntry) state.entryId = forcedEntry;
 
-let secret;
-try {
-  secret = execFileSync("security", ["find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"], {
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "ignore"],
-  }).trim();
-} catch {
-  console.error(
-    `\nNo encontré la frase de administración en el Llavero (servicio "${KEYCHAIN_SERVICE}").\n` +
-      `Raúl la guarda una sola vez con:\n  security add-generic-password -a "$USER" -s ${KEYCHAIN_SERVICE} -w`
-  );
-  process.exit(77);
-}
+const secret = readSecret();
 
 async function post(path, body) {
   let res;
@@ -129,7 +153,12 @@ async function post(path, body) {
   return data;
 }
 
-if (haveImages && !(state.covers?.es && state.covers?.en)) {
+if (onlyCovers && (!state.entryId || !haveImages)) {
+  console.error("--solo-portadas necesita un borrador ya enviado (entryId) y las dos portadas generadas.");
+  process.exit(64);
+}
+
+if (haveImages && (onlyCovers || !(state.covers?.es && state.covers?.en))) {
   state.covers = {};
   for (const lang of ["es", "en"]) {
     const art = lang === "es" ? es.article : en.article;
@@ -144,12 +173,20 @@ if (haveImages && !(state.covers?.es && state.covers?.en)) {
   writeFileSync(stateFile, JSON.stringify(state, null, 2) + "\n");
 }
 
+if (onlyCovers) {
+  const data = await post("/api/blog-draft", { entryId: state.entryId, covers: state.covers, onlyCovers: true });
+  console.log(`\nPortadas cambiadas en el borrador (textos sin tocar).`);
+  console.log(`Revisar y publicar: ${data.contentful.editUrl}`);
+  process.exit(0);
+}
+
 const updating = Boolean(state.entryId);
 const data = await post("/api/blog-draft", {
   es: es.article,
   en: en.article,
   ...(state.covers ? { covers: state.covers } : {}),
   ...(state.entryId ? { entryId: state.entryId } : {}),
+  ...(Array.isArray(draft.recommended) ? { recommended: draft.recommended } : {}),
 });
 state.entryId = data.contentful.entryId;
 state.editUrl = data.contentful.editUrl;
@@ -159,6 +196,7 @@ const c = data.contentful;
 console.log(
   `\nBorrador ${updating ? "actualizado" : "creado"} en Contentful (sin publicar): ` +
     `español → ${c.locales.es}, inglés → ${c.locales.en}` +
-    (c.imageField && state.covers ? `, portadas en «${c.imageField}»` : "") + "."
+    (c.imageField && state.covers ? `, portadas en «${c.imageField}»` : "") +
+    (c.recommended?.length ? `, ${c.recommended.length} recommended posts` : "") + "."
 );
 console.log(`Revisar y publicar: ${data.contentful.editUrl}`);

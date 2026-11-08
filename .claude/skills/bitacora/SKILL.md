@@ -71,9 +71,16 @@ está aprobado.) Recorre el autochequeo de la plantilla y corrige antes de segui
 
 ## 5. Portadas, validación y envío
 
-Incluye en el JSON la versión en inglés completa (`en`) y el objeto `cover`
-(secciones «Formato de entrega» y «Portada» de la plantilla). El español va
-arriba (`title`, `excerpt`, `body`).
+Incluye en el JSON (secciones «Formato de entrega», «Portada» y «Recommended
+posts» de la plantilla):
+
+- El español arriba (`title`, `excerpt`, `body`) y la versión en inglés
+  completa en `en`.
+- `cover.svg`: una ilustración propia del tema, dibujada por ti en SVG. El
+  panel turquesa con el isotipo en mosaico y el título en blanco los pone la
+  plantilla; no repitas la ruta de círculos.
+- `recommended`: 2 IDs de posts publicados relacionados. Sácalos de
+  `node .claude/scripts/blog-borrador.mjs --listar`.
 
 ```bash
 cd "$BLOG_REPO"
@@ -91,6 +98,8 @@ node .claude/scripts/blog-borrador.mjs .claude/blog/borradores/<archivo>.json
   `- AAAA-MM-DD · título · enlace Contentful · file://carpeta`
 
 - El primero valida las dos versiones y muestra sus índices. Si falla, corrige el JSON.
+- Para cambiar SOLO la portada de un borrador ya enviado (sin tocar sus
+  textos): `node .claude/scripts/blog-borrador.mjs <archivo>.json --solo-portadas`.
 - El último sube las dos portadas y guarda el **borrador** en Contentful:
   español en `es-ES`, inglés en `en-US` y cada portada como imagen destacada
   de su idioma. Nunca publica. Recuerda lo enviado en
