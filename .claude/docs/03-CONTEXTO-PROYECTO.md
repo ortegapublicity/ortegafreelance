@@ -162,8 +162,13 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   anclas que pinta `BlogDetails.jsx`.
 - Flujo: JSON en `.claude/blog/borradores/` (en `.gitignore`: el repo es
   público) → `node .claude/scripts/blog-borrador.mjs <json> --dry-run` → sin
-  `--dry-run` lo envía a **`/api/blog-draft`** (`netlify/functions/blog-draft.js`),
-  que no usa IA y crea el **borrador** en Contentful. Nunca publica.
+  `--dry-run` sube las portadas a **`/api/blog-asset`** y el texto a
+  **`/api/blog-draft`**. Ninguna usa IA; crean el **borrador** en
+  Contentful y nunca publican.
+- **Idiomas de Contentful:** `en-US` es el principal y `es-ES` el español.
+  El borrador lleva el español arriba y la versión inglesa en `en`; el
+  español va a `es-ES` y el inglés a `en-US`. Los primeros borradores (PR #10
+  a #13) escribían el español en `en-US`: corregido el 2026-11-08.
 - Reglas compartidas local/servidor: `netlify/functions/lib/articleDraft.js`.
 - Autenticación: `BLOG_ADMIN_SECRET`. El script la lee del **Llavero de macOS**
   (servicio `ortegafreelance-blog-admin`) y nunca la muestra. El usuario la
@@ -200,7 +205,9 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   - **`contenido-blog/INDICE.md`** lista cada borrador con su enlace de
     Contentful y el de su carpeta de imágenes. Al entregar un borrador, dar
     **siempre** el enlace `file://` de la carpeta de imágenes.
-  - Raúl sube las portadas a mano como imagen destacada.
+  - Se suben solas como imagen destacada (la ES en es-ES, la EN en en-US),
+    como assets en borrador. Al publicar, hay que publicar también las
+    referencias.
 - Contentful: `contentful-management` v12 solo tiene la API «plain»
   (`client.entry.create`…); `client.getSpace()` ya no existe (PR #12).
 

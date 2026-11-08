@@ -58,6 +58,8 @@ export function validateCover(cover) {
 
 export function renderCovers(draftFile) {
   const draft = JSON.parse(readFileSync(draftFile, "utf8"));
+  // El título inglés de la versión "en" manda sobre cover.title_en.
+  if (draft.cover && draft.en?.title) draft.cover.title_en = draft.en.title;
   const errors = validateCover(draft.cover);
   if (errors.length) throw new Error(`Portada no válida:\n  - ${errors.join("\n  - ")}`);
   if (!existsSync(CHROME)) throw new Error(`No encuentro Chrome en ${CHROME}.`);

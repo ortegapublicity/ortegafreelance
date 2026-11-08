@@ -71,7 +71,9 @@ está aprobado.) Recorre el autochequeo de la plantilla y corrige antes de segui
 
 ## 5. Portadas, validación y envío
 
-Incluye en el JSON el objeto `cover` (sección «Portada» de la plantilla).
+Incluye en el JSON la versión en inglés completa (`en`) y el objeto `cover`
+(secciones «Formato de entrega» y «Portada» de la plantilla). El español va
+arriba (`title`, `excerpt`, `body`).
 
 ```bash
 cd "$BLOG_REPO"
@@ -88,8 +90,12 @@ node .claude/scripts/blog-borrador.mjs .claude/blog/borradores/<archivo>.json
   carpeta y una línea a `contenido-blog/INDICE.md`:
   `- AAAA-MM-DD · título · enlace Contentful · file://carpeta`
 
-- El primero valida y muestra el índice. Si falla, corrige el JSON.
-- El segundo crea el **borrador** en Contentful. Nunca publica.
+- El primero valida las dos versiones y muestra sus índices. Si falla, corrige el JSON.
+- El último sube las dos portadas y guarda el **borrador** en Contentful:
+  español en `es-ES`, inglés en `en-US` y cada portada como imagen destacada
+  de su idioma. Nunca publica. Recuerda lo enviado en
+  `<archivo>.contentful.json`: si lo vuelves a lanzar, actualiza la misma
+  entrada (no duplica). `--entry ID` corrige un borrador existente.
 - La frase de administración la saca el script del Llavero de macOS; tú no la
   ves ni la pides. Si el script dice que no está en el Llavero (código 77),
   da a Raúl el comando que imprime el script para guardarla y, mientras tanto,
@@ -108,8 +114,9 @@ Responde corto:
 - **Siempre** el enlace a la carpeta de imágenes (`file://…/contenido-blog/<archivo>`),
   con los nombres `portada-es.jpg` y `portada-en.jpg`.
 - Si el cliente fue anónimo: la pregunta de permiso para nombrarlo.
-- Recordatorio: publicar es un clic de Raúl en Contentful, después de subir
-  la portada como imagen destacada.
+- Recordatorio: publicar es un clic de Raúl en Contentful. Al publicar la
+  entrada, que publique también sus referencias (las dos portadas), o la
+  imagen no saldrá en la web.
 
 No publiques, no hagas commit del borrador y no lo compartas fuera.
 

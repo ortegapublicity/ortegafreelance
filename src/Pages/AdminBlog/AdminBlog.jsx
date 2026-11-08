@@ -62,11 +62,21 @@ const AdminBlog = () => {
 
       if (mode === "claude") {
         endpoint = "/api/blog-draft";
+        let pasted;
         try {
-          body = JSON.parse(articleJson);
+          pasted = JSON.parse(articleJson);
         } catch {
           throw new Error("El texto pegado no es un JSON válido. Copia el bloque completo que te dio Claude.");
         }
+        // Acepta el archivo de borrador de la bitácora ({ title, body, en })
+        // y lo pasa al formato del endpoint ({ es, en }). Las portadas no van
+        // por aquí: las sube el script local.
+        body = pasted.es
+          ? pasted
+          : {
+              es: { title: pasted.title, excerpt: pasted.excerpt, body: pasted.body },
+              en: pasted.en,
+            };
       }
 
       const response = await fetch(endpoint, {
