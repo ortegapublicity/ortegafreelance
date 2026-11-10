@@ -17,26 +17,36 @@
 //    (lib/articleDraft.js), pide una corrección si hace falta, y lo envía con
 //    blog-borrador.mjs, que crea el BORRADOR en Contentful. Nunca publica.
 //
+// 4. Variedad: el título no repite la fórmula de los posts recientes
+//    (blog-variedad.mjs) y cada borrador trae su caption de LinkedIn, que
+//    linkedin-publicar.mjs programa cuando Raúl publica el post en el blog.
+//
 // Usa la sesión de Claude Code del usuario (suscripción claude.ai): no hay
-// API key. Lo lanza launchd: ~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist
+// API key. Lo lanza launchd a través de bitacora-arranque.mjs (que pide a
+// iCloud los archivos desalojados): ~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist
 // Registro: ~/Library/Logs/bitacora-nocturna.log
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { validateArticleDraft, draftSummary } from "../../netlify/functions/lib/articleDraft.js";
-import { ICONS, renderCovers, validateCover } from "./portada-blog.mjs";
+import { renderCovers, validateCover } from "./portada-blog.mjs";
+import { FAMILIES, bannedFamilies, localDrafts, mergeRecentTitles, titleFamily, varietyProblems } from "./blog-variedad.mjs";
+import { validateLinkedin } from "./linkedin-publicar.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-const STATE = join(BLOG_REPO, ".claude/blog"); // en .gitignore: el repo es público
+// BITACORA_DATOS cambia la carpeta de datos (borradores, portadas, índice);
+// solo se usa en pruebas, para ensayar sin tocar los borradores reales.
+const DATA = process.env.BITACORA_DATOS || BLOG_REPO;
+const STATE = join(DATA, ".claude/blog"); // en .gitignore: el repo es público
 const DRAFTS = join(STATE, "borradores");
 const ACTIVITY = join(STATE, "actividad");
 const STAMP_DRAFT = join(STATE, "ultimo-borrador");
 const STAMP_RUN = join(STATE, "ultima-ejecucion");
 const SCAN_ROOT = join(homedir(), "Documents");
-const INDEX = join(BLOG_REPO, "contenido-blog/INDICE.md"); // fuera de git: enlaces de cada borrador
+const INDEX = join(DATA, "contenido-blog/INDICE.md"); // fuera de git: enlaces de cada borrador
 
 // Repos que nunca se leen: el clon viejo y roto de la web, y la base de leads.
 const EXCLUDE = new Set([
@@ -59,6 +69,7 @@ const today = new Date().toLocaleDateString("sv-SE"); // AAAA-MM-DD en hora loca
 const log = (...m) => console.log(`[${new Date().toISOString()}]`, ...m);
 
 function notify(title, message) {
+  if (process.env.BITACORA_SIN_AVISOS) return; // pruebas
   const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"').slice(0, 200);
   spawnSync("osascript", ["-e", `display notification "${esc(message)}" with title "${esc(title)}"`]);
 }
@@ -99,6 +110,48 @@ function findRepos() {
   return repos;
 }
 
+// --- iCloud ---------------------------------------------------------------
+// ~/Documents se sincroniza con iCloud, que desaloja lo que no se usa (con el
+// disco lleno, casi todo lo interno de .git). Un proceso de fondo no puede
+// leer un archivo desalojado («error -11»), así que antes de `git log` se
+// pide la descarga con `brctl download`, archivo por archivo (por carpeta no
+// funciona), y se espera. Para no bajar de más, solo en repos con movimiento.
+const GIT_WAIT_MS = 5 * 60 * 1000;
+
+function evictedFiles(dir) {
+  const r = spawnSync("find", [dir, "-type", "f", "-flags", "+dataless"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  return r.status === 0 ? r.stdout.split("\n").filter(Boolean) : [];
+}
+
+function materialize(dir, label) {
+  let files = evictedFiles(dir);
+  if (!files.length) return true;
+  log(`${label}: ${files.length} archivos desalojados por iCloud; pido la descarga.`);
+  spawnSync("xargs", ["-0", "-n", "1", "-P", "8", "/usr/bin/brctl", "download"], { input: files.join("\0") });
+  const deadline = Date.now() + GIT_WAIT_MS;
+  while (Date.now() < deadline) {
+    spawnSync("/bin/sleep", ["2"]);
+    files = evictedFiles(dir);
+    if (!files.length) return true;
+  }
+  log(`${label}: ${files.length} archivos siguen sin descargarse.`);
+  return false;
+}
+
+// ¿Hubo commits, pulls o cambios de rama desde `since`? Lo dice la fecha del
+// reflog, que se puede consultar aunque el archivo esté desalojado.
+function touchedSince(repo, since) {
+  const limit = new Date(since).getTime() - 864e5;
+  for (const f of ["logs/HEAD", "HEAD", "index"]) {
+    try {
+      if (statSync(join(repo, ".git", f)).mtimeMs >= limit) return true;
+    } catch {
+      /* no existe */
+    }
+  }
+  return false;
+}
+
 const git = (repo, gitArgs) =>
   execFileSync("git", ["-C", repo, ...gitArgs], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 
@@ -117,6 +170,8 @@ function collectActivity(since) {
   const parts = [];
   let total = 0;
   for (const repo of findRepos()) {
+    if (!touchedSince(repo, since)) continue; // sin movimiento: ni se descarga ni se lee
+    materialize(join(repo, ".git"), basename(repo));
     let out = "";
     try {
       out = git(repo, [
@@ -128,6 +183,7 @@ function collectActivity(since) {
         "--pretty=format:%n#### %ad · %s%n%b",
       ]).trim();
     } catch {
+      log(`No pude leer el historial de ${basename(repo)} (¿archivos de git desalojados por iCloud?). Lo salto.`);
       continue;
     }
     if (!out) continue;
@@ -174,9 +230,17 @@ function publishedPosts() {
   }
 }
 
+// Títulos recientes (borradores locales + publicados), del más nuevo al más viejo.
+function recentContext(posts = []) {
+  const drafts = localDrafts(DRAFTS);
+  return { drafts, titles: mergeRecentTitles(drafts, posts.map((p) => p.es)) };
+}
+
 function buildPrompt(activity, posts = []) {
   const plantilla = readFileSync(join(BLOG_REPO, ".claude/docs/plantilla-blog.md"), "utf8");
   const titles = previousTitles();
+  const recent = recentContext(posts);
+  const banned = bannedFamilies(recent.titles);
   return `Eres el escritor de la bitácora de Raúl Ortega para el blog de ortegafreelance.com. Esta ejecución es automática y nocturna: nadie puede responder preguntas, así que decide tú y no preguntes nada.
 
 Tu material es el historial de git de sus proyectos (abajo). Cuenta UNA decisión de trabajo real, con su voz, siguiendo la plantilla al pie de la letra.
@@ -194,6 +258,11 @@ ${posts.length ? posts.slice(0, 40).map((p) => `- ${p.id} · ${p.es}`).join("\n"
 # POSTS YA ESCRITOS (no repitas tema ni enfoque)
 ${titles.length ? titles.map((t) => `- ${t}`).join("\n") : "- (ninguno)"}
 
+# TÍTULOS RECIENTES Y SU FÓRMULA (del más nuevo al más viejo): el tuyo tiene que sonar distinto
+${recent.titles.slice(0, 15).map((t) => `- [${FAMILIES[titleFamily(t)]}] ${t}`).join("\n") || "- (ninguno)"}
+Fórmulas PROHIBIDAS para este título, en español y en inglés: ${banned.length ? banned.map((f) => FAMILIES[f]).join("; ") : "ninguna"}.
+Tampoco repitas la sección «La regla: …» ni el cierre «ahí es donde empezaría a auditar/revisar»: ya se usaron. Sigue la sección «Variedad» de la plantilla.
+
 # ACTIVIDAD RECIENTE (git log, solo lectura)
 ${activity}
 
@@ -203,7 +272,8 @@ ${activity}
 ESPERAR: <motivo en una frase>
 - Si hay material, responde con una primera línea
 CLIENTE: <nombrado|anonimo|propio> · <proyecto>
-y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover y en, según el formato de la plantilla. Nada más.
+y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover, recommended, linkedin y en, según el formato de la plantilla. Nada más.
+- "linkedin" es la publicación de LinkedIn que invita a leer el post (sección «LinkedIn» de la plantilla): { es, en, hashtags, hashtags_en }. Sin enlaces ni hashtags dentro del texto; termina con una pregunta al lector.
 - "en" es la versión completa en inglés: { title, excerpt, body } con la misma estructura de bloques y los mismos títulos de sección traducidos. Traduce con naturalidad (inglés de negocio, segunda persona), no palabra por palabra.
 - "recommended": lista con los ids de 2 posts publicados de la lista de arriba, los más relacionados con el tema.
 - "cover" son los datos de la portada (ver la sección Portada de la plantilla): title_en (el título en inglés) y svg, una ILUSTRACIÓN PROPIA del tema del post: el contenido de un <svg viewBox="0 0 1008 945"> SIN la etiqueta <svg> (empieza con <defs> o con un <rect> de fondo que cubra 1008×945). Estilo plano y moderno, con profundidad suave (sombras con feDropShadow, brillos con feGaussianBlur), fondo propio a sangre y objetos reconocibles del tema (pantallas, paneles, documentos, gráficos, personas en silueta, objetos del sector). Varía la composición y la paleta de fondo según el tema; acentos de la marca: #3a7bff, #7b2cbf, #ff6b35, #ffd60a, #26d1c4. Sin texto ni números dentro (la portada se usa en dos idiomas). Prohibido: <script>, <style>, <image>, <foreignObject>, <a>, atributos on…= y URLs; solo href="#id" propios. Máximo 60.000 caracteres. NO copies la ruta de nodos numerados.
@@ -211,7 +281,22 @@ y después el artículo como un único bloque \`\`\`json con title, excerpt, bod
 - Nunca incluyas nombres de variables de entorno, claves, correos, teléfonos, IDs, rutas de paneles internos ni nombres de repos.`;
 }
 
+// Reintenta los fallos pasajeros (el 2026-11-07 la sesión devolvió un 403
+// de autenticación a las 23:00 y a la noche siguiente funcionó sin tocar nada).
 function runClaude(input, resumeId) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return runClaudeOnce(input, resumeId);
+    } catch (e) {
+      const transient = /authenticate|\b(403|429|5\d\d)\b|overloaded|timed? ?out|ETIMEDOUT|ECONNRESET/i.test(e.message);
+      if (!transient || attempt >= 3) throw e;
+      log(`Claude falló (${e.message.slice(0, 120)}). Reintento ${attempt} de 2 en 90 s…`);
+      spawnSync("/bin/sleep", ["90"]);
+    }
+  }
+}
+
+function runClaudeOnce(input, resumeId) {
   const claudeBin = process.env.CLAUDE_BIN || join(homedir(), ".local/bin/claude");
   const cliArgs = [
     "-p",
@@ -251,11 +336,19 @@ function parseReply(text) {
   }
 }
 
-function checkAll(article) {
+function checkAll(article, recent = { drafts: [], titles: [] }) {
   const a = article ? validateArticleDraft(article) : { ok: false, errors: ["No llegó el artículo."] };
   const e = article?.en ? validateArticleDraft(article.en) : { ok: false, errors: ['Falta "en" (la versión en inglés).'] };
   const coverErrors = article ? validateCover(article.cover) : [];
-  const errors = [...(a.ok ? [] : a.errors), ...(e.ok ? [] : e.errors.map((x) => `[en] ${x}`)), ...coverErrors];
+  const linkedinErrors = article ? validateLinkedin(article.linkedin) : [];
+  const variety = article ? varietyProblems(article, { recentTitles: recent.titles, recentDrafts: recent.drafts }) : [];
+  const errors = [
+    ...(a.ok ? [] : a.errors),
+    ...(e.ok ? [] : e.errors.map((x) => `[en] ${x}`)),
+    ...coverErrors,
+    ...linkedinErrors,
+    ...variety,
+  ];
   return errors.length
     ? { ok: false, errors }
     : {
@@ -264,6 +357,7 @@ function checkAll(article) {
           ...a.article,
           cover: article.cover,
           ...(Array.isArray(article.recommended) ? { recommended: article.recommended.slice(0, 3) } : {}),
+          linkedin: article.linkedin,
           en: e.article,
         },
       };
@@ -305,6 +399,7 @@ async function main() {
 
   const posts = publishedPosts();
   log(`Posts publicados para recomendar: ${posts.length}`);
+  const recent = recentContext(posts);
   let { text, sessionId } = runClaude(buildPrompt(activity, posts));
   let parsed = parseReply(text);
   if (parsed.wait) {
@@ -312,7 +407,7 @@ async function main() {
     return;
   }
 
-  let check = parsed.article ? checkAll(parsed.article) : { ok: false, errors: [parsed.error] };
+  let check = parsed.article ? checkAll(parsed.article, recent) : { ok: false, errors: [parsed.error] };
   if (!check.ok) {
     log("Primera versión rechazada, pido corrección:", check.errors.join(" | "));
     ({ text } = runClaude(
@@ -320,7 +415,7 @@ async function main() {
       sessionId
     ));
     parsed = parseReply(text);
-    check = parsed.article ? checkAll(parsed.article) : { ok: false, errors: [parsed.error] };
+    check = parsed.article ? checkAll(parsed.article, recent) : { ok: false, errors: [parsed.error] };
   }
   if (!check.ok) {
     log("El artículo no pasó la validación tras la corrección:", check.errors.join(" | "));
@@ -374,7 +469,7 @@ async function main() {
   log(`Índice: ${pathToFileURL(INDEX).href}`);
   const anon = /anonimo/i.test(parsed.client) ? " Cliente sin nombre: decide si lo nombras." : "";
   const where = imagesUrl ? ` Imágenes: contenido-blog/${basename(fileURLToPath(imagesUrl))}` : " Sin portadas (mira el registro).";
-  notify("Bitácora: borrador listo", `${article.title}.${where}${anon}`);
+  notify("Bitácora: borrador listo", `${article.title}.${where}${anon} Al publicarlo en Contentful se programa su LinkedIn.`);
 }
 
 main().catch((e) => {

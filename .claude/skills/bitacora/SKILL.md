@@ -60,7 +60,11 @@ sesiones. No rellenes.
 
 ## 4. Escribe
 
-Sigue la plantilla al pie de la letra. Guarda el JSON en:
+Sigue la plantilla al pie de la letra, sobre todo su sección **«Variedad»**:
+antes de titular, mira los títulos recientes (`--listar` y los borradores
+locales) y usa una fórmula distinta a la de los dos posts anteriores. «De X a
+Y» está gastada, igual que la sección «La regla: …» y el cierre «ahí es donde
+empezaría a auditar». El validador rechaza lo repetido. Guarda el JSON en:
 
 ```
 $BLOG_REPO/.claude/blog/borradores/AAAA-MM-DD-<slug-corto>.json
@@ -81,6 +85,9 @@ posts» de la plantilla):
   plantilla; no repitas la ruta de círculos.
 - `recommended`: 2 IDs de posts publicados relacionados. Sácalos de
   `node .claude/scripts/blog-borrador.mjs --listar`.
+- `linkedin`: el caption de LinkedIn en español e inglés con sus hashtags
+  (sección «LinkedIn» de la plantilla). Revísalo con
+  `node .claude/scripts/linkedin-publicar.mjs --simular <archivo>.json`.
 
 ```bash
 cd "$BLOG_REPO"
@@ -123,9 +130,11 @@ Responde corto:
 - **Siempre** el enlace a la carpeta de imágenes (`file://…/contenido-blog/<archivo>`),
   con los nombres `portada-es.jpg` y `portada-en.jpg`.
 - Si el cliente fue anónimo: la pregunta de permiso para nombrarlo.
+- El gancho del caption de LinkedIn (su primera línea).
 - Recordatorio: publicar es un clic de Raúl en Contentful. Al publicar la
   entrada, que publique también sus referencias (las dos portadas), o la
-  imagen no saldrá en la web.
+  imagen no saldrá en la web. Cuando lo publique, su LinkedIn se programa
+  solo para el siguiente martes, miércoles o jueves a las 9:10.
 
 No publiques, no hagas commit del borrador y no lo compartas fuera.
 
@@ -137,3 +146,18 @@ trabajo sin conversación: arma el resumen del `git log`, se lo pasa a
 el borrador. Si Raúl pregunta por un borrador nocturno, mira
 `contenido-blog/INDICE.md`, `~/Library/Logs/bitacora-nocturna.log` y
 `.claude/blog/borradores/`. Detalle en `03-CONTEXTO-PROYECTO.md` §7b.
+
+## LinkedIn (automático)
+
+Cada día a las 9:10 `.claude/scripts/linkedin-publicar.mjs --diario` mira qué
+posts de la bitácora ya están publicados en el blog y los programa (uno por
+día, de martes a jueves). El día que toca:
+
+- Sin token de LinkedIn en el Llavero: avisa y deja
+  `contenido-blog/<archivo>/linkedin.html` (texto para copiar y portada).
+- Con token: publica solo, con la portada en español.
+
+`--estado` muestra la cola; `--marcar <archivo> cancelado` saca un post. No
+publiques en LinkedIn a mano con `--ahora` salvo que Raúl lo pida en ese
+momento. Detalle y alta del token en `03-CONTEXTO-PROYECTO.md` §7e.
+

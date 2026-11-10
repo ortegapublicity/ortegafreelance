@@ -15,7 +15,8 @@
 // --base URL   por defecto https://ortegafreelance.com (local: http://localhost:8888)
 //
 // Formato del borrador (ver .claude/docs/plantilla-blog.md):
-//   { title, excerpt, body, cover, recommended: [ids], en: { title, excerpt, body } }
+//   { title, excerpt, body, cover, recommended: [ids], linkedin: { es, en, hashtags, hashtags_en },
+//     en: { title, excerpt, body } }
 // Portadas: contenido-blog/<borrador>/portada-es.jpg y portada-en.jpg
 // (las genera portada-blog.mjs). Lo enviado se recuerda en
 // <borrador>.contentful.json: reenviar actualiza la misma entrada y no
@@ -31,6 +32,8 @@ import { execFileSync } from "node:child_process";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateArticleDraft, draftSummary } from "../../netlify/functions/lib/articleDraft.js";
+import { localDrafts, mergeRecentTitles, varietyProblems } from "./blog-variedad.mjs";
+import { validateLinkedin } from "./linkedin-publicar.mjs";
 
 const KEYCHAIN_SERVICE = "ortegafreelance-blog-admin";
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -98,6 +101,32 @@ if (!es.ok || !en.ok) {
   process.exit(65);
 }
 
+const stateFile = file.replace(/\.json$/i, ".contentful.json");
+let state = {};
+try {
+  state = JSON.parse(readFileSync(stateFile, "utf8"));
+} catch {
+  /* primer envío */
+}
+if (forcedEntry) state.entryId = forcedEntry;
+
+// Variedad (título y fórmulas gastadas) y caption de LinkedIn. En un borrador
+// nuevo son obligatorios; en uno ya enviado solo se avisa, para poder
+// reenviarlo o cambiarle la portada sin reescribirlo.
+if (!onlyCovers) {
+  const others = localDrafts(dirname(resolve(file)), resolve(file));
+  const problems = [
+    ...validateLinkedin(draft.linkedin),
+    ...varietyProblems(draft, { recentTitles: mergeRecentTitles(others, []), recentDrafts: others }),
+  ];
+  if (problems.length) {
+    const sent = Boolean(state.entryId);
+    console.error(sent ? "Avisos (el borrador ya estaba enviado, no bloquean):" : "El borrador no cumple la plantilla:");
+    for (const e of problems) console.error(`  - ${e}`);
+    if (!sent) process.exit(65);
+  }
+}
+
 for (const [lang, art] of [["ES", es.article], ["EN", en.article]]) {
   const s = draftSummary(art);
   console.log(`${lang}: ${art.title}`);
@@ -114,15 +143,6 @@ if (dryRun) {
   console.log("\n--dry-run: no se envió nada.");
   process.exit(0);
 }
-
-const stateFile = file.replace(/\.json$/i, ".contentful.json");
-let state = {};
-try {
-  state = JSON.parse(readFileSync(stateFile, "utf8"));
-} catch {
-  /* primer envío */
-}
-if (forcedEntry) state.entryId = forcedEntry;
 
 const secret = readSecret();
 

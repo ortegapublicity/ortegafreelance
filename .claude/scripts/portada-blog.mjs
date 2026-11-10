@@ -29,7 +29,7 @@ export const ICONS = [
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const TEMPLATE = join(BLOG_REPO, ".claude/scripts/portada-blog.html");
-const OUT_ROOT = join(BLOG_REPO, "contenido-blog");
+const OUT_ROOT = join(process.env.BITACORA_DATOS || BLOG_REPO, "contenido-blog"); // BITACORA_DATOS: solo pruebas
 const CHROME = process.env.CHROME_BIN || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const LABEL_MAX = 14;
 

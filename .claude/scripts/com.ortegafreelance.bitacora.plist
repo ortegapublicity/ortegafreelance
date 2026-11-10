@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  Bitácora nocturna (ver .claude/docs/03-CONTEXTO-PROYECTO.md §7b).
-  Instalar: copiar a ~/Library/LaunchAgents/ cambiando las rutas de /Users/raulortega si
-  el usuario es otro, y luego
+  Bitácora nocturna (23:00): escribe como mucho un borrador del blog con el trabajo reciente.
+  Ver .claude/docs/03-CONTEXTO-PROYECTO.md §7b. Se lanza a través de
+  bitacora-arranque.mjs, que vive en una COPIA fuera de iCloud y pide a iCloud
+  los archivos desalojados antes de ejecutar el script del repo.
+  Instalar (cambia /Users/raulortega si el usuario es otro):
+    mkdir -p ~/Library/Application\ Support/ortegafreelance-bitacora
+    cp .claude/scripts/bitacora-arranque.mjs ~/Library/Application\ Support/ortegafreelance-bitacora/
+    cp .claude/scripts/com.ortegafreelance.bitacora.plist ~/Library/LaunchAgents/
     launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist
   Quitar:
     launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora
@@ -16,10 +21,12 @@
   <key>ProgramArguments</key>
   <array>
     <string>/opt/homebrew/opt/node@20/bin/node</string>
-    <string>/Users/raulortega/Documents/ortegafreelance-web/.claude/scripts/bitacora-nocturna.mjs</string>
+    <string>/Users/raulortega/Library/Application Support/ortegafreelance-bitacora/bitacora-arranque.mjs</string>
+    <string>/Users/raulortega/Documents/ortegafreelance-web</string>
+    <string>.claude/scripts/bitacora-nocturna.mjs</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/Users/raulortega/Documents/ortegafreelance-web</string>
+  <string>/Users/raulortega</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
