@@ -180,22 +180,33 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   publicados en el blog; si no, borrador anónimo y se pregunta.
 - **Automático cada noche (23:00)**: launchd
   (`~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist`, copia en
-  `.claude/scripts/`) ejecuta `.claude/scripts/bitacora-nocturna.mjs`:
+  `.claude/scripts/`) ejecuta `.claude/scripts/bitacora-nocturna.mjs` a través
+  de `bitacora-arranque.mjs` (ver «iCloud» en §9):
   1. Lee el `git log` (solo lectura) de los repos de `~/Documents` desde el
      último borrador enviado (7 días por defecto, 14 como máximo). Excluye
      `ortegafreelance` (clon viejo) y `Base de datos online` (leads). Sin
      commits nuevos no llama a Claude.
   2. Llama a `claude -p --tools ""`: sin herramientas, solo texto, desde
      `/tmp`. Usa la sesión claude.ai del usuario (plan Pro), sin API key.
-  3. Valida el JSON, pide una corrección si hace falta, genera las portadas
-     y lo envía como borrador. Máximo un post por noche; si no hay material,
-     «ESPERAR».
+  3. Valida el JSON (plantilla, portada, **variedad** y caption de
+     LinkedIn), pide una corrección si hace falta, genera las portadas y lo
+     envía como borrador. Máximo un post por noche; si no hay material,
+     «ESPERAR». Si Claude falla por algo pasajero (403, 429, 5xx), reintenta
+     dos veces.
   4. Avisa con una notificación de macOS que dice dónde están las imágenes.
      Registro en `~/Library/Logs/bitacora-nocturna.log`.
-  - Probar: `node .claude/scripts/bitacora-nocturna.mjs --force --dry-run`.
+  - Probar sin tocar nada real:
+    `BITACORA_DATOS=$(mktemp -d) BITACORA_SIN_AVISOS=1 node .claude/scripts/bitacora-nocturna.mjs --force --dry-run`
+    (`BITACORA_DATOS` cambia la carpeta de borradores y portadas).
   - Pausar: `launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora`.
   - Si sale «401 / no coincide»: la frase del Llavero es distinta a la de
     Netlify; el usuario la vuelve a guardar con `-U`.
+- **Variedad** (corrección del usuario, 2026-11-10): los posts no pueden
+  salir con el mismo molde. `blog-variedad.mjs` clasifica el título por su
+  fórmula y rechaza la que se repite respecto a los 2 posts anteriores («De X
+  a Y», como mucho una cada 6), además de la sección «La regla: …» y el
+  cierre «ahí es donde empezaría a auditar». Las fórmulas válidas salen de
+  sus 15 posts publicados y están en `plantilla-blog.md` («Variedad»).
 - **Portadas ES y EN** (1680×945). Lo fijo: panel turquesa `#00b0a2` con el
   isotipo en mosaico tenue y el título en blanco. Lo que cambia: la escena de
   la izquierda, una ilustración SVG propia de cada tema (`cover.svg`) que
@@ -247,6 +258,48 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   `src/assets/img/clients/`, pintados como silueta gris (filtro CSS). Para
   añadir uno: PNG con fondo transparente, recortado al borde.
 
+### 7e. LinkedIn de cada post
+
+- Cada borrador lleva `linkedin` (`es`, `en`, `hashtags`, `hashtags_en`): un
+  caption profesional que invita a leer el post (guía en `plantilla-blog.md`,
+  «LinkedIn»).
+- `.claude/scripts/linkedin-publicar.mjs --diario` corre cada día a las 9:10
+  (launchd `com.ortegafreelance.linkedin`, registro en
+  `~/Library/Logs/bitacora-linkedin.log`):
+  1. Mira qué posts de la bitácora **ya están publicados en el blog**
+     (`/api/blog-posts`) y los programa: uno por día, martes a jueves, 9:10
+     (`LINKEDIN_DIAS` y `LINKEDIN_HORA` en el script). El estado va en
+     `<borrador>.contentful.json` → `linkedin`.
+  2. El día que toca: **sin token**, notificación + página
+     `contenido-blog/<post>/linkedin.html` (texto para copiar, portada, botón
+     que abre LinkedIn) y el usuario publica o programa a mano. **Con token**,
+     publica solo con la API oficial «Share on LinkedIn» (`/v2/ugcPosts` +
+     imagen por `assets?action=registerUpload`), con la portada en español.
+- La API de LinkedIn **no programa** (publica al momento): la hora la pone
+  este script. No hay MCP oficial de LinkedIn, y automatizar su web con un
+  navegador va contra sus normas: no hacerlo.
+- **Token** (opcional; sin él todo funciona en modo aviso). Lo crea el
+  usuario, nunca un agente:
+  1. App en https://www.linkedin.com/developers/apps (pide asociarla a una
+     página de LinkedIn) con los productos «Share on LinkedIn» y «Sign In with
+     LinkedIn using OpenID Connect».
+  2. Token en https://www.linkedin.com/developers/tools/oauth/token-generator
+     con los permisos `openid`, `profile` y `w_member_social`.
+  3. `security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w`
+     y comprobar con `node .claude/scripts/linkedin-publicar.mjs --verificar`.
+  El token dura 60 días y no se renueva solo: el script avisa una semana antes
+  y, si caduca, vuelve al modo aviso.
+- Comandos: `--estado` (cola), `--simular <borrador>` (texto final),
+  `--marcar <borrador> cancelado|programado|publicado`, `--ahora <borrador>`
+  (publica ya; solo si el usuario lo pide en ese momento).
+- Seguridad: nunca publica un post que no esté publicado en el blog; si la
+  red se corta a mitad, el post queda en «publicando» y no se reintenta solo
+  (para no duplicar). La parte de la API está probada contra un servidor
+  simulado; **la primera publicación real conviene hacerla con el usuario
+  delante**.
+- Todas las rutas del blog comparten la misma vista previa (§7c), por eso se
+  publica como imagen + enlace en el texto y no como tarjeta de enlace.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,
@@ -258,6 +311,21 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 bloquean `.env.example`.
 
 ## 9. Trampas de esta máquina
+
+- **iCloud desaloja archivos del repo** (el disco está casi lleno: 93 % el
+  2026-11-10), incluido casi todo lo interno de `.git`. Un proceso de fondo
+  (launchd) no puede leer un archivo desalojado: falla con «Unknown system
+  error -11». Así falló la bitácora del 2026-11-09. Soluciones ya montadas:
+  - Las tareas de launchd arrancan con una copia **fuera de iCloud** de
+    `bitacora-arranque.mjs` (`~/Library/Application Support/ortegafreelance-bitacora/`),
+    que pide los archivos con `brctl download` y espera. Si cambias ese
+    archivo en el repo, vuelve a copiarlo ahí.
+  - `bitacora-nocturna.mjs` hace lo mismo con el `.git` de los repos con
+    movimiento antes de `git log`. `brctl download` solo funciona archivo
+    por archivo (por carpeta no hace nada).
+  - En una sesión interactiva los archivos se descargan solos al leerlos,
+    pero despacio: un `git log` puede tardar minutos. Se acelera con
+    `find .git -type f -flags +dataless -print0 | xargs -0 -n 1 -P 8 brctl download`.
 
 - **Cada deploy de producción cuesta 15 créditos de Netlify** (29 deploys se
   comieron 435 de 476 créditos en un periodo). `netlify.toml` tiene un
