@@ -10,7 +10,7 @@
 // Sin dependencias: lo importan bitacora-nocturna.mjs y blog-borrador.mjs.
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 const plain = (s = "") => s.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
@@ -104,10 +104,12 @@ export function varietyProblems(draft, { recentTitles = [], recentDrafts = [] } 
 }
 
 /** Borradores locales (objetos con title/body), del más nuevo al más viejo. */
-export function localDrafts(draftsDir, excludeFile = "") {
+export function localDrafts(dir, excludeFile = "") {
+  const draftsDir = resolve(dir);
+  const exclude = excludeFile ? resolve(excludeFile) : "";
   if (!existsSync(draftsDir)) return [];
   return readdirSync(draftsDir)
-    .filter((f) => f.endsWith(".json") && !f.endsWith(".contentful.json") && join(draftsDir, f) !== excludeFile)
+    .filter((f) => f.endsWith(".json") && !f.endsWith(".contentful.json") && join(draftsDir, f) !== exclude)
     .sort()
     .reverse()
     .map((f) => {
