@@ -276,8 +276,20 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
      publica solo con la API oficial «Share on LinkedIn» (`/v2/ugcPosts` +
      imagen por `assets?action=registerUpload`), con la portada en español.
 - La API de LinkedIn **no programa** (publica al momento): la hora la pone
-  este script. No hay MCP oficial de LinkedIn, y automatizar su web con un
-  navegador va contra sus normas: no hacerlo.
+  este script. No hay MCP de LinkedIn para publicar, y automatizar su web con
+  un navegador va contra sus normas: no hacerlo.
+- **Documentación oficial por MCP:** la documentación de la API de LinkedIn
+  vive en Microsoft Learn, y su servidor MCP (`microsoft-learn`,
+  https://learn.microsoft.com/api/mcp, sin login ni coste) está añadido a
+  Claude Code a nivel de usuario (2026-11-10). Herramientas:
+  `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`.
+  Úsalo antes de tocar la integración, en vez de fiarte de memoria o blogs.
+  Solo consulta documentación: no publica nada.
+- Comprobado en esa documentación (2026-11-10): «Share on LinkedIn» (perfil
+  personal, autoservicio) publica con `POST /v2/ugcPosts`. La «Posts API»
+  sustituirá algún día a `ugcPosts`, pero es del paquete de marketing (pide
+  aprobación). Si LinkedIn anuncia el cierre de `ugcPosts` para miembros,
+  migrar `publishToLinkedIn()` en `linkedin-publicar.mjs`.
 - **Token** (opcional; sin él todo funciona en modo aviso). Lo crea el
   usuario, nunca un agente:
   1. App en https://www.linkedin.com/developers/apps (pide asociarla a una
