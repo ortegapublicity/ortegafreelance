@@ -60,6 +60,10 @@ const MAX_DAYS = 14;
 const MAX_REPO_CHARS = 7000;
 const MAX_TOTAL_CHARS = 30000;
 const CLAUDE_TIMEOUT_MS = 10 * 60 * 1000;
+// Modelo fijo para la tarea: si se deja el que esté elegido en el editor, un
+// modelo nuevo puede no existir en el `claude` de terminal, que se actualiza
+// aparte (pasó el 2026-11-10: «Claude Code 2.1.221 does not support this model»).
+const CLAUDE_MODEL = process.env.BITACORA_MODELO || "opus";
 
 const args = process.argv.slice(2);
 const force = args.includes("--force");
@@ -300,6 +304,7 @@ function runClaudeOnce(input, resumeId) {
   const claudeBin = process.env.CLAUDE_BIN || join(homedir(), ".local/bin/claude");
   const cliArgs = [
     "-p",
+    "--model", CLAUDE_MODEL,
     "--tools", "",
     "--strict-mcp-config",
     "--disable-slash-commands",
