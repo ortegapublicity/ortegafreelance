@@ -11,6 +11,7 @@ import ProtfolioDetails from "../Pages/ProtfolioDetails/ProtfolioDetails";
 import ClientReyAntiguedades from "../Pages/ClientReyAntiguedades/ClientReyAntiguedades";
 import ClientNfAutoparts from "../Pages/ClientNfAutoparts/ClientNfAutoparts";
 import ClientTodxsWeb from "../Pages/ClientTodxsWeb/ClientTodxsWeb";
+import Legal from "../Pages/Legal/Legal";
 import ClientBrandtop from "../Pages/ClientBrandtop/ClientBrandtop";
 import ClientLightsEnglishAdacemy from "../Pages/ClientLightsEnglishAcademy/ClientLightsEnglishAcademy";
 import IllustrationDesign from "../Pages/IllustrationDesign/IllustrationDesign"; 
@@ -74,6 +75,24 @@ export const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <Checkout />,
+      },
+      // Páginas legales. /privacy-policy es la URL que pide LinkedIn para
+      // crear la app; los alias en español llevan a las mismas páginas.
+      {
+        path: "/privacy-policy",
+        element: <Legal doc="privacy" />,
+      },
+      {
+        path: "/terms",
+        element: <Legal doc="terms" />,
+      },
+      {
+        path: "/privacidad",
+        element: <Navigate to="/privacy-policy" replace />,
+      },
+      {
+        path: "/terminos",
+        element: <Navigate to="/terms" replace />,
       },
       {
         path: "/success",

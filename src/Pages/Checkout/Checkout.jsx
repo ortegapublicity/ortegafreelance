@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PageHeader from '../../Components/Shared/PageHeader/PageHeader';
 import './Checkout.scss';
 import { Paypal, Globe } from 'react-bootstrap-icons';
@@ -172,6 +172,12 @@ const Checkout = () => {
                     <p className="mb-1"><strong>{t('checkout.securityTitle')}</strong></p>
                     <p className="mb-0">{t('checkout.securityBody')}</p>
                 </div>
+                <p className="mt-3 mb-0 small text-muted">
+                    {t('checkout.legalNotice')}{" "}
+                    <Link to="/terms">{t('footer.terms')}</Link>{" "}
+                    {t('checkout.legalAnd')}{" "}
+                    <Link to="/privacy-policy">{t('footer.privacy')}</Link>.
+                </p>
               </div>
             </div>
 

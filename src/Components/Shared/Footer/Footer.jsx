@@ -79,10 +79,10 @@ const Footer = () => {
             </p>
             <ul className="terms">
               <li>
-                <a href="#0"> {t('footer.terms')} </a>
+                <Link to="/terms"> {t('footer.terms')} </Link>
               </li>
               <li>
-                <a href="#0"> {t('footer.privacy')} </a>
+                <Link to="/privacy-policy"> {t('footer.privacy')} </Link>
               </li>
             </ul>
             <a href="#about" className="toparrow">

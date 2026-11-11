@@ -210,7 +210,7 @@ const resources = {
       "footer.contactIntro": "Hello, I'm Raul Ortega, Creative Technologist & Digital Brand Designer based globally.",
       "footer.email": "raul@ortegafreelance.com",
       "footer.allRightsReserved": "All rights reserved.",
-      "footer.terms": "Terms & Condition",
+      "footer.terms": "Terms & Conditions",
       "footer.privacy": "Privacy Policy",
 
       "service.uiux.heading": "Web UI/UX Design",
@@ -609,6 +609,8 @@ const resources = {
       
       "checkout.securityTitle": "Guaranteed Security",
       "checkout.securityBody": "Your payments are processed directly by the banking platforms (PayPal/BNC). We do not store your financial data.",
+      "checkout.legalNotice": "By paying, you accept the",
+      "checkout.legalAnd": "and the",
 
 
 "services.pricing.plan3.name": "Webpage 360 Plan",
@@ -1233,7 +1235,9 @@ const resources = {
       "checkout.total": "Total",
       
       "checkout.securityTitle": "Seguridad Garantizada",
-      "checkout.securityBody": "Tus pagos son procesados directamente por las plataformas bancarias (PayPal/BNC). Nosotros no almacenamos tus datos financieros."
+      "checkout.securityBody": "Tus pagos son procesados directamente por las plataformas bancarias (PayPal/BNC). Nosotros no almacenamos tus datos financieros.",
+      "checkout.legalNotice": "Al pagar aceptas los",
+      "checkout.legalAnd": "y la",
 
     }
   },
