@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Anuncio LinkedIn</title>
+<!--
+  Creatividades del anuncio de LinkedIn (noviembre 2026).
+  ?v=sistema | ads   ·   ?f=h (1200×627) | c (1080×1080)
+  Exportar con Chrome headless (ver README.md de esta carpeta).
+-->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1e2a47; --muted: #5f6b7a; --blue: #4a6fa5; --soft: #f4f6fa; --line: #e6e9ef; --teal: #00b0a2; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { background: #fff; font-family: "Inter", sans-serif; overflow: hidden; }
+  .art { position: relative; overflow: hidden; background: #fff; }
+  h1 { font-weight: 800; line-height: 1.04; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }
+  h1 span { display: block; } h1 .accent { color: var(--blue); }
+  .lead { color: var(--muted); line-height: 1.42; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { padding: 9px 18px; border-radius: 999px; background: var(--soft); border: 1px solid var(--line); font-weight: 600; color: var(--ink); }
+  .price { display: inline-flex; align-items: baseline; gap: 10px; padding: 12px 22px; border-radius: 16px; background: var(--ink); color: #fff; font-weight: 800; }
+  .price small { font-weight: 600; opacity: .8; }
+  .sign { display: flex; align-items: center; gap: 14px; color: var(--muted); }
+  .sign b { color: var(--ink); font-weight: 700; } .sign i { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  .halo { position: absolute; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #e9eef6 0%, var(--soft) 60%, #fff 100%); }
+  .ring { position: absolute; border-radius: 50%; border: 3px solid var(--blue); opacity: .18; }
+  .photo { position: absolute; bottom: 0; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: var(--teal); }
+
+  /* Horizontal 1200×627 */
+  .h { width: 1200px; height: 627px; }
+  .h .text { position: absolute; left: 60px; top: 0; bottom: 0; width: 640px; display: flex; flex-direction: column; justify-content: center; gap: 22px; z-index: 2; }
+  .h h1 { font-size: 50px; } .h .lead { font-size: 23px; max-width: 540px; }
+  .h .chip { font-size: 18px; } .h .price { font-size: 30px; } .h .price small { font-size: 18px; }
+  .h .sign { position: absolute; left: 60px; bottom: 36px; font-size: 19px; z-index: 2; }
+  .h .halo { left: 700px; top: 80px; width: 400px; height: 400px; }
+  .h .ring { left: 670px; top: 50px; width: 460px; height: 460px; }
+  .h .photo { left: 690px; height: 545px; }
+
+  /* Cuadrado 1080×1080 */
+  .c { width: 1080px; height: 1080px; }
+  .c .text { position: absolute; left: 70px; right: 70px; top: 80px; display: flex; flex-direction: column; gap: 26px; z-index: 2; }
+  .c h1 { font-size: 64px; } .c .lead { font-size: 28px; max-width: 900px; }
+  .c .chip { font-size: 21px; } .c .price { font-size: 36px; } .c .price small { font-size: 21px; }
+  .c .sign { position: absolute; left: 70px; bottom: 60px; font-size: 22px; z-index: 2; }
+  .c .halo { right: 40px; bottom: 40px; width: 460px; height: 460px; }
+  .c .ring { right: 10px; bottom: 10px; width: 520px; height: 520px; }
+  .c .photo { right: 20px; height: 520px; }
+</style>
+</head>
+<body>
+<div class="art" id="art">
+  <div class="halo"></div><div class="ring"></div>
+  <img class="photo" src="../../../src/assets/img/banner/banner-man.png" alt="">
+  <div class="text">
+    <h1><span id="t1"></span><span class="accent" id="t2"></span></h1>
+    <p class="lead" id="lead"></p>
+    <div class="chips" id="chips"></div>
+    <div><span class="price" id="price"></span></div>
+  </div>
+  <p class="sign"><b>Raúl Ortega</b><i></i>ortegafreelance.com</p>
+  <div class="bar"></div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const V = {
+    sistema: {
+      t1: "Tu marca publica sola", t2: "mientras tú trabajas.",
+      lead: "Te instalo un sistema con Claude que escribe con tu contexto y publica en LinkedIn e Instagram.",
+      chips: ["LinkedIn", "Instagram", "Blog opcional"],
+      price: "$500 <small>· 2 pagos de $250</small>",
+    },
+    ads: {
+      t1: "Tus anuncios en marcha,", t2: "sin perseguir a nadie.",
+      lead: "Gestiono tus campañas cada trimestre: estrategia, piezas, medición y ajustes.",
+      chips: ["Meta Ads", "Google Ads", "LinkedIn Ads"],
+      price: "$1050 <small>/ trimestre</small>",
+    },
+  }[q.get("v") || "sistema"];
+  document.getElementById("art").className = "art " + (q.get("f") === "c" ? "c" : "h");
+  document.getElementById("t1").textContent = V.t1;
+  document.getElementById("t2").textContent = V.t2;
+  document.getElementById("lead").textContent = V.lead;
+  document.getElementById("chips").innerHTML = V.chips.map((c) => `<span class="chip">${c}</span>`).join("");
+  document.getElementById("price").innerHTML = V.price;
+</script>
+</body>
+</html>

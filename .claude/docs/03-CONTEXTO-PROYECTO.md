@@ -462,12 +462,37 @@ Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
   siguiente.
 - Ningún agente crea, lee ni pega estos tokens: los maneja el usuario.
 
+### 7i. Checkout: PayPal + ACH/wire y avisos de pago (PR #29)
+
+- «BNC Remesas» salió del checkout. Ahora: PayPal (enlaces de $1050, $1650 y
+  $2250) o **transferencia en EE. UU. (ACH o wire)** a la cuenta de Raúl en
+  Lead Bank. Las claves `checkout.bnc*` de `src/i18n.js` quedaron sin uso.
+- Número de cuenta y de ruta: **solo** en las variables de Netlify
+  `VITE_ACH_CUENTA` y `VITE_ACH_RUTA` (el repo es público). Sin ellas, el
+  bloque manda a WhatsApp. Ningún agente escribe esos números.
+- Formulario «Ya pagué» (`src/Components/PaymentNotice/`) en el checkout y en
+  `/success?plan=&price=` → `netlify/functions/pago-aviso.mts`
+  (`/api/pago-aviso`): correo a `PAGOS.avisoA` (ortegapublicity@gmail.com,
+  en `netlify/lib/config.ts`) y confirmación al cliente con agenda, WhatsApp y
+  redes. No verifica el pago: Raúl lo comprueba en PayPal o en el banco.
+  Límite: 5 por IP/hora, 3 por correo/día; copia en Blobs `pagos`.
+- Los enlaces de PayPal deberían volver a
+  `https://ortegafreelance.com/success?plan=<plan>&price=<monto>` (se
+  configura en PayPal).
+
+### 7j. LinkedIn Ads
+
+Ficha de campaña, textos e imágenes en `.claude/anuncios/linkedin-automatizacion/`
+(cuenta 517738224, crédito $342.12 en noviembre 2026). La campaña la crea y la
+lanza Raúl; no hay acceso a la API de anuncios.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,
 `MAIL_FROM` (opcional), `GEMINI_API_KEY`, `GEMINI_MODEL`, `BLOG_ADMIN_SECRET`,
 `CONTENTFUL_SPACE_ID`, `CONTENTFUL_MANAGEMENT_TOKEN`,
-`CONTENTFUL_ENVIRONMENT_ID`, `CONTENTFUL_BLOG_POST_TYPE`.
+`CONTENTFUL_ENVIRONMENT_ID`, `CONTENTFUL_BLOG_POST_TYPE`, `VITE_ACH_CUENTA`,
+`VITE_ACH_RUTA`.
 
 **Nunca** leas `.env` ni pidas o repitas valores. Los permisos locales también
 bloquean `.env.example`.
@@ -553,7 +578,10 @@ El plan de Hostinger del usuario aloja otros sitios: **no cancelarlo**.
    `AdminBlog.jsx` ya está (PR de la bitácora); quedan Flash, reintentos y
    *background*. La bitácora (§7b) no depende de esto.
 2. Crear en GTM la etiqueta `add_payment_info` y publicar el contenedor.
-3. Página de gracias tras PayPal para medir `purchase` real.
+3. Página de gracias tras PayPal para medir `purchase` real (la página
+   `/success` ya tiene el aviso de pago; falta poner la URL de vuelta en
+   cada enlace de PayPal). Falta un enlace de PayPal de $250 para el
+   sistema de $500 (§7j).
 4. Medición de 14 días a partir del 2026-11-21 (§5).
 5. Pasar a la estética limpia lo que queda de la plantilla: el pie («PONTE EN
    CONTACTO» gigante), los testimonios y el círculo «ver más trabajos».
