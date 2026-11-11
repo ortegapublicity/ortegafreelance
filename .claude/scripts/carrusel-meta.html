@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Carrusel</title>
+<!--
+  Una diapositiva de carrusel para Instagram/Facebook (1080×1350, 4:5).
+  La rellena carrusel-meta.mjs:  carrusel-meta.html?n=1&total=5#<JSON de la diapositiva>
+  Diapositiva: { tipo: "gancho"|"punto"|"cierre", titulo, texto, svg?, numero? }
+  Identidad fija (la misma de las portadas del blog): turquesa #00b0a2 con el
+  isotipo en mosaico tenue y titulares en blanco; navy para el contenido.
+  __ISOTIPO__ lo sustituye el generador por el favicon en data URI.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #00b0a2; --navy: #0a1e3f; --navy2: #14346b; --ink: #1e2a47; --gold: #ffd60a; --orange: #ff6b35; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--navy); }
+  .slide { position: relative; width: 1080px; height: 1350px; overflow: hidden; font-family: "Inter", sans-serif; color: #fff; }
+  .mosaic { position: absolute; inset: 0; background: #fff; opacity: .09;
+    -webkit-mask-image: url("__ISOTIPO__"); mask-image: url("__ISOTIPO__");
+    -webkit-mask-size: 34px 34px; mask-size: 34px 34px; -webkit-mask-repeat: space; mask-repeat: space; }
+  .teal { background: var(--teal); }
+  .navy { background: radial-gradient(ellipse at 20% 15%, #1b4a8f 0%, var(--navy2) 40%, var(--navy) 100%); }
+  .count { position: absolute; top: 44px; right: 52px; z-index: 3; font: 700 26px "Inter"; letter-spacing: .06em; padding: 8px 18px;
+    border-radius: 999px; background: rgba(10,30,63,.6); }
+  .brand { position: absolute; left: 60px; bottom: 48px; z-index: 3; display: flex; align-items: center; gap: 14px; font: 600 26px "Inter"; opacity: .9; }
+  .brand i { width: 38px; height: 38px; background: #fff; -webkit-mask: url("__ISOTIPO__") center/contain no-repeat; mask: url("__ISOTIPO__") center/contain no-repeat; }
+  .swipe { position: absolute; right: 56px; bottom: 46px; z-index: 3; font: 700 28px "Inter"; opacity: .9; }
+
+  /* Gancho: ilustración arriba, panel turquesa abajo */
+  .hook .art { position: absolute; left: 0; top: 0; width: 1080px; height: 760px; }
+  .hook .art svg { width: 100%; height: 100%; display: block; }
+  .hook .panel { position: absolute; left: 0; right: 0; bottom: 0; height: 590px; padding: 54px 60px 120px; display: flex; flex-direction: column; justify-content: center; }
+  .hook h1 { position: relative; z-index: 2; font: 800 76px/1.06 "Exo 2"; letter-spacing: -.01em; text-wrap: balance; }
+  .hook p { position: relative; z-index: 2; margin-top: 22px; font: 500 34px/1.35 "Inter"; color: #effffc; text-wrap: pretty; }
+
+  /* Punto: número grande, titular y texto sobre navy */
+  .point .wrap { position: absolute; inset: 0; padding: 150px 76px 160px; display: flex; flex-direction: column; justify-content: center; }
+  .point .num { font: 800 150px/1 "Exo 2"; color: var(--teal); margin-bottom: 28px; }
+  .point h2 { font: 800 72px/1.08 "Exo 2"; letter-spacing: -.01em; text-wrap: balance; }
+  .point p { margin-top: 30px; font: 400 38px/1.45 "Inter"; color: #c9d6ee; text-wrap: pretty; }
+  .point .bar { width: 120px; height: 10px; border-radius: 6px; background: var(--gold); margin-top: 40px; }
+  .point .mini { position: absolute; right: -80px; bottom: -60px; width: 520px; height: 520px; opacity: .14; }
+
+  /* Cierre: llamada a la acción en turquesa */
+  .cta .wrap { position: absolute; inset: 0; padding: 140px 76px 170px; display: flex; flex-direction: column; justify-content: center; }
+  .cta h2 { position: relative; z-index: 2; font: 800 84px/1.05 "Exo 2"; text-wrap: balance; }
+  .cta p { position: relative; z-index: 2; margin-top: 30px; font: 500 38px/1.4 "Inter"; color: #effffc; text-wrap: pretty; }
+  .cta .pill { position: relative; z-index: 2; align-self: flex-start; margin-top: 48px; display: inline-flex; align-items: center; gap: 18px;
+    padding: 24px 38px; border-radius: 999px; background: #fff; color: var(--ink); font: 800 40px "Exo 2"; box-shadow: 0 18px 40px rgba(6,40,40,.25); }
+  .cta .pill b { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 34px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const P = new URLSearchParams(location.search);
+const n = Number(P.get("n") || 1), total = Number(P.get("total") || 1);
+const S = JSON.parse(decodeURIComponent(location.hash.slice(1) || "%7B%7D"));
+const esc = (t) => String(t || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+const root = document.getElementById("root");
+const count = `<div class="count">${n}/${total}</div>`;
+const brand = `<div class="brand"><i></i>ortegafreelance.com</div>`;
+const swipe = n < total ? `<div class="swipe">Desliza →</div>` : "";
+
+if (S.tipo === "gancho") {
+  root.innerHTML = `<div class="slide hook navy">
+    <div class="art"><svg viewBox="0 0 1080 760" xmlns="http://www.w3.org/2000/svg">${S.svg || ""}</svg></div>
+    <div class="panel teal"><div class="mosaic"></div><h1>${esc(S.titulo)}</h1>${S.texto ? `<p>${esc(S.texto)}</p>` : ""}</div>
+    ${count}${brand}${swipe}</div>`;
+} else if (S.tipo === "cierre") {
+  root.innerHTML = `<div class="slide cta teal"><div class="mosaic"></div>
+    <div class="wrap"><h2>${esc(S.titulo)}</h2>${S.texto ? `<p>${esc(S.texto)}</p>` : ""}
+    <div class="pill"><b>↗</b>${esc(S.boton || "Mis Blogs")}</div></div>
+    ${count}${brand}</div>`;
+} else {
+  root.innerHTML = `<div class="slide point navy">
+    <svg class="mini" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#26d1c4" stroke-width="6"/><circle cx="50" cy="50" r="28" fill="none" stroke="#3a7bff" stroke-width="6"/></svg>
+    <div class="wrap"><div class="num">${String(S.numero || n - 1).padStart(2, "0")}</div><h2>${esc(S.titulo)}</h2>${S.texto ? `<p>${esc(S.texto)}</p>` : ""}<div class="bar"></div></div>
+    ${count}${brand}${swipe}</div>`;
+}
+
+// Encoge los titulares si no caben.
+document.fonts.ready.then(() => {
+  for (const h of document.querySelectorAll("h1, h2")) {
+    let size = parseFloat(getComputedStyle(h).fontSize);
+    const box = h.closest(".panel, .wrap");
+    while (box && box.scrollHeight > box.clientHeight + 2 && size > 44) { size -= 4; h.style.fontSize = size + "px"; }
+  }
+  document.body.dataset.ready = "1";
+});
+</script>
+</body>
+</html>

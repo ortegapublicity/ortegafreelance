@@ -350,6 +350,33 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   LinkedIn Insight Tag necesitarían consentimiento previo: pendiente de
   decisión del usuario.
 
+### 7h. Instagram y Facebook (carrusel por post)
+
+- Cada borrador lleva `meta`: un carrusel 4:5 de 4–6 imágenes con un
+  **gancho de tendencia** (trendjacking seguro) y texto pensado para la
+  búsqueda de Instagram/Facebook, con la llamada a la acción hacia el enlace
+  «Mis Blogs» del perfil (https://ortegafreelance.com/all-blog). Guía en
+  `plantilla-blog.md`, sección «Instagram y Facebook».
+- Lo genera `.claude/scripts/carrusel-meta.mjs <borrador>` (plantilla
+  `carrusel-meta.html`, misma identidad que las portadas) en
+  `contenido-blog/<borrador>/meta/`: `slide-N.jpg`, `caption.txt` y
+  `meta.html` para publicarlo a mano (copiar el texto y los alt, descargar
+  las imágenes).
+- La tarea nocturna lee las tendencias del día de Google Trends (RSS
+  público de VE y US, sin clave) y Claude elige una solo si es segura y
+  conecta; si no, usa un tema de temporada. **Nunca** imágenes de personas
+  reales, logos de equipos o marcas, ni temas de tragedias o política.
+- La tarea de las 9:10, al detectar que un post se publicó en el blog,
+  genera su carrusel y avisa (estado en `<borrador>.contentful.json` →
+  `meta`). **Todavía se publica a mano**: falta conectar la API de Meta.
+- Para publicar solo (fase 2), hace falta que el usuario tenga Instagram
+  como cuenta profesional y cree una app de Meta con «Instagram API with
+  Instagram Login» (`instagram_business_content_publish`). El token largo
+  dura 60 días, pero a diferencia del de LinkedIn **se puede renovar por
+  API** antes de caducar. Las imágenes tienen que estar en una URL pública.
+- Piloto: carrusel del post «Por qué mi blog se escribe solo…» con la
+  tendencia del sistema de reto ABS en la LVBP 2026-2027 (2026-11-11).
+
 ### 7g. Caducidad de tokens (LinkedIn y Contentful)
 
 Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.

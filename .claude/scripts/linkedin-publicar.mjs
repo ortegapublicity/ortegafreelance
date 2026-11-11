@@ -33,6 +33,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
+import { renderCarousel } from "./carrusel-meta.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores y portadas); solo se
@@ -255,6 +256,20 @@ function preparar() {
     n++;
     log(`Programado para ${fecha(slot)}: «${draft.title}» · ${pathToFileURL(join(dir, "linkedin.html")).href}`);
     notify("LinkedIn programado", `${fecha(slot)}: ${draft.title}. Texto en contenido-blog/${item.name}/linkedin.html`);
+
+    // Carrusel de Instagram/Facebook: hasta tener acceso por la API de Meta,
+    // se avisa con todo listo para publicarlo a mano.
+    if (draft.meta) {
+      try {
+        const { dir: metaDir } = renderCarousel(item.file);
+        state.meta = { estado: "listo", preparadoEn: new Date().toISOString() };
+        saveState(item);
+        log(`Carrusel listo: ${pathToFileURL(join(metaDir, "meta.html")).href}`);
+        notify("Instagram y Facebook: carrusel listo", `${draft.title}. Ábrelo en contenido-blog/${item.name}/meta/meta.html`);
+      } catch (e) {
+        log(`No pude preparar el carrusel de «${draft.title}»: ${e.message}`);
+      }
+    }
   }
   if (!n) log("Nada nuevo que programar.");
   return n;

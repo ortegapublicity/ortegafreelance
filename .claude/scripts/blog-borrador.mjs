@@ -34,6 +34,7 @@ import { fileURLToPath } from "node:url";
 import { validateArticleDraft, draftSummary } from "../../netlify/functions/lib/articleDraft.js";
 import { localDrafts, mergeRecentTitles, varietyProblems } from "./blog-variedad.mjs";
 import { validateLinkedin } from "./linkedin-publicar.mjs";
+import { validateMeta } from "./carrusel-meta.mjs";
 
 const KEYCHAIN_SERVICE = "ortegafreelance-blog-admin";
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -117,6 +118,7 @@ if (!onlyCovers) {
   const others = localDrafts(dirname(resolve(file)), resolve(file));
   const problems = [
     ...validateLinkedin(draft.linkedin),
+    ...validateMeta(draft.meta),
     ...varietyProblems(draft, { recentTitles: mergeRecentTitles(others, []), recentDrafts: others }),
   ];
   if (problems.length) {
