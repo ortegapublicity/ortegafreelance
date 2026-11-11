@@ -127,3 +127,32 @@ $shadow-light: rgba(0, 0, 0, 0.05);
         margin-top: 15px !important;
     }
 }
+
+// Transferencia ACH / Wire: datos con botón para copiar.
+.ach-box {
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 12px;
+  padding: 6px 14px 12px;
+}
+.ach-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f2f6;
+  &:last-of-type { border-bottom: 0; }
+  &__label { display: block; font-size: 13px; color: #5f6b7a; }
+  &__value { display: block; font-weight: 700; color: #1e2a47; word-break: break-word; }
+  &__copy {
+    flex: none;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #1e2a47;
+    background: #fff;
+    color: #1e2a47;
+    font-size: 13px;
+    font-weight: 600;
+  }
+}

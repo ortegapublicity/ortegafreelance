@@ -608,7 +608,7 @@ const resources = {
       "checkout.total": "Total",
       
       "checkout.securityTitle": "Guaranteed Security",
-      "checkout.securityBody": "Your payments are processed directly by the banking platforms (PayPal/BNC). We do not store your financial data.",
+      "checkout.securityBody": "Your payments are processed directly by the banking platforms (PayPal or your bank). We do not store your financial data.",
       "checkout.legalNotice": "By paying, you accept the",
       "checkout.legalAnd": "and the",
 
@@ -1235,7 +1235,7 @@ const resources = {
       "checkout.total": "Total",
       
       "checkout.securityTitle": "Seguridad Garantizada",
-      "checkout.securityBody": "Tus pagos son procesados directamente por las plataformas bancarias (PayPal/BNC). Nosotros no almacenamos tus datos financieros.",
+      "checkout.securityBody": "Tus pagos son procesados directamente por las plataformas bancarias (PayPal o tu banco). Nosotros no almacenamos tus datos financieros.",
       "checkout.legalNotice": "Al pagar aceptas los",
       "checkout.legalAnd": "y la",
 

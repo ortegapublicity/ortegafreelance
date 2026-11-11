@@ -43,3 +43,11 @@ export const LINKS = {
   instagram: 'https://www.instagram.com/ortegafreelance/',
   calendly: 'https://calendly.com/ortegapublicity/meeting',
 };
+
+/** Avisos de pago (/api/pago-aviso): a quién le llegan y qué se le da al cliente. */
+export const PAGOS = {
+  avisoA: 'ortegapublicity@gmail.com',
+  agenda: 'https://ortegafreelance.com/#agenda',
+  whatsapp: 'https://wa.me/584140419317',
+  whatsappTexto: '+58 414 041 9317',
+};
