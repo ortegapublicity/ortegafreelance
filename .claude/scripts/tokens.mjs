@@ -34,6 +34,8 @@ const WARN_DAYS = 7;
 const LINKEDIN_DAYS = 60;
 
 export const COMANDO_LINKEDIN = "cd ~/Documents/ortegafreelance-web && node .claude/scripts/linkedin-token.mjs";
+export const COMANDO_INSTAGRAM = "cd ~/Documents/ortegafreelance-web && node .claude/scripts/instagram-token.mjs";
+const INSTAGRAM_REFRESH_DAYS = 7; // se renueva cuando el token tiene una semana
 export const COMANDO_CONTENTFUL_FECHA = "cd ~/Documents/ortegafreelance-web && node .claude/scripts/tokens.mjs --contentful-caduca AAAA-MM-DD";
 
 const log = (...m) => console.log(`[${new Date().toISOString()}] tokens:`, ...m);
@@ -57,6 +59,24 @@ const saveState = (s) => {
 };
 
 const daysUntil = (iso) => Math.ceil((new Date(`${iso}T23:59:59`).getTime() - Date.now()) / 864e5);
+
+/** Días desde que se guardó un token en el Llavero. null si no hay. */
+function keychainAgeDays(service) {
+  try {
+    const out = execFileSync("security", ["find-generic-password", "-s", service], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    const m = out.match(/"mdat"<timedate>=\S*\s+"(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/);
+    if (!m) return null;
+    return (Date.now() - new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:00Z`).getTime()) / 864e5;
+  } catch {
+    return null;
+  }
+}
+
+/** Días que le quedan al token de Instagram (60 desde la última renovación). null si no hay. */
+export function instagramDaysLeft() {
+  const age = keychainAgeDays("ortegafreelance-instagram");
+  return age === null ? null : Math.round(60 - age);
+}
 
 /** Días que le quedan al token de LinkedIn (por la fecha en que se guardó). null si no hay. */
 export function linkedinDaysLeft() {
@@ -118,6 +138,19 @@ ${code(COMANDO_LINKEDIN)}</li>
 </section>
 
 <section>
+<h2>Instagram: publicar los carruseles</h2>
+<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : when(d) + " · se renueva solo cada semana"; })()}</p>
+<p class="note">Solo hace falta si dejó de renovarse (más de 60 días sin renovar) o si es la primera vez.</p>
+<ol>
+<li>Abre tu app en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Instagram → <b>API setup with Instagram business login</b>.</li>
+<li>Pulsa <b>Generate token</b> junto a @ortegafreelance, entra con Instagram y copia el token.</li>
+<li>En la Terminal ejecuta esto y pega el token cuando lo pida:
+${code(COMANDO_INSTAGRAM)}</li>
+<li>Debe responder «Token válido. Cuenta: @ortegafreelance».</li>
+</ol>
+</section>
+
+<section>
 <h2>Contentful: crear los borradores del blog</h2>
 <p class="when">${cf === null ? "Fecha no apuntada" : when(cf)}</p>
 <ol>
@@ -156,11 +189,29 @@ function openPageOncePerDay(state) {
  * Revisa los dos tokens y avisa si toca renovar. `problemas` permite que quien
  * llama informe de un fallo real (por ejemplo, un 401 de Contentful).
  */
-export function revisarTokens(problemas = {}) {
+export async function revisarTokens(problemas = {}) {
   const state = loadState();
   const li = linkedinDaysLeft();
   const cf = contentfulDaysLeft();
   const urgent = [];
+
+  // Instagram se renueva solo por API (no hace falta que Raúl haga nada)
+  // mientras no pasen 60 días sin renovarlo.
+  const igAge = keychainAgeDays("ortegafreelance-instagram");
+  if (igAge !== null && (igAge >= INSTAGRAM_REFRESH_DAYS || problemas.instagram)) {
+    try {
+      const { refreshToken } = await import("./instagram-publicar.mjs");
+      const days = await refreshToken();
+      log(`Instagram: token renovado (válido ~${days} días).`);
+    } catch (e) {
+      log(`Instagram: no pude renovar el token (${e.message}).`);
+      const left = instagramDaysLeft();
+      if (problemas.instagram || left === null || left <= WARN_DAYS) {
+        notify("Instagram: renueva el token", `En la Terminal: ${COMANDO_INSTAGRAM}`);
+        urgent.push("instagram");
+      }
+    }
+  }
 
   if (problemas.linkedin || (li !== null && li <= WARN_DAYS)) {
     const msg = problemas.linkedin ? "LinkedIn rechaza el token" : li > 0 ? `caduca en ${li} días` : "caducó";
@@ -197,13 +248,15 @@ if (isMain) {
     writeRenewalPage();
     console.log(`Apuntado: el token de Contentful caduca el ${date} (${daysUntil(date)} días). Te avisaré una semana antes.`);
   } else if (args.includes("--revisar")) {
-    revisarTokens();
+    await revisarTokens();
   } else if (args.includes("--pagina")) {
     spawnSync("open", [writeRenewalPage()]);
   } else {
     const li = linkedinDaysLeft();
     const cf = contentfulDaysLeft();
+    const igd = instagramDaysLeft();
     console.log(`LinkedIn:   ${li === null ? "sin token" : `le quedan ~${li} días`}`);
+    console.log(`Instagram:  ${igd === null ? "sin token" : `le quedan ~${igd} días (se renueva solo)`}`);
     console.log(`Contentful: ${cf === null ? "fecha no apuntada (usa --contentful-caduca AAAA-MM-DD)" : `le quedan ${cf} días`}`);
     console.log(`Pasos para renovar: ${pathToFileURL(writeRenewalPage()).href}`);
   }

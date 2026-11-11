@@ -58,12 +58,20 @@ export async function uploadBlogImage({ title, fileName, buffer, contentType = "
   );
   // Procesar genera la URL de la imagen. Si tarda, el asset ya existe y
   // Contentful lo termina de procesar solo; no hace falta fallar.
+  let processed = null;
   try {
-    await client.asset.processForAllLocales({}, asset);
+    processed = await client.asset.processForAllLocales({}, asset);
   } catch {
     /* se procesa en segundo plano */
   }
-  return { assetId: asset.sys.id, editUrl: editUrl(spaceId, environmentId, "assets", asset.sys.id) };
+  // URL pública del archivo (images.ctfassets.net). Instagram la necesita
+  // para descargar cada imagen del carrusel al publicarlo.
+  const fileUrl = processed?.fields?.file?.[en]?.url;
+  return {
+    assetId: asset.sys.id,
+    url: fileUrl ? `https:${fileUrl}` : null,
+    editUrl: editUrl(spaceId, environmentId, "assets", asset.sys.id),
+  };
 }
 
 const blogType = () => process.env.CONTENTFUL_BLOG_POST_TYPE || "blogPage";

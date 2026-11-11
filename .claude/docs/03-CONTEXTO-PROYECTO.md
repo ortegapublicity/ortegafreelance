@@ -368,12 +368,30 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   reales, logos de equipos o marcas, ni temas de tragedias o política.
 - La tarea de las 9:10, al detectar que un post se publicó en el blog,
   genera su carrusel y avisa (estado en `<borrador>.contentful.json` →
-  `meta`). **Todavía se publica a mano**: falta conectar la API de Meta.
-- Para publicar solo (fase 2), hace falta que el usuario tenga Instagram
-  como cuenta profesional y cree una app de Meta con «Instagram API with
-  Instagram Login» (`instagram_business_content_publish`). El token largo
-  dura 60 días, pero a diferencia del de LinkedIn **se puede renovar por
-  API** antes de caducar. Las imágenes tienen que estar en una URL pública.
+  `meta`). El día que sale su LinkedIn, **publica también el carrusel en
+  Instagram** si hay token (`instagram-publicar.mjs`); si no, se publica a
+  mano con `meta.html`.
+- **API de Instagram** (@ortegafreelance es cuenta de empresa):
+  «Instagram API with Instagram Login», `graph.instagram.com/v27.0`. Flujo:
+  sube cada imagen a Contentful con `/api/blog-asset` (devuelve la URL
+  pública de images.ctfassets.net; Instagram solo acepta JPEG en URL
+  pública) → `POST /<IG_ID>/media` por imagen (`image_url`,
+  `is_carousel_item`, `alt_text`) → `POST /<IG_ID>/media` con
+  `media_type=CAROUSEL`, `children` y `caption` → esperar
+  `status_code=FINISHED` → `POST /<IG_ID>/media_publish`. Límite: 100
+  publicaciones por API cada 24 h.
+- **Token de Instagram:** se saca en la app de Meta (developers.facebook.com
+  → la app → Instagram → «API setup with Instagram business login» →
+  **Generate token** junto a @ortegafreelance) y se guarda con
+  `node .claude/scripts/instagram-token.mjs` (Llavero, servicio
+  `ortegafreelance-instagram`). Dura 60 días y **`tokens.mjs` lo renueva
+  solo cada semana** por API (`refresh_access_token`); solo hay que volver a
+  sacarlo si pasan 60 días sin renovarse.
+- Comandos: `instagram-publicar.mjs --verificar | --ahora <borrador> |
+  --refrescar | --marcar <borrador> publicado|listo|cancelado`.
+- Facebook: la API de Instagram no publica en la página. Para que salga
+  también en Facebook, activar en Instagram «compartir en Facebook»
+  (Centro de cuentas) o publicar el carrusel a mano desde `meta.html`.
 - Piloto: carrusel del post «Por qué mi blog se escribe solo…» con la
   tendencia del sistema de reto ABS en la LVBP 2026-2027 (2026-11-11).
 
@@ -384,6 +402,7 @@ Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
 | Token | Dónde vive | Dura | Lo usan |
 |---|---|---|---|
 | LinkedIn (`w_member_social`) | Llavero de macOS, servicio `ortegafreelance-linkedin` | 60 días | `linkedin-publicar.mjs` |
+| Instagram (`instagram_business_content_publish`) | Llavero de macOS, servicio `ortegafreelance-instagram` | 60 días, **se renueva solo** cada semana | `instagram-publicar.mjs` |
 | Contentful CMA (se llamó «claude-post») | Netlify, `CONTENTFUL_MANAGEMENT_TOKEN` | lo que se elija al crearlo | `/api/blog-draft`, `/api/blog-asset`, `/api/blog-posts` |
 
 - `.claude/scripts/tokens.mjs` lo revisa cada mañana (lo llama la tarea de
@@ -396,7 +415,9 @@ Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
   https://www.linkedin.com/developers/tools/oauth/token-generator (`openid`,
   `profile`, `w_member_social`) y ejecutar
   `cd ~/Documents/ortegafreelance-web && node .claude/scripts/linkedin-token.mjs`
-  (pegar el token cuando lo pida). Nada más.
+  (pegar el token cuando lo pida). Nada más. El atajo `linkedin-token.mjs`
+  llama a `guardar-token.mjs linkedin`; `instagram-token.mjs`, a
+  `guardar-token.mjs instagram`.
 - **Renovar Contentful:** crear un token nuevo en
   https://app.contentful.com/account/profile/cma_tokens (copiarlo, solo se
   ve una vez) → Netlify, proyecto ortegafreelance → Environment variables →
