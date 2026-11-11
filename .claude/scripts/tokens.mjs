@@ -72,10 +72,14 @@ function keychainAgeDays(service) {
   }
 }
 
-/** Días que le quedan al token de Instagram (60 desde la última renovación). null si no hay. */
+/** Días que le quedan al token de Instagram: la fecha apuntada (token unificado) o 60 desde que se guardó. */
 export function instagramDaysLeft() {
   const age = keychainAgeDays("ortegafreelance-instagram");
-  return age === null ? null : Math.round(60 - age);
+  if (age === null) return null;
+  const st = loadState();
+  if (st.instagram === "nunca") return 9999; // token de usuario del sistema: no caduca
+  if (st.instagram) return daysUntil(st.instagram);
+  return Math.round(60 - age);
 }
 
 /** Días que le quedan al token de LinkedIn (por la fecha en que se guardó). null si no hay. */
@@ -96,6 +100,13 @@ export function linkedinDaysLeft() {
 export function contentfulDaysLeft() {
   const s = loadState();
   return s.contentful ? daysUntil(s.contentful) : null;
+}
+
+/** Apunta la fecha de caducidad conocida de un token (lo usa instagram-publicar --verificar). */
+export function apuntarCaducidad(nombre, isoDate) {
+  const st = loadState();
+  st[nombre] = isoDate;
+  saveState(st);
 }
 
 /** Página con los pasos para renovar cada token. */
@@ -139,11 +150,10 @@ ${code(COMANDO_LINKEDIN)}</li>
 
 <section>
 <h2>Instagram: publicar los carruseles</h2>
-<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : when(d) + " · se renueva solo cada semana"; })()}</p>
-<p class="note">Solo hace falta si dejó de renovarse (más de 60 días sin renovar) o si es la primera vez.</p>
+<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : d >= 9999 ? "No caduca (token de usuario del sistema)" : when(d); })()}</p>
 <ol>
-<li>Abre tu app en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Instagram → <b>API setup with Instagram business login</b>.</li>
-<li>Pulsa <b>Generate token</b> junto a @ortegafreelance, entra con Instagram y copia el token.</li>
+<li>Abre tu app <b>claudeiaadminpost</b> en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Casos de uso → «Administrar mensajes y contenido en Instagram» → <b>API setup with Unified login</b>.</li>
+<li>En <b>2. Generar tokens de acceso</b>, pulsa <b>Generar token</b> junto a @ortegafreelance (si no está: «Agregar cuenta»; necesita el rol de evaluador de Instagram en Roles de la app). Copia el token: solo se muestra una vez.</li>
 <li>En la Terminal ejecuta esto y pega el token cuando lo pida:
 ${code(COMANDO_INSTAGRAM)}</li>
 <li>Debe responder «Token válido. Cuenta: @ortegafreelance».</li>
@@ -195,14 +205,36 @@ export async function revisarTokens(problemas = {}) {
   const cf = contentfulDaysLeft();
   const urgent = [];
 
-  // Instagram se renueva solo por API (no hace falta que Raúl haga nada)
-  // mientras no pasen 60 días sin renovarlo.
-  const igAge = keychainAgeDays("ortegafreelance-instagram");
+  // Instagram: chequeo de salud diario (solo lectura). Un token que «no
+  // caduca» igual puede dejar de servir si se quita la app en Instagram, se
+  // revoca un permiso o Meta pide alguna acción en la app: mejor saberlo hoy
+  // que el día que toca publicar.
+  if (keychainAgeDays("ortegafreelance-instagram") !== null && !process.env.BITACORA_SIN_CHEQUEO) {
+    const { checkPublishing } = await import("./instagram-publicar.mjs");
+    const h = await checkPublishing();
+    if (h.ok) log(`Instagram: publicación disponible (${h.usadas}/${h.total} hoy).`);
+    else {
+      log(`Instagram: no puede publicar (${h.motivo}).`);
+      notify("Instagram: la conexión falló", `${h.motivo.slice(0, 90)}. Revisa «Acciones requeridas» en la app de Meta o renueva el token.`);
+      urgent.push("instagram");
+    }
+  }
+
+  // Instagram Login (no el de usuario del sistema) se renueva por API cada
+  // semana mientras no pasen 60 días sin renovarlo.
+  const igAge = state.instagram === "nunca" ? null : keychainAgeDays("ortegafreelance-instagram");
   if (igAge !== null && (igAge >= INSTAGRAM_REFRESH_DAYS || problemas.instagram)) {
     try {
       const { refreshToken } = await import("./instagram-publicar.mjs");
       const days = await refreshToken();
-      log(`Instagram: token renovado (válido ~${days} días).`);
+      if (days === null) {
+        // Token unificado: no se renueva solo. Aviso por fecha.
+        const left = instagramDaysLeft();
+        if (problemas.instagram || (left !== null && left <= WARN_DAYS)) {
+          notify("Instagram: renueva el token", `${left !== null && left > 0 ? `Caduca en ${left} días. ` : ""}En la Terminal: ${COMANDO_INSTAGRAM}`);
+          urgent.push("instagram");
+        }
+      } else log(`Instagram: token renovado (válido ~${days} días).`);
     } catch (e) {
       log(`Instagram: no pude renovar el token (${e.message}).`);
       const left = instagramDaysLeft();
@@ -256,7 +288,7 @@ if (isMain) {
     const cf = contentfulDaysLeft();
     const igd = instagramDaysLeft();
     console.log(`LinkedIn:   ${li === null ? "sin token" : `le quedan ~${li} días`}`);
-    console.log(`Instagram:  ${igd === null ? "sin token" : `le quedan ~${igd} días (se renueva solo)`}`);
+    console.log(`Instagram:  ${igd === null ? "sin token" : igd >= 9999 ? "no caduca (token de usuario del sistema)" : `le quedan ~${igd} días`}`);
     console.log(`Contentful: ${cf === null ? "fecha no apuntada (usa --contentful-caduca AAAA-MM-DD)" : `le quedan ${cf} días`}`);
     console.log(`Pasos para renovar: ${pathToFileURL(writeRenewalPage()).href}`);
   }
