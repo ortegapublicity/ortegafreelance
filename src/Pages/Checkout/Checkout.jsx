@@ -2,11 +2,61 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PageHeader from '../../Components/Shared/PageHeader/PageHeader';
 import './Checkout.scss';
-import { Paypal, Globe } from 'react-bootstrap-icons';
+import { Paypal, Bank } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
+import PaymentNotice from '../../Components/PaymentNotice/PaymentNotice';
+
+// Transferencia en EE. UU. (ACH o wire). El número de cuenta y el de ruta NO
+// están en el código (el repo es público): salen de las variables de Netlify
+// VITE_ACH_CUENTA y VITE_ACH_RUTA, que pone Raúl. Si faltan, se pide escribir
+// por WhatsApp para recibir los datos.
+const ACH = {
+  titular: 'Raul Alberto Ortega Talavera',
+  banco: 'Lead Bank',
+  direccion: '1801 Main St., Kansas City, MO 64108',
+  cuenta: import.meta.env.VITE_ACH_CUENTA || '',
+  ruta: import.meta.env.VITE_ACH_RUTA || '',
+};
+const ACH_TEXT = {
+  es: {
+    label: 'Transferencia bancaria en EE. UU. (ACH o Wire)',
+    intro: 'Envía el monto exacto desde tu banco en EE. UU. a esta cuenta. Después avísame abajo.',
+    titular: 'Titular', banco: 'Banco', tipo: 'Tipo de cuenta', tipoValor: 'Corriente (checking)',
+    cuenta: 'Número de cuenta', ruta: 'Número de ruta ACH y Wire', direccion: 'Dirección del banco',
+    tiempos: 'ACH: de 1 a 3 días hábiles. Wire: en el día (las wire de terceros pueden tardar hasta 3 días hábiles).',
+    copiar: 'Copiar', copiado: 'Copiado',
+    faltan: 'Escríbeme por WhatsApp al +58 414 041 9317 y te paso los datos de la cuenta.',
+  },
+  en: {
+    label: 'US bank transfer (ACH or Wire)',
+    intro: 'Send the exact amount from your US bank to this account. Then let me know below.',
+    titular: 'Account holder', banco: 'Bank', tipo: 'Account type', tipoValor: 'Checking',
+    cuenta: 'Account number', ruta: 'ACH and Wire routing number', direccion: 'Bank address',
+    tiempos: 'ACH: 1 to 3 business days. Wire: same day (third-party wires can take up to 3 business days).',
+    copiar: 'Copy', copiado: 'Copied',
+    faltan: 'Message me on WhatsApp at +58 414 041 9317 and I will send you the account details.',
+  },
+};
+
+const CopyRow = ({ label, value, tx }) => {
+  const [done, setDone] = useState(false);
+  const copy = async (e) => {
+    e.stopPropagation();
+    try { await navigator.clipboard.writeText(value); } catch { /* sin permiso: se copia a mano */ }
+    setDone(true);
+    setTimeout(() => setDone(false), 1500);
+  };
+  return (
+    <div className="ach-row">
+      <div><span className="ach-row__label">{label}</span><span className="ach-row__value">{value}</span></div>
+      <button type="button" className="ach-row__copy" onClick={copy}>{done ? tx.copiado : tx.copiar}</button>
+    </div>
+  );
+};
 
 const Checkout = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const ach = ACH_TEXT[i18n.language?.startsWith('es') ? 'es' : 'en'];
   const location = useLocation(); // Hook debe ir primero
   
   useEffect(() => {
@@ -44,7 +94,7 @@ const Checkout = () => {
   const currentPaypalLink = paypalLinks[finalPrice] || paypalLinks[1050];
 
   // Tracking: evento de comercio electrónico estándar de GA4. Se dispara al
-  // pulsar "pagar", que abre PayPal o el BNC en otra pestaña: es intención de
+  // pulsar "pagar", que abre PayPal en otra pestaña: es intención de
   // pago, no pago confirmado, por eso no se envía como `purchase`.
   const trackPurchaseEvent = () => {
     window.dataLayer = window.dataLayer || [];
@@ -105,49 +155,45 @@ const Checkout = () => {
                              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" alt="Tarjetas" style={{maxWidth: '150px'}} />
                           </div>
                         </form>
+                        <PaymentNotice plan={selectedPlanName} amount={finalPrice} defaultMethod="paypal" methods={['paypal']} />
                       </div>
                     )}
                   </div>
 
                   {/* -------------------------
-                      OPCIÓN 2: REMESAS BNC
+                      OPCIÓN 2: TRANSFERENCIA EN EE. UU. (ACH / WIRE)
                   -------------------------- */}
                   <div 
-                    className={`payment-option-item ${selectedPaymentMethod === 'bnc' ? 'active' : ''}`}
-                    onClick={() => setSelectedPaymentMethod('bnc')}
+                    className={`payment-option-item ${selectedPaymentMethod === 'ach' ? 'active' : ''}`}
+                    onClick={() => { if (selectedPaymentMethod !== 'ach') { setSelectedPaymentMethod('ach'); } }}
                     style={{cursor: 'pointer', border: '1px solid #ddd', padding: '20px', marginBottom: '15px', borderRadius: '12px'}}
                   >
                     <div className="d-flex align-items-center mb-2">
-                        <input type="radio" checked={selectedPaymentMethod === 'bnc'} readOnly className="me-2" style={{transform: 'scale(1.5)'}} />
+                        <input type="radio" checked={selectedPaymentMethod === 'ach'} readOnly className="me-2" style={{transform: 'scale(1.5)'}} />
                         <label className="fw-bold fs-5">
-                            <Globe className="payment-icon me-2 text-success" /> {t('checkout.bncLabel')}
+                            <Bank className="payment-icon me-2 text-success" /> {ach.label}
                         </label>
                     </div>
 
-                    {/* Contenido desplegable de BNC */}
-                    {selectedPaymentMethod === 'bnc' && (
-                       <div className="mt-3 ps-4 border-start border-4 border-success bg-light p-3">
-                        <div className="alert alert-info small">
-                            <i className="bi bi-info-circle-fill me-1"></i>
-                            <strong>{t('checkout.bncNoteTitle')}</strong> {t('checkout.bncNoteBody')}
-                        </div>
-                        
-                        <p className="mb-2">{t('checkout.bncInstruction')}</p>
+                    {selectedPaymentMethod === 'ach' && (
+                      <div className="mt-3 ps-4 border-start border-4 border-success bg-light p-3">
+                        <p className="mb-3">{ach.intro}</p>
                         <h2 className="text-center text-success fw-bold my-3">${totalDisplay} USD</h2>
-                        
-                        <a 
-                            href="https://remesas.bncenlinea.com/l/Cg2g4QpN" 
-                            target="_blank" 
-                            rel="noreferrer"
-                            className="btn btn-success w-100 fw-bold py-2 shadow-sm"
-                            onClick={() => trackPurchaseEvent()}
-                        >
-                            {t('checkout.goToBnc')} <i className="bi bi-box-arrow-up-right ms-2"></i>
-                        </a>
-                        <p className="text-muted small text-center mt-2">
-                            {t('checkout.newTabInfo')}
-                        </p>
-                    </div>
+                        {ACH.cuenta && ACH.ruta ? (
+                          <div className="ach-box">
+                            <CopyRow label={ach.titular} value={ACH.titular} tx={ach} />
+                            <CopyRow label={ach.banco} value={ACH.banco} tx={ach} />
+                            <div className="ach-row"><div><span className="ach-row__label">{ach.tipo}</span><span className="ach-row__value">{ach.tipoValor}</span></div></div>
+                            <CopyRow label={ach.cuenta} value={ACH.cuenta} tx={ach} />
+                            <CopyRow label={ach.ruta} value={ACH.ruta} tx={ach} />
+                            <CopyRow label={ach.direccion} value={ACH.direccion} tx={ach} />
+                            <p className="small text-muted mt-2 mb-0">{ach.tiempos}</p>
+                          </div>
+                        ) : (
+                          <div className="alert alert-info small mb-0">{ach.faltan}</div>
+                        )}
+                        <PaymentNotice plan={selectedPlanName} amount={finalPrice} defaultMethod="ach" methods={['ach', 'wire']} />
+                      </div>
                     )}
                   </div>
 

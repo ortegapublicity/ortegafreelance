@@ -1,11 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import PaymentNotice from "../PaymentNotice/PaymentNotice";
 import { useTranslation } from "react-i18next";
 // Puedes usar el ícono de Bootstrap que ya tienes instalado
 import { CheckCircleFill, ArrowRight } from "react-bootstrap-icons";
 
+// PayPal redirige aquí después de pagar (configurar en cada enlace de pago:
+// https://ortegafreelance.com/success?plan=<nombre>&price=<monto>). El
+// formulario avisa a Raúl y envía al cliente la confirmación por correo.
 const PaymentSuccess = () => {
   const { t } = useTranslation();
+  const q = new URLSearchParams(useLocation().search);
+  const plan = q.get("plan") || "";
+  const price = Number(String(q.get("price") || "").replace(/[^0-9.]/g, "")) || 0;
 
   return (
     <section className="payment-success-section pt-120 pb-120 d-flex align-items-center justify-content-center" style={{ minHeight: "80vh", backgroundColor: "#f4f4f4" }}>
@@ -28,6 +35,10 @@ const PaymentSuccess = () => {
               <p className="fz-18 mb-4" style={{ color: "#666" }}>
                 {t("checkout.success.message", { defaultValue: "Your payment has been received successfully. We will contact you shortly to start your project." })}
               </p>
+
+              <div className="text-start">
+                <PaymentNotice plan={plan || "Pago con PayPal"} amount={price} defaultMethod="paypal" methods={["paypal"]} />
+              </div>
 
               {/* Botón de regreso o próximos pasos */}
               <div className="mt-5">
