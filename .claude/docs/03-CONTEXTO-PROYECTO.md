@@ -310,9 +310,12 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   (publica ya; solo si el usuario lo pide en ese momento).
 - Seguridad: nunca publica un post que no esté publicado en el blog; si la
   red se corta a mitad, el post queda en «publicando» y no se reintenta solo
-  (para no duplicar). La parte de la API está probada contra un servidor
-  simulado; **la primera publicación real conviene hacerla con el usuario
-  delante**.
+  (para no duplicar).
+- **Funciona de verdad desde el 2026-11-11**: primera publicación real por la
+  API (post del correo con Resend, con el usuario delante):
+  https://www.linkedin.com/feed/update/urn:li:share:7526262903319076864/
+  El token se creó ese día; caduca hacia el 2027-01-10 y el script avisa
+  una semana antes.
 - Todas las rutas del blog comparten la misma vista previa (§7c), por eso se
   publica como imagen + enlace en el texto y no como tarjeta de enlace.
 
