@@ -13,7 +13,10 @@
 //   node .claude/scripts/linkedin-publicar.mjs --marcar <borrador.json> publicado|programado|cancelado
 //
 // Dos modos, según haya o no token de LinkedIn en el Llavero de macOS
-// (servicio "ortegafreelance-linkedin"):
+// (servicio "ortegafreelance-linkedin"). Guárdalo desde el portapapeles, NO
+// escribiéndolo en la pregunta de `security -w`, que corta a 128 caracteres
+// (y los tokens de LinkedIn son más largos):
+//   security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null
 // - SIN token: el día programado avisa con una notificación y deja lista
 //   contenido-blog/<post>/linkedin.html (texto para copiar, portada y botón
 //   para abrir LinkedIn). Raúl publica o programa a mano.
@@ -472,7 +475,19 @@ if (isMain) {
         console.log(`No hay token en el Llavero (servicio "${KEYCHAIN}"). Sin token, el sistema avisa y se publica a mano.`);
         process.exit(77);
       }
-      const me = await whoAmI(token);
+      let me;
+      try {
+        me = await whoAmI(token);
+      } catch (e) {
+        if (e.status === 401 && token.length === 128) {
+          throw new Error(
+            "LinkedIn rechaza el token y mide exactamente 128 caracteres: casi seguro se cortó al guardarlo " +
+              "(la pregunta de `security -w` admite 128 como máximo). Cópialo de nuevo y guárdalo con:\n" +
+              '  security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null'
+          );
+        }
+        throw e;
+      }
       const left = tokenDaysLeft();
       console.log(`Token válido. Perfil: ${me.name || "(sin nombre)"}${left !== null ? ` · le quedan ~${left} días` : ""}`);
     } else if (args.includes("--ahora")) {
