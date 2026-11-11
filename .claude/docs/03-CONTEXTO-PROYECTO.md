@@ -312,6 +312,25 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - Todas las rutas del blog comparten la misma vista previa (§7c), por eso se
   publica como imagen + enlace en el texto y no como tarjeta de enlace.
 
+### 7f. Páginas legales
+
+- **https://ortegafreelance.com/privacy-policy** y **/terms** (alias
+  `/privacidad` y `/terminos`), en español e inglés según la bandera o el
+  idioma del navegador. Las enlazan el pie y el checkout. La URL de
+  privacidad es la que se da a LinkedIn al crear la app (§7e). PR #22,
+  2026-11-11.
+- Textos en `src/data/legal.js`; los pinta `src/Pages/Legal/Legal.jsx`.
+- La política de privacidad describe los servicios de terceros que usa la
+  web **de verdad**. Si se añade o quita uno (un píxel, un formulario, un
+  medio de pago), hay que actualizarla y cambiar `UPDATED`.
+- No son asesoría legal. Pendiente de que el usuario confirme: 50/50 en webs,
+  trimestre no reembolsable, 2 rondas de cambios, aprobación a los 7 días,
+  30 días de corrección, límite de responsabilidad de 3 meses y ley de
+  Venezuela (Carabobo).
+- La web no tiene banner de cookies. Para visitantes de la UE, GA4 y
+  LinkedIn Insight Tag necesitarían consentimiento previo: pendiente de
+  decisión del usuario.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,
@@ -324,6 +343,11 @@ bloquean `.env.example`.
 
 ## 9. Trampas de esta máquina
 
+- **`npx vite build` se queda parado** sin usar CPU: iCloud desalojó
+  `node_modules` (el 2026-11-11, 21.254 de 21.782 archivos). Lo rápido es
+  compilar en una copia fuera de iCloud:
+  `tar -c --exclude ./node_modules --exclude ./.git --exclude './.env*' . | tar -x -C <scratchpad>/build`,
+  y allí `npm ci` y `npx vite build` (unos 6 s en total).
 - **iCloud desaloja archivos del repo** (el disco está casi lleno: 93 % el
   2026-11-10), incluido casi todo lo interno de `.git`. Un proceso de fondo
   (launchd) no puede leer un archivo desalojado: falla con «Unknown system
