@@ -297,22 +297,37 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
      LinkedIn using OpenID Connect».
   2. Token en https://www.linkedin.com/developers/tools/oauth/token-generator
      con los permisos `openid`, `profile` y `w_member_social`.
-  3. Copiar el token y guardarlo **desde el portapapeles**:
-     `security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null`
-     (escribirlo en la pregunta de `security -w` lo corta a 128 caracteres:
-     pasó el 2026-11-11). Comprobar con
-     `node .claude/scripts/linkedin-publicar.mjs --verificar`.
+  3. Guardarlo con el asistente `node .claude/scripts/linkedin-token.mjs`
+     (pide el token sin mostrarlo, lo guarda en el Llavero y lo comprueba).
+     No usar `security add-generic-password -w`: su pregunta corta a 128
+     caracteres, y con `-w "$(pbpaste)"` se acaba guardando el propio
+     comando. Pasaron las dos cosas el 2026-11-11.
   - No hacen falta el Client ID ni el Client Secret de la app: solo el token.
   El token dura 60 días y no se renueva solo: el script avisa una semana antes
   y, si caduca, vuelve al modo aviso.
 - Comandos: `--estado` (cola), `--simular <borrador>` (texto final),
   `--marcar <borrador> cancelado|programado|publicado`, `--ahora <borrador>`
   (publica ya; solo si el usuario lo pide en ese momento).
+- **El enlace al artículo va en el primer comentario** (desde el
+  2026-11-11): el texto termina en «Enlace al artículo completo en el primer
+  comentario» y, justo después de publicar, el script comenta el enlace
+  (`POST /v2/socialActions/{urn}/comments`). Funciona con `w_member_social`:
+  probado en real ese día, aunque la documentación nueva pide
+  `w_member_social_feed`. Si un día LinkedIn lo rechaza, el post sale igual
+  y avisa para comentar a mano. `LINKEDIN_ENLACE=texto` vuelve a poner el
+  enlace en el texto.
+- Por qué: hay estudios que ven menos alcance con enlaces externos en el
+  texto (18–26 %) y otros que no ven ninguno o lo contrario; nada oficial de
+  LinkedIn. El usuario prefirió el comentario. Revisar con las estadísticas
+  de sus propios posts.
 - Seguridad: nunca publica un post que no esté publicado en el blog; si la
   red se corta a mitad, el post queda en «publicando» y no se reintenta solo
-  (para no duplicar). La parte de la API está probada contra un servidor
-  simulado; **la primera publicación real conviene hacerla con el usuario
-  delante**.
+  (para no duplicar).
+- **Funciona de verdad desde el 2026-11-11**: primera publicación real por la
+  API (post del correo con Resend, con el usuario delante):
+  https://www.linkedin.com/feed/update/urn:li:share:7526262903319076864/
+  El token se creó ese día; caduca hacia el 2027-01-10 y el script avisa
+  una semana antes.
 - Todas las rutas del blog comparten la misma vista previa (§7c), por eso se
   publica como imagen + enlace en el texto y no como tarjeta de enlace.
 
@@ -334,6 +349,39 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - La web no tiene banner de cookies. Para visitantes de la UE, GA4 y
   LinkedIn Insight Tag necesitarían consentimiento previo: pendiente de
   decisión del usuario.
+
+### 7g. Caducidad de tokens (LinkedIn y Contentful)
+
+Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
+
+| Token | Dónde vive | Dura | Lo usan |
+|---|---|---|---|
+| LinkedIn (`w_member_social`) | Llavero de macOS, servicio `ortegafreelance-linkedin` | 60 días | `linkedin-publicar.mjs` |
+| Contentful CMA (se llamó «claude-post») | Netlify, `CONTENTFUL_MANAGEMENT_TOKEN` | lo que se elija al crearlo | `/api/blog-draft`, `/api/blog-asset`, `/api/blog-posts` |
+
+- `.claude/scripts/tokens.mjs` lo revisa cada mañana (lo llama la tarea de
+  LinkedIn de las 9:10). Cuando falta una semana o menos, o el token ya
+  falla (401), manda una notificación con el comando exacto y abre
+  `contenido-blog/renovar-tokens.html` (pasos con botones para copiar; como
+  mucho una vez al día).
+- `node .claude/scripts/tokens.mjs` muestra el estado y la ruta de esa página.
+- **Renovar LinkedIn:** generar el token en
+  https://www.linkedin.com/developers/tools/oauth/token-generator (`openid`,
+  `profile`, `w_member_social`) y ejecutar
+  `cd ~/Documents/ortegafreelance-web && node .claude/scripts/linkedin-token.mjs`
+  (pegar el token cuando lo pida). Nada más.
+- **Renovar Contentful:** crear un token nuevo en
+  https://app.contentful.com/account/profile/cma_tokens (copiarlo, solo se
+  ve una vez) → Netlify, proyecto ortegafreelance → Environment variables →
+  `CONTENTFUL_MANAGEMENT_TOKEN` → pegar → Save → **Trigger deploy** (las
+  funciones no leen el valor nuevo sin deploy; 15 créditos) → apuntar la
+  caducidad con `node .claude/scripts/tokens.mjs --contentful-caduca AAAA-MM-DD`
+  → comprobar con `node .claude/scripts/blog-borrador.mjs --listar`.
+- La caducidad de Contentful no se puede leer desde el Mac: se apunta a mano
+  en `.claude/blog/caducidades.json` (con el comando de arriba). El
+  2026-11-11 Contentful avisó de que «claude-post» caducaba al día
+  siguiente.
+- Ningún agente crea, lee ni pega estos tokens: los maneja el usuario.
 
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
