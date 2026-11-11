@@ -338,6 +338,39 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   LinkedIn Insight Tag necesitarían consentimiento previo: pendiente de
   decisión del usuario.
 
+### 7g. Caducidad de tokens (LinkedIn y Contentful)
+
+Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
+
+| Token | Dónde vive | Dura | Lo usan |
+|---|---|---|---|
+| LinkedIn (`w_member_social`) | Llavero de macOS, servicio `ortegafreelance-linkedin` | 60 días | `linkedin-publicar.mjs` |
+| Contentful CMA (se llamó «claude-post») | Netlify, `CONTENTFUL_MANAGEMENT_TOKEN` | lo que se elija al crearlo | `/api/blog-draft`, `/api/blog-asset`, `/api/blog-posts` |
+
+- `.claude/scripts/tokens.mjs` lo revisa cada mañana (lo llama la tarea de
+  LinkedIn de las 9:10). Cuando falta una semana o menos, o el token ya
+  falla (401), manda una notificación con el comando exacto y abre
+  `contenido-blog/renovar-tokens.html` (pasos con botones para copiar; como
+  mucho una vez al día).
+- `node .claude/scripts/tokens.mjs` muestra el estado y la ruta de esa página.
+- **Renovar LinkedIn:** generar el token en
+  https://www.linkedin.com/developers/tools/oauth/token-generator (`openid`,
+  `profile`, `w_member_social`) y ejecutar
+  `cd ~/Documents/ortegafreelance-web && node .claude/scripts/linkedin-token.mjs`
+  (pegar el token cuando lo pida). Nada más.
+- **Renovar Contentful:** crear un token nuevo en
+  https://app.contentful.com/account/profile/cma_tokens (copiarlo, solo se
+  ve una vez) → Netlify, proyecto ortegafreelance → Environment variables →
+  `CONTENTFUL_MANAGEMENT_TOKEN` → pegar → Save → **Trigger deploy** (las
+  funciones no leen el valor nuevo sin deploy; 15 créditos) → apuntar la
+  caducidad con `node .claude/scripts/tokens.mjs --contentful-caduca AAAA-MM-DD`
+  → comprobar con `node .claude/scripts/blog-borrador.mjs --listar`.
+- La caducidad de Contentful no se puede leer desde el Mac: se apunta a mano
+  en `.claude/blog/caducidades.json` (con el comando de arriba). El
+  2026-11-11 Contentful avisó de que «claude-post» caducaba al día
+  siguiente.
+- Ningún agente crea, lee ni pega estos tokens: los maneja el usuario.
+
 ## 8. Variables de entorno (solo nombres; los valores están en Netlify)
 
 `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET`, `SESSION_SECRET`, `TEAM_LOGIN`,

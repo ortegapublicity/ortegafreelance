@@ -32,6 +32,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores y portadas); solo se
@@ -423,18 +424,17 @@ async function publicarPendiente() {
     log(`No se pudo publicar «${due.draft.title}»: ${e.message}`);
     notify(
       expired ? "LinkedIn: token caducado" : "LinkedIn: no se publicó",
-      expired ? `Renueva el token (dura 60 días). Hoy publícalo a mano: ${helper}` : `${e.message.slice(0, 90)}. Texto en ${helper}`
+      expired ? `Renuévalo en la Terminal: ${COMANDO_LINKEDIN} · Hoy publícalo a mano: ${helper}` : `${e.message.slice(0, 90)}. Texto en ${helper}`
     );
+    if (expired) revisarTokens({ linkedin: true });
   }
 }
 
-function avisarCaducidad() {
-  if (!readToken() || MOCK) return;
-  const left = tokenDaysLeft();
-  if (left !== null && left <= 7) {
-    log(`El token de LinkedIn caduca en ~${left} días.`);
-    notify("LinkedIn: renueva el token", left > 0 ? `Caduca en unos ${left} días.` : "Probablemente ya caducó.");
-  }
+// Caducidad de los tokens de LinkedIn y Contentful: ver tokens.mjs (avisa con
+// el comando exacto y abre contenido-blog/renovar-tokens.html).
+function avisarCaducidad(problemas = {}) {
+  if (MOCK) return;
+  revisarTokens(problemas);
 }
 
 // ---------- Línea de comandos ----------
@@ -510,13 +510,16 @@ if (isMain) {
     } else if (args.includes("--publicar")) {
       await publicarPendiente();
     } else if (args.includes("--diario")) {
+      const problemas = {};
       try {
         preparar();
       } catch (e) {
         log(`No pude revisar los posts publicados: ${e.message}`);
+        // /api/blog-posts falla con 401 cuando caduca el token de Contentful.
+        if (/\b401\b|access token|unauthori[sz]ed/i.test(e.message)) problemas.contentful = true;
       }
       await publicarPendiente();
-      avisarCaducidad();
+      avisarCaducidad(problemas);
     } else {
       console.error("Uso: linkedin-publicar.mjs --diario | --preparar | --estado | --simular <borrador> | --verificar | --ahora <borrador> | --marcar <borrador> <estado>");
       process.exit(64);
