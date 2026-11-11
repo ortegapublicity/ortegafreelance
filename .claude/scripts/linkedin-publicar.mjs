@@ -34,6 +34,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
 import { renderCarousel } from "./carrusel-meta.mjs";
+import { publishIfPossible as publishInstagram } from "./instagram-publicar.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores y portadas); solo se
@@ -436,7 +437,14 @@ async function publishItem(item, token) {
   return result;
 }
 
+// El día que sale el LinkedIn de un post, sale también su carrusel de
+// Instagram (si hay token de Instagram; si no, ya se avisó al prepararlo).
 async function publicarPendiente() {
+  const due = await publicarLinkedInPendiente();
+  if (due?.draft.meta) await publishInstagram(due.file);
+}
+
+async function publicarLinkedInPendiente() {
   const items = loadItems();
   const stuck = items.find((i) => i.state.linkedin?.estado === "publicando");
   if (stuck) {
@@ -459,7 +467,7 @@ async function publicarPendiente() {
     saveState(due);
     log(`Sin token de LinkedIn: aviso para publicar a mano «${due.draft.title}» (${helper}).`);
     notify("Hoy toca LinkedIn", `${due.draft.title}. Abre ${helper}: texto listo para copiar y portada.`);
-    return;
+    return due;
   }
   try {
     const r = await publishItem(due, token);
@@ -469,7 +477,7 @@ async function publicarPendiente() {
     if (li.estado === "publicando") {
       log(`Fallo después de enviar la publicación (${e.message}): no reintento.`);
       notify("LinkedIn: revisar", `Pudo publicarse «${due.draft.title}» pero LinkedIn no lo confirmó. Míralo en tu perfil.`);
-      return;
+      return due;
     }
     li.intentos = (li.intentos || 0) + 1;
     li.ultimoError = e.message.slice(0, 200);
@@ -484,15 +492,16 @@ async function publicarPendiente() {
       expired ? "LinkedIn: token caducado" : "LinkedIn: no se publicó",
       expired ? `Renuévalo en la Terminal: ${COMANDO_LINKEDIN} · Hoy publícalo a mano: ${helper}` : `${e.message.slice(0, 90)}. Texto en ${helper}`
     );
-    if (expired) revisarTokens({ linkedin: true });
+    if (expired) await revisarTokens({ linkedin: true });
   }
+  return due;
 }
 
 // Caducidad de los tokens de LinkedIn y Contentful: ver tokens.mjs (avisa con
 // el comando exacto y abre contenido-blog/renovar-tokens.html).
-function avisarCaducidad(problemas = {}) {
+async function avisarCaducidad(problemas = {}) {
   if (MOCK) return;
-  revisarTokens(problemas);
+  await revisarTokens(problemas);
 }
 
 // ---------- Línea de comandos ----------
@@ -580,7 +589,7 @@ if (isMain) {
         if (/\b401\b|access token|unauthori[sz]ed/i.test(e.message)) problemas.contentful = true;
       }
       await publicarPendiente();
-      avisarCaducidad(problemas);
+      await avisarCaducidad(problemas);
     } else {
       console.error("Uso: linkedin-publicar.mjs --diario | --preparar | --estado | --simular <borrador> | --verificar | --ahora <borrador> | --marcar <borrador> <estado>");
       process.exit(64);
