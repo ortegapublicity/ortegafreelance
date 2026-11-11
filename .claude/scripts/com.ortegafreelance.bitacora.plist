@@ -13,6 +13,9 @@
   Quitar:
     launchctl bootout gui/$(id -u)/com.ortegafreelance.bitacora
   Si el Mac está dormido a la hora, launchd la ejecuta al despertar.
+  `caffeinate -i` mantiene el Mac despierto mientras dura la tarea: sin él, la
+  bitácora del 2026-11-10 se cortó tres veces porque el Mac volvió a dormirse
+  en mitad de la llamada a Claude.
 -->
 <plist version="1.0">
 <dict>
@@ -20,6 +23,8 @@
   <string>com.ortegafreelance.bitacora</string>
   <key>ProgramArguments</key>
   <array>
+    <string>/usr/bin/caffeinate</string>
+    <string>-i</string>
     <string>/opt/homebrew/opt/node@20/bin/node</string>
     <string>/Users/raulortega/Library/Application Support/ortegafreelance-bitacora/bitacora-arranque.mjs</string>
     <string>/Users/raulortega/Documents/ortegafreelance-web</string>

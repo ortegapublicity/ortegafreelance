@@ -297,8 +297,12 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
      LinkedIn using OpenID Connect».
   2. Token en https://www.linkedin.com/developers/tools/oauth/token-generator
      con los permisos `openid`, `profile` y `w_member_social`.
-  3. `security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w`
-     y comprobar con `node .claude/scripts/linkedin-publicar.mjs --verificar`.
+  3. Copiar el token y guardarlo **desde el portapapeles**:
+     `security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null`
+     (escribirlo en la pregunta de `security -w` lo corta a 128 caracteres:
+     pasó el 2026-11-11). Comprobar con
+     `node .claude/scripts/linkedin-publicar.mjs --verificar`.
+  - No hacen falta el Client ID ni el Client Secret de la app: solo el token.
   El token dura 60 días y no se renueva solo: el script avisa una semana antes
   y, si caduca, vuelve al modo aviso.
 - Comandos: `--estado` (cola), `--simular <borrador>` (texto final),
@@ -348,6 +352,9 @@ bloquean `.env.example`.
   compilar en una copia fuera de iCloud:
   `tar -c --exclude ./node_modules --exclude ./.git --exclude './.env*' . | tar -x -C <scratchpad>/build`,
   y allí `npm ci` y `npx vite build` (unos 6 s en total).
+- **El Mac se duerme de noche** y corta las tareas a medias (la bitácora del
+  2026-11-10 falló así). Las dos tareas de launchd se lanzan con
+  `caffeinate -i`, que lo mantiene despierto mientras trabajan.
 - **iCloud desaloja archivos del repo** (el disco está casi lleno: 93 % el
   2026-11-10), incluido casi todo lo interno de `.git`. Un proceso de fondo
   (launchd) no puede leer un archivo desalojado: falla con «Unknown system
