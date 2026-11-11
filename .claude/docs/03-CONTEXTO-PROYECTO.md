@@ -394,6 +394,20 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   (`INSTAGRAM_ACCOUNT_ID` lo cambia). Permiso comprobado leyendo
   `/<ID>/content_publishing_limit` (cupo de 100 al día). `/debug_token` no
   funciona con este tipo de token, y no hace falta.
+- **Chequeo diario (9:10, `tokens.mjs`):** comprueba en solo lectura que el
+  token llega a la cuenta y conserva el permiso de publicar
+  (`checkPublishing()`). Si falla, avisa el mismo día.
+- **Qué hace falta en la app de Meta y qué no (2026-11-11):**
+  - No hacen falta los pasos «3. Webhooks» (solo sirven para recibir avisos
+    de comentarios o mensajes) ni «4. Revisión de la app» (acceso avanzado,
+    solo para cuentas de terceros). Para la cuenta propia basta el modo
+    desarrollo con acceso estándar, comprobado al publicar el primer
+    carrusel.
+  - Lo que sí evita bloqueos: atender «Acciones requeridas» (por ejemplo,
+    la revisión anual del uso de datos), rellenar Configuración → Básica
+    (privacidad https://ortegafreelance.com/privacy-policy, condiciones
+    https://ortegafreelance.com/terms, dominio, correo, icono) y no quitar
+    la app en Instagram (Apps y sitios web) ni la cuenta del portfolio.
 - **Token de Instagram:** en la app de Meta → Casos de uso → «Administrar
   mensajes y contenido en Instagram» → **API setup with Unified login** →
   «2. Generar tokens de acceso» → **Generar token** junto a @ortegafreelance

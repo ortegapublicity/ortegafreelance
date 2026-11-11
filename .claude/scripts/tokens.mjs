@@ -205,9 +205,24 @@ export async function revisarTokens(problemas = {}) {
   const cf = contentfulDaysLeft();
   const urgent = [];
 
-  // Instagram se renueva solo por API (no hace falta que Raúl haga nada)
-  // mientras no pasen 60 días sin renovarlo.
-  const igAge = keychainAgeDays("ortegafreelance-instagram");
+  // Instagram: chequeo de salud diario (solo lectura). Un token que «no
+  // caduca» igual puede dejar de servir si se quita la app en Instagram, se
+  // revoca un permiso o Meta pide alguna acción en la app: mejor saberlo hoy
+  // que el día que toca publicar.
+  if (keychainAgeDays("ortegafreelance-instagram") !== null && !process.env.BITACORA_SIN_CHEQUEO) {
+    const { checkPublishing } = await import("./instagram-publicar.mjs");
+    const h = await checkPublishing();
+    if (h.ok) log(`Instagram: publicación disponible (${h.usadas}/${h.total} hoy).`);
+    else {
+      log(`Instagram: no puede publicar (${h.motivo}).`);
+      notify("Instagram: la conexión falló", `${h.motivo.slice(0, 90)}. Revisa «Acciones requeridas» en la app de Meta o renueva el token.`);
+      urgent.push("instagram");
+    }
+  }
+
+  // Instagram Login (no el de usuario del sistema) se renueva por API cada
+  // semana mientras no pasen 60 días sin renovarlo.
+  const igAge = state.instagram === "nunca" ? null : keychainAgeDays("ortegafreelance-instagram");
   if (igAge !== null && (igAge >= INSTAGRAM_REFRESH_DAYS || problemas.instagram)) {
     try {
       const { refreshToken } = await import("./instagram-publicar.mjs");

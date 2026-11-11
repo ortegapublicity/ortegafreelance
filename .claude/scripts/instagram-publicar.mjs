@@ -134,6 +134,24 @@ export async function whoAmI(token) {
   return { id: me.id, username: me.username || "", mode: MODE, systemUser };
 }
 
+/**
+ * Chequeo de salud (solo lectura): el token llega a la cuenta y conserva el
+ * permiso de publicar (leer el cupo diario exige instagram_content_publish).
+ * Lo usa tokens.mjs cada mañana para avisar ANTES de que falle una publicación.
+ */
+export async function checkPublishing() {
+  const token = readToken();
+  if (!token) return { ok: false, motivo: "no hay token" };
+  try {
+    const me = await whoAmI(token);
+    const q = await ig(`/${me.id}/content_publishing_limit`, { token, params: { fields: "config,quota_usage" } });
+    const c = q.data?.[0] || {};
+    return { ok: true, usadas: c.quota_usage ?? 0, total: c.config?.quota_total ?? 100, mode: me.mode };
+  } catch (e) {
+    return { ok: false, motivo: e.message.slice(0, 160) };
+  }
+}
+
 /** Caducidad y permisos del token unificado (debug_token). null si no se puede saber. */
 export async function tokenInfo(token) {
   try {
