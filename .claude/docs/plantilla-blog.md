@@ -168,6 +168,7 @@ el servidor).
 - [ ] `cover.svg` con una ilustración del tema (no la ruta de nodos)
 - [ ] `recommended` con 2 posts publicados relacionados
 - [ ] `linkedin` con el caption en español e inglés y sus hashtags
+- [ ] `meta` con el carrusel: tendencia segura que conecte, gancho con SVG propio, cierre hacia «Mis Blogs», caption con palabras clave y alt
 
 ## Portada (ES y EN)
 
@@ -243,3 +244,66 @@ post en Contentful y deja el enlace en el primer comentario.
 - Mismas reglas de datos de clientes que el post.
 - Ejemplos aprobados: los captions de los posts del 2026-11-07 en
   `.claude/blog/borradores/`.
+
+## Instagram y Facebook (carrusel)
+
+Cada borrador lleva `meta`: un carrusel de 4 a 6 imágenes (1080×1350, 4:5)
+que se apoya en **algo que la gente ya está mirando** para llevar al artículo.
+Lo genera `carrusel-meta.mjs` (plantilla `carrusel-meta.html`) en
+`contenido-blog/<borrador>/meta/`, con `meta.html` para publicarlo.
+
+**La técnica (trendjacking seguro):** se toma una tendencia del momento y se
+usa como metáfora de la lección del post. Ejemplo aprobado (2026-11-11): «La
+LVBP estrena una máquina que revisa el strike. El umpire sigue en el plato.»
+para el post «la máquina escribe, yo decido».
+
+- **Fuente:** las tendencias de hoy (Google Trends de Venezuela y EE. UU.,
+  que la tarea nocturna lee sola) o un tema de temporada vigente (LVBP,
+  Serie del Caribe, regreso a clases, Navidad, Black Friday, lanzamientos
+  de tecnología…).
+- **Solo temas seguros:** deportes, cultura, tecnología, lanzamientos,
+  temporadas. **Nunca** tragedias, desastres, muertes, crímenes, política,
+  conflictos ni personas en una polémica.
+- **Nunca la imagen de personas reales** (ni caricaturas reconocibles),
+  logos de equipos o marcas, ni nada que sugiera que alguien respalda el
+  post. Se nombra el hecho («la LVBP estrena…»), no se usa a sus
+  protagonistas. Ilustraciones propias en SVG.
+- La tendencia tiene que **conectar de verdad** con la lección; si no
+  conecta, no se fuerza.
+
+**Diapositivas:** `gancho` (ilustración SVG de 1080×760 **de la tendencia
+misma**, lo que la gente ya está mirando, con algún guiño al tema del post; +
+titular de la tendencia conectado con la idea, ≤ 90 caracteres) → 2–4 `punto` (titular
+corto + una o dos frases) → `cierre` («¿Quieres ver…?» + texto hacia el
+perfil + botón «Mis Blogs»). Sin enlaces en las imágenes.
+
+**Texto (caption), pensado para la búsqueda de Instagram y Facebook:**
+- La **primera línea** (≤ 125 caracteres, lo que se ve antes de «más»)
+  lleva las **palabras clave** de lo que alguien buscaría («Automatización de
+  contenido con IA», «diseño web para negocios», «campañas de Meta Ads»…),
+  dichas con naturalidad.
+- Luego la tendencia, la conexión y la lección en párrafos cortos, con las
+  palabras clave repetidas sin forzarlas.
+- **Llamada a la acción:** «El artículo completo está en el enlace de mi
+  perfil: «Mis Blogs»». Sin enlaces (en Instagram no son clicables).
+- Termina con una pregunta al lector.
+- 300–2.200 caracteres. `hashtags`: 3–8, específicos (tema + sector +
+  tendencia + ubicación: `MarketingDigitalVenezuela`).
+- `alt`: un texto alternativo por imagen (accesibilidad y buscador).
+
+**El perfil de Instagram tiene que tener un enlace llamado «Mis Blogs»** que
+lleve a https://ortegafreelance.com/all-blog.
+
+```json
+"meta": {
+  "tendencia": { "tema": "…", "por_que": "cómo conecta con el post", "fuente": "…" },
+  "slides": [
+    { "tipo": "gancho", "titulo": "…", "texto": "…", "svg": "<defs>…</defs>…" },
+    { "tipo": "punto", "titulo": "…", "texto": "…" },
+    { "tipo": "cierre", "titulo": "¿Quieres ver…?", "texto": "…en el enlace de mi perfil.", "boton": "Mis Blogs" }
+  ],
+  "caption": "Palabras clave en la primera línea…\n\n…«Mis Blogs».\n\n¿Pregunta?",
+  "hashtags": ["…"],
+  "alt": ["…", "…", "…"]
+}
+```

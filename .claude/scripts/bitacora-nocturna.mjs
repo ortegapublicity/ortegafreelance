@@ -35,6 +35,7 @@ import { validateArticleDraft, draftSummary } from "../../netlify/functions/lib/
 import { renderCovers, validateCover } from "./portada-blog.mjs";
 import { FAMILIES, bannedFamilies, localDrafts, mergeRecentTitles, titleFamily, varietyProblems } from "./blog-variedad.mjs";
 import { validateLinkedin } from "./linkedin-publicar.mjs";
+import { renderCarousel, validateMeta } from "./carrusel-meta.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores, portadas, índice);
@@ -220,6 +221,32 @@ function previousTitles() {
     .filter(Boolean);
 }
 
+// Tendencias del día (Google Trends, RSS público y gratuito) para el gancho
+// del carrusel de Instagram/Facebook. Si falla, el carrusel usa un tema de
+// temporada. Solo da temas: decidir si alguno sirve (y si es seguro) es de Claude.
+async function trendsFeed() {
+  const out = [];
+  for (const geo of ["VE", "US"]) {
+    try {
+      const res = await fetch(`https://trends.google.com/trending/rss?geo=${geo}`, {
+        headers: { "user-agent": "Mozilla/5.0" },
+        signal: AbortSignal.timeout(20000),
+      });
+      const xml = await res.text();
+      const decode = (t) => t.replace(/<!\[CDATA\[|\]\]>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim();
+      for (const item of (xml.match(/<item>[\s\S]*?<\/item>/g) || []).slice(0, 15)) {
+        const title = decode((item.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "");
+        const news = decode((item.match(/<ht:news_item_title>([\s\S]*?)<\/ht:news_item_title>/) || [])[1] || "");
+        const traffic = (item.match(/<ht:approx_traffic>([\s\S]*?)<\/ht:approx_traffic>/) || [])[1] || "";
+        if (title) out.push(`- [${geo}, ${traffic}] ${title}${news ? ` · titular: ${news}` : ""}`);
+      }
+    } catch (e) {
+      log(`No pude leer las tendencias de ${geo}: ${e.message}`);
+    }
+  }
+  return out.join("\n");
+}
+
 // Posts publicados (id y títulos) para elegir los «Recommended posts». Si
 // falla, el servidor pone los dos más recientes.
 function publishedPosts() {
@@ -240,7 +267,7 @@ function recentContext(posts = []) {
   return { drafts, titles: mergeRecentTitles(drafts, posts.map((p) => p.es)) };
 }
 
-function buildPrompt(activity, posts = []) {
+function buildPrompt(activity, posts = [], trends = "") {
   const plantilla = readFileSync(join(BLOG_REPO, ".claude/docs/plantilla-blog.md"), "utf8");
   const titles = previousTitles();
   const recent = recentContext(posts);
@@ -267,6 +294,10 @@ ${recent.titles.slice(0, 15).map((t) => `- [${FAMILIES[titleFamily(t)]}] ${t}`).
 Fórmulas PROHIBIDAS para este título, en español y en inglés: ${banned.length ? banned.map((f) => FAMILIES[f]).join("; ") : "ninguna"}.
 Tampoco repitas la sección «La regla: …» ni el cierre «ahí es donde empezaría a auditar/revisar»: ya se usaron. Sigue la sección «Variedad» de la plantilla.
 
+# TENDENCIAS DE HOY (Google Trends; solo para el gancho del carrusel de Instagram/Facebook)
+${trends || "- (no disponibles: usa un tema de temporada o cultural que conozcas y que siga vigente)"}
+Usa como mucho UNA, y solo si conecta de verdad con la lección del post y es segura (sección «Instagram y Facebook» de la plantilla): deportes, cultura, tecnología, lanzamientos o temporadas. Nunca tragedias, desastres, muertes, crímenes, política, conflictos ni personas en una polémica. Nunca dibujes ni nombres como si respaldaran el post a personas reales, equipos o marcas. Si ninguna sirve, usa un tema de temporada.
+
 # ACTIVIDAD RECIENTE (git log, solo lectura)
 ${activity}
 
@@ -276,7 +307,8 @@ ${activity}
 ESPERAR: <motivo en una frase>
 - Si hay material, responde con una primera línea
 CLIENTE: <nombrado|anonimo|propio> · <proyecto>
-y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover, recommended, linkedin y en, según el formato de la plantilla. Nada más.
+y después el artículo como un único bloque \`\`\`json con title, excerpt, body, cover, recommended, linkedin, meta y en, según el formato de la plantilla. Nada más.
+- "meta" es el carrusel de Instagram/Facebook (sección «Instagram y Facebook» de la plantilla): tendencia, 4 a 6 slides (gancho con svg 1080×760 que dibuja LA TENDENCIA, no el tema del post, con algún guiño al tema; puntos; cierre hacia «Mis Blogs»), caption con palabras clave al inicio, hashtags y alt.
 - "linkedin" es la publicación de LinkedIn que invita a leer el post (sección «LinkedIn» de la plantilla): { es, en, hashtags, hashtags_en }. Sin enlaces ni hashtags dentro del texto; termina con una pregunta al lector.
 - "en" es la versión completa en inglés: { title, excerpt, body } con la misma estructura de bloques y los mismos títulos de sección traducidos. Traduce con naturalidad (inglés de negocio, segunda persona), no palabra por palabra.
 - "recommended": lista con los ids de 2 posts publicados de la lista de arriba, los más relacionados con el tema.
@@ -346,12 +378,14 @@ function checkAll(article, recent = { drafts: [], titles: [] }) {
   const e = article?.en ? validateArticleDraft(article.en) : { ok: false, errors: ['Falta "en" (la versión en inglés).'] };
   const coverErrors = article ? validateCover(article.cover) : [];
   const linkedinErrors = article ? validateLinkedin(article.linkedin) : [];
+  const metaErrors = article ? validateMeta(article.meta) : [];
   const variety = article ? varietyProblems(article, { recentTitles: recent.titles, recentDrafts: recent.drafts }) : [];
   const errors = [
     ...(a.ok ? [] : a.errors),
     ...(e.ok ? [] : e.errors.map((x) => `[en] ${x}`)),
     ...coverErrors,
     ...linkedinErrors,
+    ...metaErrors,
     ...variety,
   ];
   return errors.length
@@ -363,6 +397,7 @@ function checkAll(article, recent = { drafts: [], titles: [] }) {
           cover: article.cover,
           ...(Array.isArray(article.recommended) ? { recommended: article.recommended.slice(0, 3) } : {}),
           linkedin: article.linkedin,
+          meta: article.meta,
           en: e.article,
         },
       };
@@ -405,7 +440,9 @@ async function main() {
   const posts = publishedPosts();
   log(`Posts publicados para recomendar: ${posts.length}`);
   const recent = recentContext(posts);
-  let { text, sessionId } = runClaude(buildPrompt(activity, posts));
+  const trends = await trendsFeed();
+  log(`Tendencias del día: ${trends ? trends.split("\n").length : 0}`);
+  let { text, sessionId } = runClaude(buildPrompt(activity, posts, trends));
   let parsed = parseReply(text);
   if (parsed.wait) {
     log(`Claude decidió esperar: ${parsed.wait}`);
@@ -443,6 +480,14 @@ async function main() {
     log(`Imágenes: ${imagesUrl}`);
   } catch (e) {
     log("No se pudieron generar las portadas:", e.message);
+  }
+
+  // Carrusel de Instagram/Facebook. Si falla, el borrador sigue adelante.
+  try {
+    const { dir } = renderCarousel(file);
+    log(`Carrusel: ${pathToFileURL(join(dir, "meta.html")).href}`);
+  } catch (e) {
+    log("No se pudo generar el carrusel:", e.message);
   }
 
   if (dryRun) {
