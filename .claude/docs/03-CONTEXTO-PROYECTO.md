@@ -387,6 +387,13 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   `instagram-publicar.mjs` detecta solo qué tipo de token es. El unificado no
   se renueva con `ig_refresh_token`: `--verificar` lee su caducidad con
   `/debug_token` y la apunta para que `tokens.mjs` avise a tiempo.
+- **El token en uso es de «usuario del sistema»** («claudeiaadminpost System
+  User», configuración con caducidad «Nunca»): **no caduca**. Con él,
+  `/me/assigned_instagram_accounts` devuelve una lista vacía, así que el
+  script usa el ID de @ortegafreelance, **17841448821036371**
+  (`INSTAGRAM_ACCOUNT_ID` lo cambia). Permiso comprobado leyendo
+  `/<ID>/content_publishing_limit` (cupo de 100 al día). `/debug_token` no
+  funciona con este tipo de token, y no hace falta.
 - **Token de Instagram:** en la app de Meta → Casos de uso → «Administrar
   mensajes y contenido en Instagram» → **API setup with Unified login** →
   «2. Generar tokens de acceso» → **Generar token** junto a @ortegafreelance

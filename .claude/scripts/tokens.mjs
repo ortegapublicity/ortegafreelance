@@ -77,6 +77,7 @@ export function instagramDaysLeft() {
   const age = keychainAgeDays("ortegafreelance-instagram");
   if (age === null) return null;
   const st = loadState();
+  if (st.instagram === "nunca") return 9999; // token de usuario del sistema: no caduca
   if (st.instagram) return daysUntil(st.instagram);
   return Math.round(60 - age);
 }
@@ -149,7 +150,7 @@ ${code(COMANDO_LINKEDIN)}</li>
 
 <section>
 <h2>Instagram: publicar los carruseles</h2>
-<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : when(d); })()}</p>
+<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : d >= 9999 ? "No caduca (token de usuario del sistema)" : when(d); })()}</p>
 <ol>
 <li>Abre tu app <b>claudeiaadminpost</b> en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Casos de uso → «Administrar mensajes y contenido en Instagram» → <b>API setup with Unified login</b>.</li>
 <li>En <b>2. Generar tokens de acceso</b>, pulsa <b>Generar token</b> junto a @ortegafreelance (si no está: «Agregar cuenta»; necesita el rol de evaluador de Instagram en Roles de la app). Copia el token: solo se muestra una vez.</li>
@@ -272,7 +273,7 @@ if (isMain) {
     const cf = contentfulDaysLeft();
     const igd = instagramDaysLeft();
     console.log(`LinkedIn:   ${li === null ? "sin token" : `le quedan ~${li} días`}`);
-    console.log(`Instagram:  ${igd === null ? "sin token" : `le quedan ~${igd} días (se renueva solo)`}`);
+    console.log(`Instagram:  ${igd === null ? "sin token" : igd >= 9999 ? "no caduca (token de usuario del sistema)" : `le quedan ~${igd} días`}`);
     console.log(`Contentful: ${cf === null ? "fecha no apuntada (usa --contentful-caduca AAAA-MM-DD)" : `le quedan ${cf} días`}`);
     console.log(`Pasos para renovar: ${pathToFileURL(writeRenewalPage()).href}`);
   }

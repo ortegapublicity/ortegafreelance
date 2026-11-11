@@ -52,6 +52,10 @@ const HOSTS = {
 let MODE = "instagram"; // lo fija whoAmI() según el token
 const BLOG = MOCK_BLOG || "https://ortegafreelance.com";
 const POLL_MS = Number(process.env.INSTAGRAM_POLL_MS || 15000);
+// ID de @ortegafreelance (público, sale en el panel de Meta). Hace falta
+// porque con el token de «usuario del sistema» /me/assigned_instagram_accounts
+// devuelve una lista vacía aunque la cuenta sea accesible (2026-11-11).
+const ACCOUNT_ID = process.env.INSTAGRAM_ACCOUNT_ID || "17841448821036371";
 
 const log = (...m) => console.log(`[${new Date().toISOString()}] instagram:`, ...m);
 function notify(title, message) {
@@ -112,12 +116,22 @@ export async function whoAmI(token) {
     /* no es de Instagram Login: probamos el unificado */
   }
   // 2) Token del «inicio de sesión unificado» (graph.facebook.com).
+  const who = await ig("/me", { token, params: { fields: "id,name" }, mode: "unificado" });
+  const systemUser = /system user/i.test(who.name || "");
   const d = await ig("/me/assigned_instagram_accounts", { token, params: { fields: "id,username" }, mode: "unificado" });
   const list = Array.isArray(d.data) ? d.data : [];
-  const me = list.find((a) => a.username === "ortegafreelance") || list[0];
-  if (!me?.id) throw new InstagramError(0, "El token no tiene ninguna cuenta de Instagram asignada (¿falta el permiso instagram_basic o el rol de evaluador?).");
+  let me = list.find((a) => a.username === "ortegafreelance") || list[0];
+  if (!me?.id) {
+    // Lista vacía con el token de usuario del sistema: se usa el ID conocido.
+    try {
+      me = await ig(`/${ACCOUNT_ID}`, { token, params: { fields: "id,username" }, mode: "unificado" });
+    } catch {
+      me = null;
+    }
+  }
+  if (!me?.id) throw new InstagramError(0, "El token no llega a la cuenta de Instagram (¿falta el permiso instagram_basic o asignar la cuenta en la configuración?).");
   MODE = "unificado";
-  return { id: me.id, username: me.username || "", mode: MODE };
+  return { id: me.id, username: me.username || "", mode: MODE, systemUser };
 }
 
 /** Caducidad y permisos del token unificado (debug_token). null si no se puede saber. */
@@ -302,8 +316,20 @@ if (isMain) {
       const me = await whoAmI(token);
       console.log(`Token válido. Cuenta: @${me.username} (id ${me.id}) · tipo: ${me.mode === "unificado" ? "inicio de sesión unificado (graph.facebook.com)" : "Instagram Login (graph.instagram.com)"}`);
       if (me.mode === "unificado") {
-        const info = await tokenInfo(token);
-        if (info) {
+        // Permiso de publicar: el cupo diario solo se puede leer con instagram_content_publish.
+        try {
+          const q = await ig(`/${me.id}/content_publishing_limit`, { token, params: { fields: "config,quota_usage" } });
+          const c = q.data?.[0] || {};
+          console.log(`Permiso para publicar: sí · usadas hoy ${c.quota_usage ?? "?"} de ${c.config?.quota_total ?? "?"}`);
+        } catch (e) {
+          console.log(`AVISO: no puedo leer el cupo de publicación (${e.message}); puede faltar instagram_content_publish.`);
+        }
+        const info = me.systemUser ? null : await tokenInfo(token);
+        if (me.systemUser) {
+          console.log("Tipo: token de usuario del sistema; según tu configuración, no caduca.");
+          const { apuntarCaducidad } = await import("./tokens.mjs");
+          apuntarCaducidad("instagram", "nunca");
+        } else if (info) {
           console.log(`Caduca: ${info.expira || "no lo dice"} · permisos: ${info.permisos.join(", ") || "?"}`);
           if (!info.permisos.includes("instagram_content_publish"))
             console.log("AVISO: falta el permiso instagram_content_publish; no podrá publicar.");
