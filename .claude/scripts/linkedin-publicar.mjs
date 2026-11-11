@@ -13,10 +13,10 @@
 //   node .claude/scripts/linkedin-publicar.mjs --marcar <borrador.json> publicado|programado|cancelado
 //
 // Dos modos, según haya o no token de LinkedIn en el Llavero de macOS
-// (servicio "ortegafreelance-linkedin"). Guárdalo desde el portapapeles, NO
-// escribiéndolo en la pregunta de `security -w`, que corta a 128 caracteres
-// (y los tokens de LinkedIn son más largos):
-//   security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null
+// (servicio "ortegafreelance-linkedin"). Se guarda con el asistente
+//   node .claude/scripts/linkedin-token.mjs
+// (la pregunta de `security -w` corta a 128 caracteres y `-w "$(pbpaste)"`
+// acaba guardando el propio comando: pasaron las dos cosas el 2026-11-11).
 // - SIN token: el día programado avisa con una notificación y deja lista
 //   contenido-blog/<post>/linkedin.html (texto para copiar, portada y botón
 //   para abrir LinkedIn). Raúl publica o programa a mano.
@@ -482,8 +482,8 @@ if (isMain) {
         if (e.status === 401 && token.length === 128) {
           throw new Error(
             "LinkedIn rechaza el token y mide exactamente 128 caracteres: casi seguro se cortó al guardarlo " +
-              "(la pregunta de `security -w` admite 128 como máximo). Cópialo de nuevo y guárdalo con:\n" +
-              '  security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null'
+              "(la pregunta de `security -w` admite 128 como máximo). Guárdalo de nuevo con:\n" +
+              "  node .claude/scripts/linkedin-token.mjs"
           );
         }
         throw e;

@@ -297,11 +297,11 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
      LinkedIn using OpenID Connect».
   2. Token en https://www.linkedin.com/developers/tools/oauth/token-generator
      con los permisos `openid`, `profile` y `w_member_social`.
-  3. Copiar el token y guardarlo **desde el portapapeles**:
-     `security add-generic-password -U -a "$USER" -s ortegafreelance-linkedin -w "$(pbpaste)"; pbcopy < /dev/null`
-     (escribirlo en la pregunta de `security -w` lo corta a 128 caracteres:
-     pasó el 2026-11-11). Comprobar con
-     `node .claude/scripts/linkedin-publicar.mjs --verificar`.
+  3. Guardarlo con el asistente `node .claude/scripts/linkedin-token.mjs`
+     (pide el token sin mostrarlo, lo guarda en el Llavero y lo comprueba).
+     No usar `security add-generic-password -w`: su pregunta corta a 128
+     caracteres, y con `-w "$(pbpaste)"` se acaba guardando el propio
+     comando. Pasaron las dos cosas el 2026-11-11.
   - No hacen falta el Client ID ni el Client Secret de la app: solo el token.
   El token dura 60 días y no se renueva solo: el script avisa una semana antes
   y, si caduca, vuelve al modo aviso.
