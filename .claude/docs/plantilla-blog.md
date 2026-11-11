@@ -219,8 +219,9 @@ relacionados con el tema. Van al campo «Recommended posts» en los dos idiomas
 ## LinkedIn
 
 Cada borrador lleva `linkedin`: la publicación que invita a leer el post en
-el blog. `linkedin-publicar.mjs` le añade el enlace al artículo y los
-hashtags, y la programa cuando Raúl publica el post en Contentful.
+el blog. `linkedin-publicar.mjs` le añade los hashtags y la línea «Enlace al
+artículo completo en el primer comentario», la publica cuando Raúl publica el
+post en Contentful y deja el enlace en el primer comentario.
 
 - **Perspectiva profesional, en primera persona.** No resume el artículo:
   cuenta **una** lección o decisión con un detalle concreto, y deja el resto

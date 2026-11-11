@@ -107,10 +107,27 @@ export function validateLinkedin(li) {
 }
 
 /** Texto final que se publica: caption + enlace al artículo + hashtags. */
-export function linkedinText(li, lang, url) {
-  const cta = lang === "en" ? "Full article:" : "El artículo completo:";
-  const tags = lang === "en" ? li.hashtags_en : li.hashtags;
-  return `${li[lang].trim()}\n\n${cta} ${url}\n\n${tags.map((h) => `#${h}`).join(" ")}`;
+// Dónde va el enlace al artículo. Por defecto, en el PRIMER COMENTARIO: hay
+// estudios (no concluyentes) que ven menos alcance en posts con enlaces
+// externos en el texto, y el usuario lo prefirió así (2026-11-11). Con
+// LINKEDIN_ENLACE=texto vuelve a ir dentro de la publicación.
+export const LINK_MODE = process.env.LINKEDIN_ENLACE === "texto" ? "texto" : "comentario";
+
+/** Texto de la publicación: caption + (enlace o aviso del comentario) + hashtags. */
+export function linkedinText(li, lang, url, mode = LINK_MODE) {
+  const tags = (lang === "en" ? li.hashtags_en : li.hashtags).map((h) => `#${h}`).join(" ");
+  const link =
+    mode === "texto"
+      ? `${lang === "en" ? "Full article:" : "El artículo completo:"} ${url}`
+      : lang === "en"
+        ? "Link to the full article in the first comment."
+        : "Enlace al artículo completo en el primer comentario.";
+  return `${li[lang].trim()}\n\n${link}\n\n${tags}`;
+}
+
+/** Texto del primer comentario, con el enlace. */
+export function linkedinComment(lang, url) {
+  return lang === "en" ? `Full article, with all the details: ${url}` : `El artículo completo, con todos los detalles: ${url}`;
 }
 
 // ---------- Cola (estado junto a cada borrador) ----------
@@ -161,9 +178,10 @@ function writeHelper(item) {
   mkdirSync(dir, { recursive: true });
   const url = state.linkedin.url;
   const texts = { es: linkedinText(draft.linkedin, "es", url), en: linkedinText(draft.linkedin, "en", url) };
-  writeFileSync(join(dir, "linkedin-es.txt"), texts.es + "\n");
-  writeFileSync(join(dir, "linkedin-en.txt"), texts.en + "\n");
-  const data = JSON.stringify({ texts, url, title: draft.title }).replace(/</g, "\\u003c");
+  const comments = { es: linkedinComment("es", url), en: linkedinComment("en", url) };
+  writeFileSync(join(dir, "linkedin-es.txt"), texts.es + (LINK_MODE === "comentario" ? `\n\n--- Primer comentario ---\n${comments.es}` : "") + "\n");
+  writeFileSync(join(dir, "linkedin-en.txt"), texts.en + (LINK_MODE === "comentario" ? `\n\n--- First comment ---\n${comments.en}` : "") + "\n");
+  const data = JSON.stringify({ texts, comments, url, title: draft.title }).replace(/</g, "\\u003c");
   writeFileSync(
     join(dir, "linkedin.html"),
     `<!doctype html>
@@ -180,18 +198,20 @@ function writeHelper(item) {
 </style></head><body><main>
 <h1>${draft.title.replace(/[<&]/g, "")}</h1>
 <p>Publicación de LinkedIn de este post. Artículo: <a href="${url}">${url}</a></p>
-<ol><li>Pulsa «Copiar y abrir LinkedIn».</li><li>Si el texto no llega escrito, pégalo (⌘V).</li><li>Arrastra la portada de abajo.</li><li>Publica, o usa el reloj para programarla.</li></ol>
+<ol><li>Pulsa «Copiar y abrir LinkedIn».</li><li>Si el texto no llega escrito, pégalo (⌘V).</li><li>Arrastra la portada de abajo.</li><li>Publica.</li>${LINK_MODE === "comentario" ? "<li>En cuanto salga, deja el <b>primer comentario</b> con el enlace (botón «Copiar comentario»).</li>" : ""}</ol>
 <h2>Español</h2><pre id="es"></pre>
 <button data-lang="es">Copiar y abrir LinkedIn</button><button data-lang="es" data-only="1">Solo copiar</button>
+${LINK_MODE === "comentario" ? '<pre id="c-es"></pre><button data-comment="es" data-only="1">Copiar comentario</button>' : ""}
 <h2>English</h2><pre id="en"></pre>
 <button data-lang="en">Copy and open LinkedIn</button><button data-lang="en" data-only="1">Copy only</button>
+${LINK_MODE === "comentario" ? '<pre id="c-en"></pre><button data-comment="en" data-only="1">Copy comment</button>' : ""}
 <h2>Portada</h2><p>Arrástrala a la publicación.</p><img src="portada-es.jpg" alt="Portada en español"><p></p><img src="portada-en.jpg" alt="Cover in English">
 </main><script>
 const D = ${data};
-for (const l of ["es", "en"]) document.getElementById(l).textContent = D.texts[l];
+for (const l of ["es", "en"]) { document.getElementById(l).textContent = D.texts[l]; const c = document.getElementById("c-" + l); if (c) c.textContent = D.comments[l]; }
 async function copy(t) { try { await navigator.clipboard.writeText(t); } catch { const a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); } }
 for (const b of document.querySelectorAll("button")) b.onclick = async () => {
-  const t = D.texts[b.dataset.lang]; await copy(t); const old = b.textContent; b.textContent = "Copiado"; setTimeout(() => (b.textContent = old), 1500);
+  const t = b.dataset.comment ? D.comments[b.dataset.comment] : D.texts[b.dataset.lang]; await copy(t); const old = b.textContent; b.textContent = "Copiado"; setTimeout(() => (b.textContent = old), 1500);
   if (!b.dataset.only) window.open("https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(t), "_blank");
 };
 </script></body></html>
@@ -338,7 +358,17 @@ async function publishToLinkedIn({ token, text, imagePath, title, onBeforePost }
     },
   });
   const id = post.headers.get("x-restli-id") || post.data.id || "";
-  return { id, url: id ? `https://www.linkedin.com/feed/update/${id}/` : "" };
+  return { id, author, url: id ? `https://www.linkedin.com/feed/update/${id}/` : "" };
+}
+
+/** Comenta en una publicación propia (probado con w_member_social el 2026-11-11). Devuelve el id. */
+async function commentOnPost({ token, author, postUrn, text }) {
+  const r = await call(`${API}/v2/socialActions/${encodeURIComponent(postUrn)}/comments`, {
+    method: "POST",
+    token,
+    json: { actor: author, message: { text } },
+  });
+  return r.headers.get("x-restli-id") || r.data.id || "";
 }
 
 // ---------- Publicar lo que toque ----------
@@ -375,6 +405,19 @@ async function publishItem(item, token) {
   }
   Object.assign(li, { estado: "publicado", publicadoEn: new Date().toISOString(), id: result.id, postUrl: result.url });
   saveState(item);
+
+  // Enlace en el primer comentario. Si falla, la publicación ya salió: no se
+  // reintenta ni se borra; se avisa para comentarlo a mano.
+  if (LINK_MODE === "comentario" && result.id) {
+    try {
+      li.comentarioId = await commentOnPost({ token, author: result.author, postUrn: result.id, text: linkedinComment("es", li.url) });
+    } catch (e) {
+      li.comentarioError = e.message.slice(0, 200);
+      notify("LinkedIn: falta el comentario con el enlace", `Publicado, pero no pude comentar. Pega en el primer comentario: ${li.url}`);
+      log(`Publicado sin comentario (${e.message}). Comenta a mano: ${li.url}`);
+    }
+    saveState(item);
+  }
   return result;
 }
 
@@ -498,6 +541,9 @@ if (isMain) {
       if (["publicado", "publicando"].includes(item.state.linkedin.estado)) throw new Error(`Ese post ya está en estado «${item.state.linkedin.estado}».`);
       const r = await publishItem(item, token);
       console.log(`Publicado: ${r.url}`);
+      const li = item.state.linkedin;
+      if (li.comentarioId) console.log(`Enlace en el primer comentario (${li.comentarioId}).`);
+      else if (li.comentarioError) console.log(`Sin comentario (${li.comentarioError}). Pega el enlace a mano: ${li.url}`);
     } else if (args.includes("--marcar")) {
       const item = findItem();
       const estado = args.find((a) => ["publicado", "programado", "cancelado"].includes(a));

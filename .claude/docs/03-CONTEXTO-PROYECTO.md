@@ -308,6 +308,18 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - Comandos: `--estado` (cola), `--simular <borrador>` (texto final),
   `--marcar <borrador> cancelado|programado|publicado`, `--ahora <borrador>`
   (publica ya; solo si el usuario lo pide en ese momento).
+- **El enlace al artículo va en el primer comentario** (desde el
+  2026-11-11): el texto termina en «Enlace al artículo completo en el primer
+  comentario» y, justo después de publicar, el script comenta el enlace
+  (`POST /v2/socialActions/{urn}/comments`). Funciona con `w_member_social`:
+  probado en real ese día, aunque la documentación nueva pide
+  `w_member_social_feed`. Si un día LinkedIn lo rechaza, el post sale igual
+  y avisa para comentar a mano. `LINKEDIN_ENLACE=texto` vuelve a poner el
+  enlace en el texto.
+- Por qué: hay estudios que ven menos alcance con enlaces externos en el
+  texto (18–26 %) y otros que no ven ninguno o lo contrario; nada oficial de
+  LinkedIn. El usuario prefirió el comentario. Revisar con las estadísticas
+  de sus propios posts.
 - Seguridad: nunca publica un post que no esté publicado en el blog; si la
   red se corta a mitad, el post queda en «publicando» y no se reintenta solo
   (para no duplicar).
