@@ -12,6 +12,12 @@
 // sale el LinkedIn del post. Sin token, esa tarea solo avisa con el carrusel
 // listo para publicarlo a mano (contenido-blog/<post>/meta/meta.html).
 //
+// Dos tipos de token (Meta cambió el panel en 2026: las apps nuevas solo
+// ofrecen el «inicio de sesión unificado»). El script detecta cuál es:
+// - Instagram Login: host graph.instagram.com, ID con GET /me?fields=user_id.
+// - Unificado: host graph.facebook.com, ID con
+//   GET /me/assigned_instagram_accounts?fields=id,username; permiso
+//   instagram_content_publish. Caducidad con /debug_token.
 // Flujo (documentación de Meta, 2026-11-11):
 // 1. Las imágenes tienen que estar en una URL pública: se suben a Contentful
 //    con /api/blog-asset (devuelve la URL de images.ctfassets.net).
@@ -37,8 +43,13 @@ const VERSION = process.env.INSTAGRAM_API_VERSION || "v27.0";
 // Solo para pruebas locales contra servidores simulados.
 const isLocal = (u) => /^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(u || "");
 const MOCK_IG = isLocal(process.env.INSTAGRAM_API_BASE) ? process.env.INSTAGRAM_API_BASE : "";
+const MOCK_FB = isLocal(process.env.FACEBOOK_API_BASE) ? process.env.FACEBOOK_API_BASE : "";
 const MOCK_BLOG = isLocal(process.env.BLOG_API_BASE) ? process.env.BLOG_API_BASE : "";
-const IG = `${MOCK_IG || "https://graph.instagram.com"}/${VERSION}`;
+const HOSTS = {
+  instagram: `${MOCK_IG || "https://graph.instagram.com"}/${VERSION}`,
+  unificado: `${MOCK_FB || "https://graph.facebook.com"}/${VERSION}`,
+};
+let MODE = "instagram"; // lo fija whoAmI() según el token
 const BLOG = MOCK_BLOG || "https://ortegafreelance.com";
 const POLL_MS = Number(process.env.INSTAGRAM_POLL_MS || 15000);
 
@@ -56,7 +67,7 @@ function keychain(service) {
     return "";
   }
 }
-export const readToken = () => (MOCK_IG ? "token-de-prueba" : keychain(KEYCHAIN));
+export const readToken = () => (MOCK_IG || MOCK_FB ? "token-de-prueba" : keychain(KEYCHAIN));
 const blogSecret = () => (MOCK_BLOG ? "frase-de-prueba" : keychain("ortegafreelance-blog-admin"));
 
 export class InstagramError extends Error {
@@ -67,9 +78,10 @@ export class InstagramError extends Error {
 }
 
 // El token va como parámetro (así lo documenta Meta). Nunca se imprime la URL.
-async function ig(path, { method = "GET", token, params = {} } = {}) {
+async function ig(path, { method = "GET", token, params = {}, mode = MODE } = {}) {
+  const base = HOSTS[mode];
   const qs = new URLSearchParams({ ...params, access_token: token });
-  const res = await fetch(method === "GET" ? `${IG}${path}?${qs}` : `${IG}${path}`, {
+  const res = await fetch(method === "GET" ? `${base}${path}?${qs}` : `${base}${path}`, {
     method,
     ...(method === "GET" ? {} : { headers: { "content-type": "application/x-www-form-urlencoded" }, body: qs }),
   });
@@ -88,16 +100,49 @@ async function ig(path, { method = "GET", token, params = {} } = {}) {
 }
 
 export async function whoAmI(token) {
-  const d = await ig("/me", { token, params: { fields: "user_id,username" } });
-  const me = Array.isArray(d.data) ? d.data[0] : d;
-  if (!me?.user_id) throw new InstagramError(0, "Instagram no devolvió el id de la cuenta (falta el permiso instagram_business_basic).");
-  return { id: me.user_id, username: me.username || "" };
+  // 1) Token de «Instagram Login».
+  try {
+    const d = await ig("/me", { token, params: { fields: "user_id,username" }, mode: "instagram" });
+    const me = Array.isArray(d.data) ? d.data[0] : d;
+    if (me?.user_id) {
+      MODE = "instagram";
+      return { id: me.user_id, username: me.username || "", mode: MODE };
+    }
+  } catch {
+    /* no es de Instagram Login: probamos el unificado */
+  }
+  // 2) Token del «inicio de sesión unificado» (graph.facebook.com).
+  const d = await ig("/me/assigned_instagram_accounts", { token, params: { fields: "id,username" }, mode: "unificado" });
+  const list = Array.isArray(d.data) ? d.data : [];
+  const me = list.find((a) => a.username === "ortegafreelance") || list[0];
+  if (!me?.id) throw new InstagramError(0, "El token no tiene ninguna cuenta de Instagram asignada (¿falta el permiso instagram_basic o el rol de evaluador?).");
+  MODE = "unificado";
+  return { id: me.id, username: me.username || "", mode: MODE };
+}
+
+/** Caducidad y permisos del token unificado (debug_token). null si no se puede saber. */
+export async function tokenInfo(token) {
+  try {
+    const d = await ig("/debug_token", { token, params: { input_token: token }, mode: "unificado" });
+    const t = d.data || {};
+    return {
+      expira: t.expires_at ? new Date(t.expires_at * 1000).toISOString().slice(0, 10) : t.expires_at === 0 ? "nunca" : null,
+      permisos: t.scopes || [],
+      tipo: t.type || "",
+    };
+  } catch {
+    return null;
+  }
 }
 
 /** Renueva el token largo por 60 días más. Lo guarda en el Llavero sin mostrarlo. */
 export async function refreshToken() {
   const token = readToken();
   if (!token) throw new InstagramError(0, "No hay token de Instagram en el Llavero.");
+  // El token unificado no se renueva con ig_refresh_token: su caducidad la
+  // vigila tokens.mjs con la fecha que da debug_token.
+  const me = await whoAmI(token);
+  if (me.mode === "unificado") return null;
   const res = await fetch(`${MOCK_IG || "https://graph.instagram.com"}/refresh_access_token?${new URLSearchParams({ grant_type: "ig_refresh_token", access_token: token })}`);
   const d = await res.json().catch(() => ({}));
   if (!res.ok || !d.access_token) throw new InstagramError(res.status, `${res.status} ${d.error?.message || "no se pudo renovar"}`);
@@ -255,10 +300,22 @@ if (isMain) {
         process.exit(77);
       }
       const me = await whoAmI(token);
-      console.log(`Token válido. Cuenta: @${me.username} (id ${me.id})`);
+      console.log(`Token válido. Cuenta: @${me.username} (id ${me.id}) · tipo: ${me.mode === "unificado" ? "inicio de sesión unificado (graph.facebook.com)" : "Instagram Login (graph.instagram.com)"}`);
+      if (me.mode === "unificado") {
+        const info = await tokenInfo(token);
+        if (info) {
+          console.log(`Caduca: ${info.expira || "no lo dice"} · permisos: ${info.permisos.join(", ") || "?"}`);
+          if (!info.permisos.includes("instagram_content_publish"))
+            console.log("AVISO: falta el permiso instagram_content_publish; no podrá publicar.");
+          if (info.expira && info.expira !== "nunca") {
+            const { apuntarCaducidad } = await import("./tokens.mjs");
+            apuntarCaducidad("instagram", info.expira);
+          }
+        }
+      }
     } else if (args.includes("--refrescar")) {
       const days = await refreshToken();
-      console.log(`Token de Instagram renovado: válido ~${days} días.`);
+      console.log(days === null ? "Este token (inicio de sesión unificado) no se renueva por API; te avisaré antes de que caduque." : `Token de Instagram renovado: válido ~${days} días.`);
     } else if (args.includes("--ahora")) {
       if (!fileArg) throw new Error("Indica el borrador: --ahora .claude/blog/borradores/<archivo>.json");
       const token = readToken();

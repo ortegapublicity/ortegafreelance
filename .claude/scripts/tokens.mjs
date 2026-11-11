@@ -72,10 +72,13 @@ function keychainAgeDays(service) {
   }
 }
 
-/** Días que le quedan al token de Instagram (60 desde la última renovación). null si no hay. */
+/** Días que le quedan al token de Instagram: la fecha apuntada (token unificado) o 60 desde que se guardó. */
 export function instagramDaysLeft() {
   const age = keychainAgeDays("ortegafreelance-instagram");
-  return age === null ? null : Math.round(60 - age);
+  if (age === null) return null;
+  const st = loadState();
+  if (st.instagram) return daysUntil(st.instagram);
+  return Math.round(60 - age);
 }
 
 /** Días que le quedan al token de LinkedIn (por la fecha en que se guardó). null si no hay. */
@@ -96,6 +99,13 @@ export function linkedinDaysLeft() {
 export function contentfulDaysLeft() {
   const s = loadState();
   return s.contentful ? daysUntil(s.contentful) : null;
+}
+
+/** Apunta la fecha de caducidad conocida de un token (lo usa instagram-publicar --verificar). */
+export function apuntarCaducidad(nombre, isoDate) {
+  const st = loadState();
+  st[nombre] = isoDate;
+  saveState(st);
 }
 
 /** Página con los pasos para renovar cada token. */
@@ -139,11 +149,10 @@ ${code(COMANDO_LINKEDIN)}</li>
 
 <section>
 <h2>Instagram: publicar los carruseles</h2>
-<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : when(d) + " · se renueva solo cada semana"; })()}</p>
-<p class="note">Solo hace falta si dejó de renovarse (más de 60 días sin renovar) o si es la primera vez.</p>
+<p class="when">${(() => { const d = instagramDaysLeft(); return d === null ? "No hay token guardado" : when(d); })()}</p>
 <ol>
-<li>Abre tu app en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Instagram → <b>API setup with Instagram business login</b>.</li>
-<li>Pulsa <b>Generate token</b> junto a @ortegafreelance, entra con Instagram y copia el token.</li>
+<li>Abre tu app <b>claudeiaadminpost</b> en <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> → Casos de uso → «Administrar mensajes y contenido en Instagram» → <b>API setup with Unified login</b>.</li>
+<li>En <b>2. Generar tokens de acceso</b>, pulsa <b>Generar token</b> junto a @ortegafreelance (si no está: «Agregar cuenta»; necesita el rol de evaluador de Instagram en Roles de la app). Copia el token: solo se muestra una vez.</li>
 <li>En la Terminal ejecuta esto y pega el token cuando lo pida:
 ${code(COMANDO_INSTAGRAM)}</li>
 <li>Debe responder «Token válido. Cuenta: @ortegafreelance».</li>
@@ -202,7 +211,14 @@ export async function revisarTokens(problemas = {}) {
     try {
       const { refreshToken } = await import("./instagram-publicar.mjs");
       const days = await refreshToken();
-      log(`Instagram: token renovado (válido ~${days} días).`);
+      if (days === null) {
+        // Token unificado: no se renueva solo. Aviso por fecha.
+        const left = instagramDaysLeft();
+        if (problemas.instagram || (left !== null && left <= WARN_DAYS)) {
+          notify("Instagram: renueva el token", `${left !== null && left > 0 ? `Caduca en ${left} días. ` : ""}En la Terminal: ${COMANDO_INSTAGRAM}`);
+          urgent.push("instagram");
+        }
+      } else log(`Instagram: token renovado (válido ~${days} días).`);
     } catch (e) {
       log(`Instagram: no pude renovar el token (${e.message}).`);
       const left = instagramDaysLeft();

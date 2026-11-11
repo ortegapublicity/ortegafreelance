@@ -380,13 +380,23 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   `media_type=CAROUSEL`, `children` y `caption` → esperar
   `status_code=FINISHED` → `POST /<IG_ID>/media_publish`. Límite: 100
   publicaciones por API cada 24 h.
-- **Token de Instagram:** se saca en la app de Meta (developers.facebook.com
-  → la app → Instagram → «API setup with Instagram business login» →
-  **Generate token** junto a @ortegafreelance) y se guarda con
+- **Inicio de sesión unificado (2026-11-11):** Meta ya no ofrece «Instagram
+  Login» en las apps nuevas; la app del usuario (**claudeiaadminpost**) usa el
+  unificado: host `graph.facebook.com`, permiso `instagram_content_publish`,
+  ID de la cuenta con `GET /me/assigned_instagram_accounts?fields=id,username`.
+  `instagram-publicar.mjs` detecta solo qué tipo de token es. El unificado no
+  se renueva con `ig_refresh_token`: `--verificar` lee su caducidad con
+  `/debug_token` y la apunta para que `tokens.mjs` avise a tiempo.
+- **Token de Instagram:** en la app de Meta → Casos de uso → «Administrar
+  mensajes y contenido en Instagram» → **API setup with Unified login** →
+  «2. Generar tokens de acceso» → **Generar token** junto a @ortegafreelance
+  (antes, Roles de la app → Evaluadores de Instagram → ortegafreelance, y
+  aceptar la invitación en Instagram). No hace falta el paso «1. Configurar
+  tu app» (es para que otros clientes inicien sesión). Se guarda con
   `node .claude/scripts/instagram-token.mjs` (Llavero, servicio
-  `ortegafreelance-instagram`). Dura 60 días y **`tokens.mjs` lo renueva
-  solo cada semana** por API (`refresh_access_token`); solo hay que volver a
-  sacarlo si pasan 60 días sin renovarse.
+  `ortegafreelance-instagram`). Con un token de Instagram Login,
+  `tokens.mjs` lo renueva solo cada semana; con el unificado, avisa una
+  semana antes de la caducidad que dio `/debug_token`.
 - Comandos: `instagram-publicar.mjs --verificar | --ahora <borrador> |
   --refrescar | --marcar <borrador> publicado|listo|cancelado`.
 - Facebook: la API de Instagram no publica en la página. Para que salga
