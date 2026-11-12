@@ -39,7 +39,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
-import { renderCarousel } from "./carrusel-meta.mjs";
+import { renderCarousel, renderStory } from "./carrusel-meta.mjs";
 import { medirPublicaciones, publishIfPossible as publishInstagram, publishReelIfPossible, publishStoryIfPossible } from "./instagram-publicar.mjs";
 import { CONFIG, aLaHora, dia, horaDelDia, resumen } from "./redes-agenda.mjs";
 
@@ -449,9 +449,35 @@ async function publicarPendiente() {
   const due = await publicarLinkedInPendiente();
   if (due) {
     if (due.draft.meta) await publishInstagram(due.file);
-    if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
+    if (CONFIG.instagram.historia === "enlace") historiaConEnlace(due);
+    else if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
   }
   if (CONFIG.instagram.reel) await publicarReelPendiente();
+}
+
+// Historia con enlace (instagram.historia = "enlace"). La API de Instagram no
+// publica stickers de enlace, así que la historia se sube a mano desde el
+// teléfono: se deja la imagen en iCloud Drive («Historias Instagram»), con un
+// .txt con el enlace, el enlace en el portapapeles y un aviso. En el iPhone:
+// Archivos → la imagen → Compartir → Instagram (historia) → sticker «Enlace».
+const HISTORIAS = process.env.HISTORIAS_DIR || join(process.env.HOME || "", "Library/Mobile Documents/com~apple~CloudDocs/Historias Instagram");
+function historiaConEnlace(item) {
+  if (["aviso-manual", "publicado"].includes(item.state.historia?.estado)) return;
+  try {
+    const jpg = renderStory(item.file, { enlace: true });
+    const enlace = `${item.state.linkedin?.url || postUrl(item.draft.title)}?utm_source=instagram&utm_medium=historia&utm_campaign=blog`;
+    mkdirSync(HISTORIAS, { recursive: true });
+    const base = join(HISTORIAS, `${dia(new Date())} ${item.name.replace(/^\d{4}-\d{2}-\d{2}-/, "").slice(0, 60)}`);
+    writeFileSync(`${base}.jpg`, readFileSync(jpg));
+    writeFileSync(`${base} - enlace.txt`, `${enlace}\n`);
+    if (!process.env.BITACORA_SIN_AVISOS) spawnSync("pbcopy", { input: enlace });
+    item.state.historia = { estado: "aviso-manual", avisadoEn: new Date().toISOString(), archivo: `${base}.jpg`, enlace };
+    saveState(item);
+    log(`Historia lista para subir con enlace: ${base}.jpg · ${enlace}`);
+    notify("Historia de Instagram lista", `Súbela con el sticker de enlace (copiado): iCloud Drive › Historias Instagram`);
+  } catch (e) {
+    log(`No pude preparar la historia con enlace de «${item.draft.title}»: ${e.message}`);
+  }
 }
 
 // Reel: el de un post cuyo carrusel salió hace `reelTrasDias` días o más,

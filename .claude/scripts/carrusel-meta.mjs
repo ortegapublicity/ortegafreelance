@@ -152,7 +152,7 @@ export function renderCarousel(draftFile) {
  * el botón hacia «Mis Blogs». Sirve también para los posts sin carrusel.
  * Deja contenido-blog/<borrador>/meta/historia.jpg.
  */
-export function renderStory(draftFile) {
+export function renderStory(draftFile, { enlace = false } = {}) {
   const draft = JSON.parse(readFileSync(draftFile, "utf8"));
   const name = basename(draftFile).replace(/\.json$/i, "");
   const dir = join(OUT_ROOT, name, "meta");
@@ -184,7 +184,10 @@ export function renderStory(draftFile) {
       etiqueta: "Nuevo en el blog",
       titulo: cut(gancho || draft.title, 110),
       texto: textoHistoria(gancho, draft.excerpt || ""),
-      boton: "Léelo en «Mis Blogs»",
+      // Con enlace: el botón señala hacia abajo, donde va el sticker de enlace
+      // que se pone a mano (la API de Instagram no publica stickers).
+      boton: enlace ? "Toca el enlace de abajo" : "Léelo en «Mis Blogs»",
+      flecha: enlace ? "↓" : "↗",
     };
     const png = join(profile, "historia.png");
     execFileSync(CHROME, [
