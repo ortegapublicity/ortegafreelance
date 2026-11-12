@@ -378,7 +378,10 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   genera su carrusel y avisa (estado en `<borrador>.contentful.json` →
   `meta`). El día que sale su LinkedIn, **publica también el carrusel y una
   historia (9:16, `historia-meta.html`; también para posts sin carrusel) en
-  Instagram** si hay token (`instagram-publicar.mjs`); si no, se publica a
+  Instagram**. **Dos días después sale su reel** (`renderReel`: las
+  diapositivas sin contador, zoom lento y fundidos sobre `reel-fondo.html`,
+  15 s, MP4 con ffmpeg de Homebrew; subida reanudable a rupload.facebook.com,
+  sin alojar el video), como mucho uno al día, a la hora del día si hay token (`instagram-publicar.mjs`); si no, se publica a
   mano con `meta.html`.
 - **API de Instagram** (@ortegafreelance es cuenta de empresa):
   «Instagram API with Instagram Login», `graph.instagram.com/v27.0`. Flujo:
@@ -595,8 +598,9 @@ El plan de Hostinger del usuario aloja otros sitios: **no cancelarlo**.
 5. Pasar a la estética limpia lo que queda de la plantilla: el pie («PONTE EN
    CONTACTO» gigante), los testimonios y el círculo «ver más trabajos».
 6. Rellenar las metas `<X>/<Y>` de `02-GOALS.md`, que pone el PO.
-7. Redes (2026-11-12): **reels** (video con las diapositivas; falta ffmpeg y
-   la subida reanudable de Meta), permiso `instagram_manage_insights` en el
-   token del usuario del sistema (alcance y guardados para la agenda) y, si
-   LinkedIn lo aprueba, la Community Management API
-   (`r_member_postAnalytics`) para medir LinkedIn.
+7. Redes (2026-11-12): token del usuario del sistema **regenerado** con
+   `instagram_manage_insights` (añadirlo a la app no basta: el token guarda
+   los permisos con los que se generó) para sumar alcance y guardados a la
+   agenda; y, si LinkedIn lo aprueba, la Community Management API
+   (`r_member_postAnalytics`) para medir LinkedIn. El primer reel real por
+   API aún no ha salido (probado solo contra servidor simulado).

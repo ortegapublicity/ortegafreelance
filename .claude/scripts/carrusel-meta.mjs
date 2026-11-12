@@ -22,7 +22,7 @@
 //   }
 
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -31,6 +31,8 @@ import { svgProblems } from "./portada-blog.mjs";
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const TEMPLATE = join(BLOG_REPO, ".claude/scripts/carrusel-meta.html");
 const STORY_TEMPLATE = join(BLOG_REPO, ".claude/scripts/historia-meta.html");
+const REEL_BG = join(BLOG_REPO, ".claude/scripts/reel-fondo.html");
+const FFMPEG = process.env.FFMPEG_BIN || ["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg"].find((f) => existsSync(f)) || "ffmpeg";
 const OUT_ROOT = join(process.env.BITACORA_DATOS || BLOG_REPO, "contenido-blog");
 const CHROME = process.env.CHROME_BIN || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
@@ -189,7 +191,82 @@ export function renderStory(draftFile) {
   return jpg;
 }
 
+/**
+ * Reel de Instagram (1080×1920, MP4 H.264) a partir de las diapositivas del
+ * carrusel: cada una 3,5 s con un zoom lento, fundido de 0,5 s entre ellas,
+ * sobre el fondo de reel-fondo.html. Pista de audio en silencio (Instagram
+ * acepta reels sin música; la música de la biblioteca no se puede poner por
+ * API). Deja contenido-blog/<borrador>/meta/reel.mp4. Necesita ffmpeg.
+ */
+export function renderReel(draftFile, { segundos = 3.5, fundido = 0.5 } = {}) {
+  const draft = JSON.parse(readFileSync(draftFile, "utf8"));
+  const errors = validateMeta(draft.meta);
+  if (errors.length) throw new Error(`Reel no válido (usa el carrusel):\n  - ${errors.join("\n  - ")}`);
+  const name = basename(draftFile).replace(/\.json$/i, "");
+  const dir = join(OUT_ROOT, name, "meta");
+  mkdirSync(dir, { recursive: true });
+  const profile = mkdtempSync(join(tmpdir(), "reel-"));
+  const mp4 = join(dir, "reel.mp4");
+  try {
+    const iso = `data:image/png;base64,${readFileSync(join(BLOG_REPO, "src/assets/img/logo/favicon.png")).toString("base64")}`;
+    // Diapositivas del carrusel sin contador ni «Desliza» (?reel=1).
+    const slidePage = join(profile, "slide.html");
+    writeFileSync(slidePage, readFileSync(TEMPLATE, "utf8").replaceAll("__ISOTIPO__", iso));
+    const slides = draft.meta.slides.map((sl, i) => {
+      const png = join(profile, `r${i + 1}.png`);
+      const url = `${pathToFileURL(slidePage).href}?n=${i + 1}&total=${draft.meta.slides.length}&reel=1#${encodeURIComponent(JSON.stringify({ ...sl, numero: i }))}`;
+      execFileSync(CHROME, [
+        "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run", `--user-data-dir=${profile}`,
+        "--window-size=1080,1350", "--force-device-scale-factor=1", "--virtual-time-budget=10000", `--screenshot=${png}`, url,
+      ], { stdio: "ignore", timeout: 60000 });
+      return png;
+    });
+    const page = join(profile, "fondo.html");
+    writeFileSync(page, readFileSync(REEL_BG, "utf8").replaceAll("__ISOTIPO__", iso));
+    const fondo = join(profile, "fondo.png");
+    execFileSync(CHROME, [
+      "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run", `--user-data-dir=${profile}`,
+      "--window-size=1080,1920", "--force-device-scale-factor=1", "--virtual-time-budget=10000", `--screenshot=${fondo}`, pathToFileURL(page).href,
+    ], { stdio: "ignore", timeout: 60000 });
+
+    const fps = 30;
+    const frames = Math.round(segundos * fps);
+    const n = slides.length;
+    const inputs = ["-loop", "1", "-framerate", String(fps), "-i", fondo];
+    for (const f of slides) inputs.push("-i", f);
+    inputs.push("-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo");
+    const parts = [`[0:v]split=${n}${slides.map((_, i) => `[b${i}]`).join("")}`];
+    slides.forEach((_, i) => {
+      parts.push(
+        `[${i + 1}:v]scale=2160:2700,zoompan=z='min(zoom+0.0007,1.07)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frames}:s=1080x1350:fps=${fps},setsar=1[z${i}]`,
+        `[b${i}][z${i}]overlay=0:285:shortest=1,format=yuv420p,setpts=PTS-STARTPTS[v${i}]`
+      );
+    });
+    let last = "v0";
+    for (let i = 1; i < n; i++) {
+      const out = i === n - 1 ? "out" : `x${i}`;
+      parts.push(`[${last}][v${i}]xfade=transition=fade:duration=${fundido}:offset=${(i * (segundos - fundido)).toFixed(2)}[${out}]`);
+      last = out;
+    }
+    if (n === 1) parts.push("[v0]copy[out]");
+    const total = n * segundos - (n - 1) * fundido;
+    execFileSync(FFMPEG, [
+      "-y", "-hide_banner", "-loglevel", "error", ...inputs,
+      "-filter_complex", parts.join(";"), "-map", "[out]", "-map", `${n + 1}:a`,
+      "-t", total.toFixed(2), "-r", String(fps), "-c:v", "libx264", "-profile:v", "high", "-preset", "medium", "-crf", "20",
+      "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", mp4,
+    ], { stdio: ["ignore", "ignore", "pipe"], timeout: 300000 });
+  } finally {
+    rmSync(profile, { recursive: true, force: true });
+  }
+  return mp4;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (process.argv[2] === "--reel" && process.argv[3]) {
+    console.log(`Reel: ${pathToFileURL(renderReel(resolve(process.argv[3]))).href}`);
+    process.exit(0);
+  }
   if (process.argv[2] === "--historia" && process.argv[3]) {
     console.log(`Historia: ${pathToFileURL(renderStory(resolve(process.argv[3]))).href}`);
     process.exit(0);

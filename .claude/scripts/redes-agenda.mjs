@@ -31,7 +31,7 @@ const DEFAULTS = {
   medirTrasHoras: 48,
   minMuestrasPorHora: 2,
   explorar: 0.2,
-  instagram: { historia: true },
+  instagram: { historia: true, reel: true, reelTrasDias: 2 },
 };
 
 function loadConfig() {

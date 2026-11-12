@@ -40,7 +40,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
 import { renderCarousel } from "./carrusel-meta.mjs";
-import { medirPublicaciones, publishIfPossible as publishInstagram, publishStoryIfPossible } from "./instagram-publicar.mjs";
+import { medirPublicaciones, publishIfPossible as publishInstagram, publishReelIfPossible, publishStoryIfPossible } from "./instagram-publicar.mjs";
 import { CONFIG, aLaHora, dia, horaDelDia, resumen } from "./redes-agenda.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -447,9 +447,30 @@ async function publishItem(item, token) {
 async function publicarPendiente() {
   fijarHoraDeHoy();
   const due = await publicarLinkedInPendiente();
-  if (!due) return;
-  if (due.draft.meta) await publishInstagram(due.file);
-  if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
+  if (due) {
+    if (due.draft.meta) await publishInstagram(due.file);
+    if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
+  }
+  if (CONFIG.instagram.reel) await publicarReelPendiente();
+}
+
+// Reel: el de un post cuyo carrusel salió hace `reelTrasDias` días o más,
+// como mucho uno al día, a la hora que toca hoy. Así el perfil alterna
+// formatos (carrusel + historia un día, reel otro).
+async function publicarReelPendiente() {
+  const items = loadItems();
+  const hoy = dia(new Date());
+  if (items.some((i) => i.state.reel?.publicadoEn && dia(i.state.reel.publicadoEn) === hoy)) return;
+  const deHoy = items.find((i) => i.state.linkedin?.horaFijada && dia(i.state.linkedin.para) === hoy);
+  const hora = deHoy ? new Date(deHoy.state.linkedin.para) : aLaHora(new Date(), horaDelDia(items, new Date()).hora);
+  if (Date.now() < hora.getTime()) return;
+  const limite = new Date();
+  limite.setDate(limite.getDate() - (CONFIG.instagram.reelTrasDias ?? 2));
+  const candidato = items
+    .filter((i) => i.draft.meta && i.state.meta?.estado === "publicado" && i.state.meta.publicadoEn && dia(i.state.meta.publicadoEn) <= dia(limite))
+    .filter((i) => !["publicado", "publicando", "cancelado", "error"].includes(i.state.reel?.estado))
+    .sort((a, b) => b.state.meta.publicadoEn.localeCompare(a.state.meta.publicadoEn))[0];
+  if (candidato) await publishReelIfPossible(candidato.file);
 }
 
 // El día que toca, la hora se recalcula con las estadísticas más nuevas (al
