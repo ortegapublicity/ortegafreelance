@@ -152,7 +152,7 @@ export function renderCarousel(draftFile) {
  * el botón hacia «Mis Blogs». Sirve también para los posts sin carrusel.
  * Deja contenido-blog/<borrador>/meta/historia.jpg.
  */
-export function renderStory(draftFile) {
+export function renderStory(draftFile, { enlace = false } = {}) {
   const draft = JSON.parse(readFileSync(draftFile, "utf8"));
   const name = basename(draftFile).replace(/\.json$/i, "");
   const dir = join(OUT_ROOT, name, "meta");
@@ -168,15 +168,26 @@ export function renderStory(draftFile) {
         .replaceAll("__ISOTIPO__", dataUri(join(BLOG_REPO, "src/assets/img/logo/favicon.png"), "image/png"))
         .replaceAll("__PORTADA__", dataUri(join(OUT_ROOT, name, "portada-es.jpg"), "image/jpeg"))
     );
-    const cut = (t, n) => (t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : t);
+    const cut = (t, n) => (t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "").replace(/[.,;:]+$/, "") + "…" : t);
+    // El extracto, salvo que repita el gancho (mismas primeras palabras): entonces
+    // su segunda frase, o nada.
+    const textoHistoria = (g, ex) => {
+      const norm = (t) => t.toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g, "").split(/\s+/).slice(0, 4).join(" ");
+      if (!g || norm(g) !== norm(ex)) return cut(ex, 150);
+      const resto = ex.split(/(?<=[.!?])\s+/).slice(1).join(" ");
+      return resto ? cut(resto, 150) : "";
+    };
     // La portada ya lleva el título del post: el texto grande es el gancho
     // (primera línea del caption de LinkedIn, que habla del dolor del lector).
     const gancho = String(draft.linkedin?.es || "").split("\n")[0].trim();
     const data = {
       etiqueta: "Nuevo en el blog",
       titulo: cut(gancho || draft.title, 110),
-      texto: cut(draft.excerpt || "", 150),
-      boton: "Léelo en «Mis Blogs»",
+      texto: textoHistoria(gancho, draft.excerpt || ""),
+      // Con enlace: el botón señala hacia abajo, donde va el sticker de enlace
+      // que se pone a mano (la API de Instagram no publica stickers).
+      boton: enlace ? "Toca el enlace de abajo" : "Léelo en «Mis Blogs»",
+      flecha: enlace ? "↓" : "↗",
     };
     const png = join(profile, "historia.png");
     execFileSync(CHROME, [

@@ -42,7 +42,7 @@
   <div class="mosaic"></div>
   <div class="tag" id="tag"></div>
   <div class="cover" style="background-image:url('__PORTADA__')"></div>
-  <div class="panel"><div class="mosaic"></div><h1 id="t"></h1><p id="x"></p><div class="pill"><b>↗</b><span id="b"></span></div></div>
+  <div class="panel"><div class="mosaic"></div><h1 id="t"></h1><p id="x"></p><div class="pill"><b id="f">↗</b><span id="b"></span></div></div>
   <div class="brand"><i></i>ortegafreelance.com</div>
 </div>
 <script>
@@ -51,6 +51,7 @@ document.getElementById("tag").textContent = S.etiqueta || "Nuevo en el blog";
 document.getElementById("t").textContent = S.titulo || "";
 document.getElementById("x").textContent = S.texto || "";
 document.getElementById("b").textContent = S.boton || "Mis Blogs";
+document.getElementById("f").textContent = S.flecha || "↗";
 document.fonts.ready.then(() => {
   const h = document.getElementById("t"), box = document.querySelector(".panel");
   let size = parseFloat(getComputedStyle(h).fontSize);

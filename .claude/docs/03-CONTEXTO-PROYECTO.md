@@ -379,7 +379,13 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   genera su carrusel y avisa (estado en `<borrador>.contentful.json` →
   `meta`). El día que sale su LinkedIn, **publica también el carrusel y una
   historia (9:16, `historia-meta.html`; también para posts sin carrusel) en
-  Instagram**. **Dos días después sale su reel** (`renderReel`: las
+  Instagram**. Desde 2026-11-12, `instagram.historia = "enlace"` (pedido de
+  Raúl: que la historia lleve el link): la API de Instagram **no publica
+  stickers de enlace**, así que la historia se deja en iCloud Drive ›
+  «Historias Instagram» (imagen + `.txt` con el enlace con UTM
+  `utm_medium=historia`), el enlace en el portapapeles y un aviso; Raúl la
+  sube desde el iPhone con el sticker «Enlace». Con `true` vuelve a
+  publicarse sola, sin enlace. **Dos días después sale su reel** (`renderReel`: las
   diapositivas sin contador, zoom lento y fundidos sobre `reel-fondo.html`,
   15 s, MP4 con ffmpeg de Homebrew; subida reanudable a rupload.facebook.com,
   sin alojar el video), como mucho uno al día, a la hora del día si hay token (`instagram-publicar.mjs`); si no, se publica a
