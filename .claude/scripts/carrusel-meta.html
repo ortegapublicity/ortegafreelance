@@ -60,9 +60,10 @@ const n = Number(P.get("n") || 1), total = Number(P.get("total") || 1);
 const S = JSON.parse(decodeURIComponent(location.hash.slice(1) || "%7B%7D"));
 const esc = (t) => String(t || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
 const root = document.getElementById("root");
-const count = `<div class="count">${n}/${total}</div>`;
+const reel = P.get("reel") === "1"; // en el reel no hay contador ni «Desliza»
+const count = reel ? "" : `<div class="count">${n}/${total}</div>`;
 const brand = `<div class="brand"><i></i>ortegafreelance.com</div>`;
-const swipe = n < total ? `<div class="swipe">Desliza →</div>` : "";
+const swipe = n < total && !reel ? `<div class="swipe">Desliza →</div>` : "";
 
 if (S.tipo === "gancho") {
   root.innerHTML = `<div class="slide hook navy">

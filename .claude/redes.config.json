@@ -1,0 +1,14 @@
+{
+  "_que_es": "Agenda de redes de la bitácora (linkedin-publicar.mjs + redes-agenda.mjs). Para instalarlo a un cliente, solo cambia este archivo.",
+  "dias": [0, 1, 2, 3, 4, 5, 6],
+  "horas": ["08:10", "12:10", "19:10"],
+  "postsPorDia": 1,
+  "medirTrasHoras": 48,
+  "minMuestrasPorHora": 2,
+  "explorar": 0.2,
+  "instagram": {
+    "historia": true,
+    "reel": true,
+    "reelTrasDias": 2
+  }
+}

@@ -3,7 +3,8 @@
 // web, programa su publicación en el perfil de LinkedIn de Raúl con el
 // caption que viene en el borrador ("linkedin") y la portada del post.
 //
-//   node .claude/scripts/linkedin-publicar.mjs --diario     lo que lanza launchd (09:10): prepara y publica lo que toque
+//   node .claude/scripts/linkedin-publicar.mjs --diario     lo que lanza launchd (cada hora, 7:10–21:10): prepara y publica lo que toque
+//   node .claude/scripts/linkedin-publicar.mjs --reprogramar  reparte la cola en los próximos días libres (tras cambiar la agenda)
 //   node .claude/scripts/linkedin-publicar.mjs --preparar   programa los posts recién publicados en el blog
 //   node .claude/scripts/linkedin-publicar.mjs --publicar   publica (o avisa) lo que ya toque, sin mirar el blog
 //   node .claude/scripts/linkedin-publicar.mjs --estado     muestra la cola
@@ -24,6 +25,11 @@
 //   (ugcPosts + imagen). La API no programa: la hora la pone este script.
 //   El token dura 60 días y no se renueva solo; el script avisa antes.
 //
+// Agenda (desde 2026-11-12): días y horas en .claude/redes.config.json; la
+// hora de cada día la elige redes-agenda.mjs con las estadísticas de
+// Instagram. Un post publicado en el blog sale el primer día libre: si es hoy
+// y la hora elegida ya pasó, sale en la siguiente pasada (cada hora).
+//
 // Reglas: nunca publica un post que no esté publicado en el blog, como mucho
 // uno por día, y nunca reintenta a ciegas una publicación que pudo haber
 // salido (estado "publicando"). El token no se imprime ni se guarda en disco.
@@ -34,7 +40,8 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
 import { renderCarousel } from "./carrusel-meta.mjs";
-import { publishIfPossible as publishInstagram } from "./instagram-publicar.mjs";
+import { medirPublicaciones, publishIfPossible as publishInstagram, publishReelIfPossible, publishStoryIfPossible } from "./instagram-publicar.mjs";
+import { CONFIG, aLaHora, dia, horaDelDia, resumen } from "./redes-agenda.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores y portadas); solo se
@@ -46,11 +53,9 @@ const SITE = "https://ortegafreelance.com";
 const KEYCHAIN = "ortegafreelance-linkedin";
 const TOKEN_DAYS = 60;
 
-// Días (0 = domingo) y hora local en que sale un post. Martes a jueves por la
-// mañana es cuando más actividad profesional hay; se cambia aquí o con las
-// variables LINKEDIN_DIAS="1,2,3,4" y LINKEDIN_HORA="08:30".
-const DIAS = (process.env.LINKEDIN_DIAS || "2,3,4").split(",").map(Number);
-const HORA = process.env.LINKEDIN_HORA || "09:10";
+// Días (0 = domingo) en que sale un post: los de redes.config.json, o la
+// variable LINKEDIN_DIAS="1,2,3,4". La hora la elige la agenda cada día.
+const DIAS = process.env.LINKEDIN_DIAS ? process.env.LINKEDIN_DIAS.split(",").map(Number) : CONFIG.dias;
 
 // Solo para pruebas locales contra un servidor simulado: nunca usa el token real.
 const MOCK = /^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(process.env.LINKEDIN_API_BASE || "")
@@ -160,11 +165,11 @@ function loadItems() {
 
 const saveState = (item) => writeFileSync(item.stateFile, JSON.stringify(item.state, null, 2) + "\n");
 
-function nextSlot(taken, from = new Date()) {
-  const [h, m] = HORA.split(":").map(Number);
-  for (let i = 0; i < 90; i++) {
-    const c = new Date(from.getFullYear(), from.getMonth(), from.getDate() + i, h, m, 0);
-    if (c > from && DIAS.includes(c.getDay()) && !taken.has(c.toLocaleDateString("sv-SE"))) return c;
+/** Primer día libre (hoy incluido) en los días de la agenda, a la hora que toca ese día. */
+function nextSlot(taken, items, from = new Date()) {
+  for (let k = 0; k < 90; k++) {
+    const d = new Date(from.getFullYear(), from.getMonth(), from.getDate() + k);
+    if (DIAS.includes(d.getDay()) && !taken.has(dia(d))) return aLaHora(d, horaDelDia(items, d).hora);
   }
   return new Date(from.getTime() + 864e5);
 }
@@ -249,8 +254,8 @@ function preparar() {
       log(`«${draft.title}» está publicado pero su caption no sirve: ${errors.join(" | ")}`);
       continue;
     }
-    const slot = nextSlot(taken);
-    taken.add(slot.toLocaleDateString("sv-SE"));
+    const slot = nextSlot(taken, items);
+    taken.add(dia(slot));
     state.linkedin = { estado: "programado", para: slot.toISOString(), url: postUrl(post.es || draft.title), intentos: 0 };
     saveState(item);
     const dir = writeHelper(item);
@@ -440,8 +445,82 @@ async function publishItem(item, token) {
 // El día que sale el LinkedIn de un post, sale también su carrusel de
 // Instagram (si hay token de Instagram; si no, ya se avisó al prepararlo).
 async function publicarPendiente() {
+  fijarHoraDeHoy();
   const due = await publicarLinkedInPendiente();
-  if (due?.draft.meta) await publishInstagram(due.file);
+  if (due) {
+    if (due.draft.meta) await publishInstagram(due.file);
+    if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
+  }
+  if (CONFIG.instagram.reel) await publicarReelPendiente();
+}
+
+// Reel: el de un post cuyo carrusel salió hace `reelTrasDias` días o más,
+// como mucho uno al día, a la hora que toca hoy. Así el perfil alterna
+// formatos (carrusel + historia un día, reel otro).
+async function publicarReelPendiente() {
+  const items = loadItems();
+  const hoy = dia(new Date());
+  if (items.some((i) => i.state.reel?.publicadoEn && dia(i.state.reel.publicadoEn) === hoy)) return;
+  const deHoy = items.find((i) => i.state.linkedin?.horaFijada && dia(i.state.linkedin.para) === hoy);
+  const hora = deHoy ? new Date(deHoy.state.linkedin.para) : aLaHora(new Date(), horaDelDia(items, new Date()).hora);
+  if (Date.now() < hora.getTime()) return;
+  const limite = new Date();
+  limite.setDate(limite.getDate() - (CONFIG.instagram.reelTrasDias ?? 2));
+  const candidato = items
+    .filter((i) => i.draft.meta && i.state.meta?.estado === "publicado" && i.state.meta.publicadoEn && dia(i.state.meta.publicadoEn) <= dia(limite))
+    .filter((i) => !["publicado", "publicando", "cancelado", "error"].includes(i.state.reel?.estado))
+    .sort((a, b) => b.state.meta.publicadoEn.localeCompare(a.state.meta.publicadoEn))[0];
+  if (candidato) await publishReelIfPossible(candidato.file);
+}
+
+// El día que toca, la hora se recalcula con las estadísticas más nuevas (al
+// programarlo quizá aún no estaban). Se fija una vez y no se mueve más.
+function fijarHoraDeHoy() {
+  const hoy = dia(new Date());
+  for (const item of loadItems()) {
+    const li = item.state.linkedin;
+    if (li?.estado !== "programado" || li.horaFijada || dia(li.para) !== hoy) continue;
+    const { hora, motivo } = horaDelDia(loadItems(), new Date());
+    li.para = aLaHora(new Date(), hora).toISOString();
+    li.horaFijada = true;
+    saveState(item);
+    log(`Hoy «${item.draft.title}» sale a las ${hora}: ${motivo}.`);
+  }
+}
+
+/** Reparte los posts programados en los próximos días libres, en su orden. */
+function reprogramar() {
+  const items = loadItems();
+  const cola = items
+    .filter((i) => i.state.linkedin?.estado === "programado")
+    .sort((a, b) => a.state.linkedin.para.localeCompare(b.state.linkedin.para));
+  const taken = new Set(
+    items
+      .filter((i) => i.state.linkedin?.para && i.state.linkedin.estado !== "programado")
+      .map((i) => dia(i.state.linkedin.publicadoEn || i.state.linkedin.para))
+  );
+  for (const item of cola) {
+    const slot = nextSlot(taken, items);
+    taken.add(dia(slot));
+    Object.assign(item.state.linkedin, { para: slot.toISOString(), horaFijada: false });
+    saveState(item);
+    log(`Reprogramado para ${fecha(slot)}: «${item.draft.title}»`);
+  }
+  if (!cola.length) log("No hay posts programados.");
+}
+
+/** Una vez al día: tokens y estadísticas (la tarea corre cada hora). */
+async function tareasDelDia(problemas) {
+  const marca = join(DATA, ".claude/blog/agenda-ultimo-dia.txt");
+  const hoy = dia(new Date());
+  if (existsSync(marca) && readFileSync(marca, "utf8").trim() === hoy && !problemas.contentful) return;
+  try {
+    await medirPublicaciones();
+  } catch (e) {
+    log(`No pude medir las publicaciones de Instagram: ${e.message}`);
+  }
+  await avisarCaducidad(problemas);
+  writeFileSync(marca, hoy + "\n");
 }
 
 async function publicarLinkedInPendiente() {
@@ -527,6 +606,11 @@ if (isMain) {
       const t = readToken();
       const left = tokenDaysLeft();
       console.log(`\nToken de LinkedIn: ${t ? `guardado${left !== null ? ` (le quedan ~${left} días)` : ""} → publica solo` : "no hay → avisa para publicar a mano"}`);
+      const items = loadItems();
+      const r = resumen(items);
+      const h = horaDelDia(items, new Date());
+      console.log(`Agenda: días ${DIAS.join(",")} (0 = domingo) · horas ${CONFIG.horas.join(", ")} · hoy tocaría ${h.hora}: ${h.motivo}`);
+      console.log("Instagram por hora: " + CONFIG.horas.map((x) => `${x} → ${r[x].n} medidas, ${r[x].promedio.toFixed(1)} pts`).join(" · "));
     } else if (args.includes("--simular")) {
       const item = findItem();
       const errors = validateLinkedin(item.draft.linkedin);
@@ -577,6 +661,8 @@ if (isMain) {
       console.log(`«${item.draft.title}» → ${estado}`);
     } else if (args.includes("--preparar")) {
       preparar();
+    } else if (args.includes("--reprogramar")) {
+      reprogramar();
     } else if (args.includes("--publicar")) {
       await publicarPendiente();
     } else if (args.includes("--diario")) {
@@ -589,9 +675,9 @@ if (isMain) {
         if (/\b401\b|access token|unauthori[sz]ed/i.test(e.message)) problemas.contentful = true;
       }
       await publicarPendiente();
-      await avisarCaducidad(problemas);
+      await tareasDelDia(problemas);
     } else {
-      console.error("Uso: linkedin-publicar.mjs --diario | --preparar | --estado | --simular <borrador> | --verificar | --ahora <borrador> | --marcar <borrador> <estado>");
+      console.error("Uso: linkedin-publicar.mjs --diario | --preparar | --reprogramar | --estado | --simular <borrador> | --verificar | --ahora <borrador> | --marcar <borrador> <estado>");
       process.exit(64);
     }
   } catch (e) {

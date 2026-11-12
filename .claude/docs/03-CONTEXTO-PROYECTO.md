@@ -263,13 +263,22 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
 - Cada borrador lleva `linkedin` (`es`, `en`, `hashtags`, `hashtags_en`): un
   caption profesional que invita a leer el post (guía en `plantilla-blog.md`,
   «LinkedIn»).
-- `.claude/scripts/linkedin-publicar.mjs --diario` corre cada día a las 9:10
-  (launchd `com.ortegafreelance.linkedin`, registro en
-  `~/Library/Logs/bitacora-linkedin.log`):
+- `.claude/scripts/linkedin-publicar.mjs --diario` corre **cada hora de 7:10
+  a 21:10** (launchd `com.ortegafreelance.linkedin`, registro en
+  `~/Library/Logs/bitacora-linkedin.log`). Desde el 2026-11-12 (pedido de
+  Raúl: «que publique todos los días lo que tenga armado y vaya ajustando el
+  horario con las estadísticas»):
   1. Mira qué posts de la bitácora **ya están publicados en el blog**
-     (`/api/blog-posts`) y los programa: uno por día, martes a jueves, 9:10
-     (`LINKEDIN_DIAS` y `LINKEDIN_HORA` en el script). El estado va en
-     `<borrador>.contentful.json` → `linkedin`.
+     (`/api/blog-posts`) y los programa: **uno por día, todos los días**, el
+     primer día libre. Días y horas candidatas en `.claude/redes.config.json`
+     (8:10, 12:10, 19:10). La hora de cada día la elige
+     `redes-agenda.mjs` ese mismo día: rota hasta tener 2 publicaciones por
+     hora y luego usa la de mejor promedio (alcance/10 + me gusta + 3 ×
+     comentarios + 4 × (guardados + compartidos) del carrusel de Instagram a
+     las 48 h; el alcance llega con `instagram_manage_insights`), explorando otra un día de cada cinco.
+     Si un post se publica en el blog y hoy no salió nada, sale en la
+     siguiente pasada. `--reprogramar` reparte la cola tras cambiar la agenda.
+     El estado va en `<borrador>.contentful.json` → `linkedin`.
   2. El día que toca: **sin token**, notificación + página
      `contenido-blog/<post>/linkedin.html` (texto para copiar, portada, botón
      que abre LinkedIn) y el usuario publica o programa a mano. **Con token**,
@@ -366,10 +375,14 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   público de VE y US, sin clave) y Claude elige una solo si es segura y
   conecta; si no, usa un tema de temporada. **Nunca** imágenes de personas
   reales, logos de equipos o marcas, ni temas de tragedias o política.
-- La tarea de las 9:10, al detectar que un post se publicó en el blog,
+- La tarea horaria, al detectar que un post se publicó en el blog,
   genera su carrusel y avisa (estado en `<borrador>.contentful.json` →
-  `meta`). El día que sale su LinkedIn, **publica también el carrusel en
-  Instagram** si hay token (`instagram-publicar.mjs`); si no, se publica a
+  `meta`). El día que sale su LinkedIn, **publica también el carrusel y una
+  historia (9:16, `historia-meta.html`; también para posts sin carrusel) en
+  Instagram**. **Dos días después sale su reel** (`renderReel`: las
+  diapositivas sin contador, zoom lento y fundidos sobre `reel-fondo.html`,
+  15 s, MP4 con ffmpeg de Homebrew; subida reanudable a rupload.facebook.com,
+  sin alojar el video), como mucho uno al día, a la hora del día si hay token (`instagram-publicar.mjs`); si no, se publica a
   mano con `meta.html`.
 - **API de Instagram** (@ortegafreelance es cuenta de empresa):
   «Instagram API with Instagram Login», `graph.instagram.com/v27.0`. Flujo:
@@ -387,8 +400,10 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   `instagram-publicar.mjs` detecta solo qué tipo de token es. El unificado no
   se renueva con `ig_refresh_token`: `--verificar` lee su caducidad con
   `/debug_token` y la apunta para que `tokens.mjs` avise a tiempo.
-- **El token en uso es de «usuario del sistema»** («claudeiaadminpost System
-  User», configuración con caducidad «Nunca»): **no caduca**. Con él,
+- **El token en uso es de «usuario del sistema»** (desde 2026-11-12,
+  «Claude-IA-User», con @ortegafreelance y la página asignados en «Asignar
+  activos»; antes, «claudeiaadminpost System User»), caducidad «Nunca»:
+  **no caduca**. Con él,
   `/me/assigned_instagram_accounts` devuelve una lista vacía, así que el
   script usa el ID de @ortegafreelance, **17841448821036371**
   (`INSTAGRAM_ACCOUNT_ID` lo cambia). Permiso comprobado leyendo
@@ -586,3 +601,9 @@ El plan de Hostinger del usuario aloja otros sitios: **no cancelarlo**.
 5. Pasar a la estética limpia lo que queda de la plantilla: el pie («PONTE EN
    CONTACTO» gigante), los testimonios y el círculo «ver más trabajos».
 6. Rellenar las metas `<X>/<Y>` de `02-GOALS.md`, que pone el PO.
+7. Redes (2026-11-12): hecho el token con `instagram_manage_insights`
+   (usuario del sistema «Claude-IA-User», con @ortegafreelance y la página
+   asignados como activos: un token de un usuario del sistema sin activos
+   asignados no llega a la cuenta). Pendiente: si LinkedIn lo aprueba, la Community Management API
+   (`r_member_postAnalytics`) para medir LinkedIn. El primer reel real por
+   API aún no ha salido (probado solo contra servidor simulado).

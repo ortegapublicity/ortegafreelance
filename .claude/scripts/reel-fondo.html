@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Fondo del reel</title>
+<!--
+  Fondo 1080×1920 del reel de Instagram (renderReel en carrusel-meta.mjs).
+  Las diapositivas del carrusel (1080×1350) se colocan encima, en y = 285.
+  Arriba, la etiqueta; abajo (fuera de la zona de botones de Instagram), la
+  llamada a «Mis Blogs». __ISOTIPO__ lo sustituye el generador.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #00b0a2; --navy: #0a1e3f; --navy2: #14346b; --ink: #1e2a47; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; }
+  .bg { position: relative; width: 1080px; height: 1920px; background: radial-gradient(ellipse at 20% 10%, #1b4a8f 0%, var(--navy2) 40%, var(--navy) 100%); color: #fff; font-family: "Inter", sans-serif; }
+  .mosaic { position: absolute; inset: 0; background: #fff; opacity: .09;
+    -webkit-mask-image: url("__ISOTIPO__"); mask-image: url("__ISOTIPO__");
+    -webkit-mask-size: 34px 34px; mask-size: 34px 34px; -webkit-mask-repeat: space; mask-repeat: space; }
+  .top { position: absolute; top: 150px; left: 60px; right: 60px; display: flex; justify-content: space-between; align-items: center; }
+  .tag { padding: 12px 26px; border-radius: 999px; background: var(--teal); font: 700 32px "Inter"; }
+  .brand { display: flex; align-items: center; gap: 12px; font: 600 28px "Inter"; }
+  .brand i { width: 40px; height: 40px; background: #fff; -webkit-mask: url("__ISOTIPO__") center/contain no-repeat; mask: url("__ISOTIPO__") center/contain no-repeat; }
+  .cta { position: absolute; top: 1675px; left: 60px; display: inline-flex; align-items: center; gap: 16px; padding: 18px 32px;
+    border-radius: 999px; background: #fff; color: var(--ink); font: 800 34px "Exo 2"; }
+  .cta b { display: inline-grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 28px; }
+</style>
+</head>
+<body>
+<div class="bg">
+  <div class="mosaic"></div>
+  <div class="top"><span class="tag">Nuevo en el blog</span><span class="brand"><i></i>ortegafreelance.com</span></div>
+  <div class="cta"><b>↗</b>El post completo en «Mis Blogs»</div>
+</div>
+</body>
+</html>
