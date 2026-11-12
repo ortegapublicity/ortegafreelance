@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  LinkedIn de la bitácora (09:10): programa los posts ya publicados en el blog y publica o avisa el que toque.
+  Redes de la bitácora (cada hora, 7:10–21:10): programa los posts ya publicados en el blog y
+  publica el que toque (LinkedIn + carrusel e historia de Instagram) a la hora que elige
+  redes-agenda.mjs. Tokens y estadísticas, una vez al día. Días y horas: .claude/redes.config.json
+  (si cambias las horas, que caigan en una de estas pasadas).
   Ver .claude/docs/03-CONTEXTO-PROYECTO.md §7b. Se lanza a través de
   bitacora-arranque.mjs, que vive en una COPIA fuera de iCloud y pide a iCloud
   los archivos desalojados antes de ejecutar el script del repo.
@@ -39,12 +42,23 @@
     <string>/opt/homebrew/opt/node@20/bin:/Users/raulortega/.local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
   </dict>
   <key>StartCalendarInterval</key>
-  <dict>
-    <key>Hour</key>
-    <integer>9</integer>
-    <key>Minute</key>
-    <integer>10</integer>
-  </dict>
+  <array>
+    <dict><key>Hour</key><integer>7</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>10</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>11</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>13</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>14</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>15</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>16</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>17</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>19</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>20</integer><key>Minute</key><integer>10</integer></dict>
+    <dict><key>Hour</key><integer>21</integer><key>Minute</key><integer>10</integer></dict>
+  </array>
   <key>StandardOutPath</key>
   <string>/Users/raulortega/Library/Logs/bitacora-linkedin.log</string>
   <key>StandardErrorPath</key>

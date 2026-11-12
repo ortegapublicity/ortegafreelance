@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Historia</title>
+<!--
+  Historia de Instagram (1080×1920, 9:16) del post del blog. La rellena
+  carrusel-meta.mjs (renderStory):  historia-meta.html#<JSON { etiqueta, titulo, texto, boton }>
+  __PORTADA__ (portada del post) e __ISOTIPO__ los sustituye el generador por
+  data URIs. Misma identidad que el carrusel: navy + panel turquesa con el
+  isotipo en mosaico. Zonas seguras: nada importante en los 250 px de arriba
+  ni en los 250 px de abajo (ahí Instagram pone el perfil y la caja de
+  respuesta).
+-->
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #00b0a2; --navy: #0a1e3f; --navy2: #14346b; --ink: #1e2a47; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  .story { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: "Inter", sans-serif; color: #fff;
+    background: radial-gradient(ellipse at 20% 10%, #1b4a8f 0%, var(--navy2) 40%, var(--navy) 100%); }
+  .mosaic { position: absolute; inset: 0; background: #fff; opacity: .09;
+    -webkit-mask-image: url("__ISOTIPO__"); mask-image: url("__ISOTIPO__");
+    -webkit-mask-size: 34px 34px; mask-size: 34px 34px; -webkit-mask-repeat: space; mask-repeat: space; }
+  .tag { position: absolute; top: 270px; left: 70px; z-index: 2; padding: 12px 26px; border-radius: 999px; background: var(--teal);
+    font: 700 32px "Inter"; letter-spacing: .02em; }
+  .cover { position: absolute; top: 370px; left: 70px; right: 70px; height: 530px; border-radius: 28px; overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,.35); background: #0e2a55 center/cover no-repeat; }
+  .panel { position: absolute; left: 0; right: 0; top: 960px; bottom: 0; background: var(--teal); padding: 80px 70px 290px;
+    display: flex; flex-direction: column; justify-content: flex-start; }
+  h1 { position: relative; z-index: 2; font: 800 76px/1.06 "Exo 2"; letter-spacing: -.01em; text-wrap: balance; }
+  p { position: relative; z-index: 2; margin-top: 26px; font: 500 36px/1.4 "Inter"; color: #effffc; text-wrap: pretty; }
+  .pill { position: relative; z-index: 2; align-self: flex-start; margin-top: 40px; display: inline-flex; align-items: center; gap: 18px;
+    padding: 22px 36px; border-radius: 999px; background: #fff; color: var(--ink); font: 800 38px "Exo 2"; box-shadow: 0 18px 40px rgba(6,40,40,.25); }
+  .pill b { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 32px; }
+  .brand { position: absolute; right: 70px; top: 280px; z-index: 3; display: flex; align-items: center; gap: 14px; font: 600 30px "Inter"; opacity: .95; }
+  .brand i { width: 42px; height: 42px; background: #fff; -webkit-mask: url("__ISOTIPO__") center/contain no-repeat; mask: url("__ISOTIPO__") center/contain no-repeat; }
+</style>
+</head>
+<body>
+<div class="story">
+  <div class="mosaic"></div>
+  <div class="tag" id="tag"></div>
+  <div class="cover" style="background-image:url('__PORTADA__')"></div>
+  <div class="panel"><div class="mosaic"></div><h1 id="t"></h1><p id="x"></p><div class="pill"><b>↗</b><span id="b"></span></div></div>
+  <div class="brand"><i></i>ortegafreelance.com</div>
+</div>
+<script>
+const S = JSON.parse(decodeURIComponent(location.hash.slice(1) || "%7B%7D"));
+document.getElementById("tag").textContent = S.etiqueta || "Nuevo en el blog";
+document.getElementById("t").textContent = S.titulo || "";
+document.getElementById("x").textContent = S.texto || "";
+document.getElementById("b").textContent = S.boton || "Mis Blogs";
+document.fonts.ready.then(() => {
+  const h = document.getElementById("t"), box = document.querySelector(".panel");
+  let size = parseFloat(getComputedStyle(h).fontSize);
+  while (box.scrollHeight > box.clientHeight + 2 && size > 48) { size -= 4; h.style.fontSize = size + "px"; }
+  document.body.dataset.ready = "1";
+});
+</script>
+</body>
+</html>

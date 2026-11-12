@@ -7,6 +7,8 @@
 //   node .claude/scripts/instagram-publicar.mjs --ahora <borrador.json>
 //   node .claude/scripts/instagram-publicar.mjs --refrescar      renueva el token (lo hace tokens.mjs solo)
 //   node .claude/scripts/instagram-publicar.mjs --marcar <borrador.json> publicado|listo|cancelado
+//   node .claude/scripts/instagram-publicar.mjs --historia <borrador.json>  publica su historia ya
+//   node .claude/scripts/instagram-publicar.mjs --medir      guarda me gusta y comentarios (la agenda los usa)
 //
 // Lo llama la tarea diaria (linkedin-publicar.mjs --diario) el mismo día que
 // sale el LinkedIn del post. Sin token, esa tarea solo avisa con el carrusel
@@ -31,7 +33,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { metaCaption, renderCarousel } from "./carrusel-meta.mjs";
+import { metaCaption, renderCarousel, renderStory } from "./carrusel-meta.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const DATA = process.env.BITACORA_DATOS || BLOG_REPO;
@@ -211,27 +213,28 @@ async function publicUrls(item) {
   if (!existsSync(join(dir, "slide-1.jpg"))) renderCarousel(item.file);
   const slides = readdirSync(dir).filter((f) => /^slide-\d+\.jpg$/.test(f)).sort((a, b) => parseInt(a.slice(6)) - parseInt(b.slice(6)));
   if (Array.isArray(m.urls) && m.urls.length === slides.length && m.urls.every(Boolean)) return m.urls;
-  const secret = blogSecret();
-  if (!secret) throw new InstagramError(0, "Falta la frase de administración del blog en el Llavero (para subir las imágenes).");
   const urls = [];
   for (const [i, f] of slides.entries()) {
-    const res = await fetch(`${BLOG}/api/blog-asset`, {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-admin-secret": secret },
-      body: JSON.stringify({
-        title: `Instagram · ${item.draft.title} · ${i + 1}`.slice(0, 200),
-        fileName: `${item.name.replace(/[^a-z0-9-]/gi, "-").slice(0, 70)}-ig-${i + 1}.jpg`,
-        dataBase64: readFileSync(join(dir, f)).toString("base64"),
-      }),
-    });
-    const d = await res.json().catch(() => ({}));
-    if (!res.ok || !d.ok) throw new InstagramError(res.status, `No pude subir la imagen ${i + 1}: ${d.error || res.status}`);
-    if (!d.url) throw new InstagramError(0, `Contentful no devolvió la dirección de la imagen ${i + 1} (¿falta desplegar /api/blog-asset con URL?).`);
-    urls.push(d.url);
+    urls.push(await uploadPublic(join(dir, f), `Instagram · ${item.draft.title} · ${i + 1}`, `${item.name.replace(/[^a-z0-9-]/gi, "-").slice(0, 70)}-ig-${i + 1}.jpg`, `la imagen ${i + 1}`));
   }
   m.urls = urls;
   saveState(item);
   return urls;
+}
+
+/** Sube un JPG a Contentful (en borrador) y devuelve su URL pública. */
+async function uploadPublic(file, title, fileName, what = "la imagen") {
+  const secret = blogSecret();
+  if (!secret) throw new InstagramError(0, "Falta la frase de administración del blog en el Llavero (para subir las imágenes).");
+  const res = await fetch(`${BLOG}/api/blog-asset`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-admin-secret": secret },
+    body: JSON.stringify({ title: title.slice(0, 200), fileName, dataBase64: readFileSync(file).toString("base64") }),
+  });
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok || !d.ok) throw new InstagramError(res.status, `No pude subir ${what}: ${d.error || res.status}`);
+  if (!d.url) throw new InstagramError(0, `Contentful no devolvió la dirección de ${what} (¿falta desplegar /api/blog-asset con URL?).`);
+  return d.url;
 }
 
 // ---------- Publicar el carrusel ----------
@@ -318,6 +321,80 @@ export async function publishIfPossible(file) {
   }
 }
 
+// ---------- Historia ----------
+
+/** Publica la historia del post (imagen 9:16). Estado en state.historia. */
+export async function publishStory(item, token) {
+  const h = (item.state.historia ||= {});
+  if (["publicado", "publicando"].includes(h.estado)) throw new InstagramError(0, `La historia ya está en estado «${h.estado}».`);
+  const me = await whoAmI(token);
+  if (!h.url) {
+    const jpg = renderStory(item.file);
+    h.url = await uploadPublic(jpg, `Historia · ${item.draft.title}`, `${item.name.replace(/[^a-z0-9-]/gi, "-").slice(0, 70)}-historia.jpg`, "la historia");
+    saveState(item);
+  }
+  const container = await ig(`/${me.id}/media`, { method: "POST", token, params: { media_type: "STORIES", image_url: h.url } });
+  await waitFinished(container.id, token);
+  h.estado = "publicando";
+  saveState(item);
+  let published;
+  try {
+    published = await ig(`/${me.id}/media_publish`, { method: "POST", token, params: { creation_id: container.id } });
+  } catch (e) {
+    if (e.status >= 400 && e.status < 500) {
+      h.estado = "error";
+      saveState(item);
+    }
+    throw e;
+  }
+  Object.assign(h, { estado: "publicado", publicadoEn: new Date().toISOString(), id: published.id });
+  saveState(item);
+  return { id: published.id };
+}
+
+/** Para la tarea diaria: historia del post que salió hoy (tenga o no carrusel). */
+export async function publishStoryIfPossible(file) {
+  const token = readToken();
+  if (!token) return null;
+  const item = loadItem(file);
+  if (["publicado", "publicando", "cancelado"].includes(item.state.historia?.estado)) return null;
+  try {
+    const r = await publishStory(item, token);
+    log(`Historia publicada en Instagram: «${item.draft.title}»`);
+    return r;
+  } catch (e) {
+    log(`No se pudo publicar la historia de «${item.draft.title}»: ${e.message}`);
+    notify("Instagram: historia no publicada", `${e.message.slice(0, 80)}. Imagen en contenido-blog/${item.name}/meta/historia.jpg`);
+    return null;
+  }
+}
+
+// ---------- Estadísticas (para la agenda) ----------
+
+/**
+ * Guarda me gusta y comentarios de cada carrusel publicado hace más de
+ * `horas` horas (state.meta.stats). Solo lectura en Instagram. El alcance y
+ * los guardados piden el permiso instagram_manage_insights en el token.
+ */
+export async function medirPublicaciones(horas = Number(process.env.MEDIR_TRAS_HORAS || 48)) {
+  const token = readToken();
+  if (!token || !existsSync(DRAFTS)) return 0;
+  await whoAmI(token);
+  let n = 0;
+  for (const f of readdirSync(DRAFTS).filter((x) => x.endsWith(".json") && !x.endsWith(".contentful.json"))) {
+    const item = loadItem(join(DRAFTS, f));
+    const m = item.state.meta;
+    if (m?.estado !== "publicado" || !m.id || !m.publicadoEn || m.stats) continue;
+    if (Date.now() - new Date(m.publicadoEn).getTime() < horas * 3600e3) continue;
+    const d = await ig(`/${m.id}`, { token, params: { fields: "like_count,comments_count" } });
+    m.stats = { likes: d.like_count || 0, comentarios: d.comments_count || 0, medidoEn: new Date().toISOString() };
+    saveState(item);
+    log(`Medido «${item.draft.title}»: ${m.stats.likes} me gusta, ${m.stats.comentarios} comentarios.`);
+    n++;
+  }
+  return n;
+}
+
 // ---------- Línea de comandos ----------
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -325,7 +402,15 @@ if (isMain) {
   const args = process.argv.slice(2);
   const fileArg = args.find((a) => a.endsWith(".json"));
   try {
-    if (args.includes("--verificar")) {
+    if (args.includes("--historia")) {
+      if (!fileArg) throw new Error("Uso: --historia <borrador.json>");
+      const token = readToken();
+      if (!token) throw new Error("No hay token de Instagram en el Llavero.");
+      await publishStory(loadItem(resolve(fileArg)), token);
+      console.log("Historia publicada.");
+    } else if (args.includes("--medir")) {
+      console.log(`Publicaciones medidas: ${await medirPublicaciones()}`);
+    } else if (args.includes("--verificar")) {
       const token = readToken();
       if (!token) {
         console.log(`No hay token en el Llavero (servicio "${KEYCHAIN}"). Guárdalo con: node .claude/scripts/instagram-token.mjs`);

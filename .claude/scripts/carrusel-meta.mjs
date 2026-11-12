@@ -22,7 +22,7 @@
 //   }
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -30,6 +30,7 @@ import { svgProblems } from "./portada-blog.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const TEMPLATE = join(BLOG_REPO, ".claude/scripts/carrusel-meta.html");
+const STORY_TEMPLATE = join(BLOG_REPO, ".claude/scripts/historia-meta.html");
 const OUT_ROOT = join(process.env.BITACORA_DATOS || BLOG_REPO, "contenido-blog");
 const CHROME = process.env.CHROME_BIN || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
@@ -144,7 +145,55 @@ export function renderCarousel(draftFile) {
   return { dir, files };
 }
 
+/**
+ * Historia de Instagram (1080×1920) del post: portada + título + extracto y
+ * el botón hacia «Mis Blogs». Sirve también para los posts sin carrusel.
+ * Deja contenido-blog/<borrador>/meta/historia.jpg.
+ */
+export function renderStory(draftFile) {
+  const draft = JSON.parse(readFileSync(draftFile, "utf8"));
+  const name = basename(draftFile).replace(/\.json$/i, "");
+  const dir = join(OUT_ROOT, name, "meta");
+  mkdirSync(dir, { recursive: true });
+  const profile = mkdtempSync(join(tmpdir(), "historia-chrome-"));
+  const jpg = join(dir, "historia.jpg");
+  try {
+    const dataUri = (file, type) => (existsSync(file) ? `data:${type};base64,${readFileSync(file).toString("base64")}` : "");
+    const page = join(profile, "historia.html");
+    writeFileSync(
+      page,
+      readFileSync(STORY_TEMPLATE, "utf8")
+        .replaceAll("__ISOTIPO__", dataUri(join(BLOG_REPO, "src/assets/img/logo/favicon.png"), "image/png"))
+        .replaceAll("__PORTADA__", dataUri(join(OUT_ROOT, name, "portada-es.jpg"), "image/jpeg"))
+    );
+    const cut = (t, n) => (t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : t);
+    // La portada ya lleva el título del post: el texto grande es el gancho
+    // (primera línea del caption de LinkedIn, que habla del dolor del lector).
+    const gancho = String(draft.linkedin?.es || "").split("\n")[0].trim();
+    const data = {
+      etiqueta: "Nuevo en el blog",
+      titulo: cut(gancho || draft.title, 110),
+      texto: cut(draft.excerpt || "", 150),
+      boton: "Léelo en «Mis Blogs»",
+    };
+    const png = join(profile, "historia.png");
+    execFileSync(CHROME, [
+      "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run", `--user-data-dir=${profile}`,
+      "--window-size=1080,1920", "--force-device-scale-factor=1", "--virtual-time-budget=10000", `--screenshot=${png}`,
+      `${pathToFileURL(page).href}#${encodeURIComponent(JSON.stringify(data))}`,
+    ], { stdio: "ignore", timeout: 60000 });
+    execFileSync("sips", ["-s", "format", "jpeg", "-s", "formatOptions", "88", png, "--out", jpg], { stdio: "ignore" });
+  } finally {
+    rmSync(profile, { recursive: true, force: true });
+  }
+  return jpg;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (process.argv[2] === "--historia" && process.argv[3]) {
+    console.log(`Historia: ${pathToFileURL(renderStory(resolve(process.argv[3]))).href}`);
+    process.exit(0);
+  }
   const file = process.argv[2];
   if (!file) {
     console.error("Uso: node .claude/scripts/carrusel-meta.mjs <borrador.json>");

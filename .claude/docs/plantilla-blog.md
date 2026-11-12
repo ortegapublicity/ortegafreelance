@@ -102,6 +102,34 @@ Prohibido volver a «ahí es donde empezaría a auditar/revisar».
   secreto», «potenciar», «sinergia», y la venta agresiva (la invitación suave
   del cierre sí cabe, ver «Variedad»).
 
+## Enfoque comercial: el dolor que resuelvo (desde 2026-11-12)
+
+Pedido de Raúl: los posts están bien; ahora tienen que **hablar de lo que
+resuelve**, porque el blog y las redes existen para encontrar a quien le
+pague por resolverlo. Lo que vende: automatizar el marketing de un negocio
+(contenido que se escribe y se publica solo, anuncios, webs que convierten)
+con Claude como herramienta.
+
+- **Arranca desde el dolor del lector, no desde la tecnología.** Antes de
+  escribir, nombra en una frase el problema de un dueño de negocio que este
+  trabajo resuelve: «publico en LinkedIn solo cuando me acuerdo», «pago
+  anuncios y no sé qué funciona», «mi web no me trae clientes», «pierdo horas
+  en tareas repetidas», «no sé si me pagaron hasta que reviso el banco». El
+  gancho del post, la primera línea de LinkedIn y la del carrusel salen de ahí.
+- **Cada decisión técnica se traduce a lo que le ahorra o le gana al
+  negocio** (horas, clientes, dinero, tranquilidad). Primero el efecto, luego
+  la herramienta.
+- **El lector se tiene que reconocer**: describe la situación con detalles
+  que solo conoce quien la vive. Mejor «escribes el post el domingo por la
+  noche» que «falta de constancia».
+- **Una prueba, no una promesa**: el caso real (el propio sistema de Raúl o
+  el de un cliente con permiso) demuestra que se puede.
+- **Puerta abierta, sin presión**: el cierre deja claro que esto se le puede
+  montar al lector (rota con los otros cierres de «Variedad»; la invitación a
+  agendar sigue siendo como mucho una de cada tres veces).
+- Lo mismo en LinkedIn y en el carrusel: la lección del post contada como
+  «el problema que tenía → cómo lo resolví → lo que cambia para tu negocio».
+
 ## Datos de clientes (permiso)
 
 - **Se puede nombrar** a un cliente si aparece en `src/data/caseStudies.js`
@@ -226,7 +254,8 @@ post en Contentful y deja el enlace en el primer comentario.
 
 - **Perspectiva profesional, en primera persona.** No resume el artículo:
   cuenta **una** lección o decisión con un detalle concreto, y deja el resto
-  para el blog.
+  para el blog. Parte del **dolor del lector** (ver «Enfoque comercial»): el
+  dueño de negocio tiene que pensar «eso me pasa a mí».
 - **Gancho en la primera línea** (≤ 160 caracteres), sola, seguida de una
   línea en blanco: LinkedIn corta el texto a las tres líneas con «…ver más».
   Rota el tipo como en los títulos: una confesión con cifra («Mi web hacía
