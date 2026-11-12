@@ -12,9 +12,9 @@
 // La elección depende solo de la fecha y de los datos: si la tarea corre
 // varias veces el mismo día, sale siempre la misma hora.
 //
-// Puntuación de una publicación: me gusta + 3 × comentarios del carrusel de
-// Instagram a las `medirTrasHoras` horas (los comentarios valen más porque
-// son conversación). LinkedIn no da estadísticas sin la Community Management
+// Puntuación de una publicación (ver `puntuacion`): alcance, me gusta,
+// comentarios, guardados y compartidos del carrusel de Instagram a las
+// `medirTrasHoras` horas. LinkedIn no da estadísticas sin la Community Management
 // API; cuando esté, se suma aquí.
 
 import { existsSync, readFileSync } from "node:fs";
@@ -75,7 +75,11 @@ function azar(texto) {
   return ((h >>> 0) % 10000) / 10000;
 }
 
-export const puntuacion = (s) => (s ? (s.likes || 0) + 3 * (s.comentarios || 0) : 0);
+// Alcance / 10 + me gusta + 3 × comentarios + 4 × (guardados + compartidos).
+// El alcance es lo que más depende de la hora; guardar y compartir pesan más
+// que un me gusta. Sin permiso de estadísticas, solo me gusta y comentarios.
+export const puntuacion = (s) =>
+  s ? (s.alcance || 0) / 10 + (s.likes || 0) + 3 * (s.comentarios || 0) + 4 * ((s.guardados || 0) + (s.compartidos || 0)) : 0;
 
 /**
  * Muestras medidas: [{ hora, puntos, fecha }] a partir de los estados de los

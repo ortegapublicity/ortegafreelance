@@ -476,8 +476,17 @@ export async function medirPublicaciones(horas = Number(process.env.MEDIR_TRAS_H
     if (Date.now() - new Date(m.publicadoEn).getTime() < horas * 3600e3) continue;
     const d = await ig(`/${m.id}`, { token, params: { fields: "like_count,comments_count" } });
     m.stats = { likes: d.like_count || 0, comentarios: d.comments_count || 0, medidoEn: new Date().toISOString() };
+    // Alcance, guardados y compartidos (permiso instagram_manage_insights). Si
+    // no hay permiso, se queda con me gusta y comentarios.
+    try {
+      const ins = await ig(`/${m.id}/insights`, { token, params: { metric: "reach,saved,shares" } });
+      const v = Object.fromEntries((ins.data || []).map((x) => [x.name, x.values?.[0]?.value || 0]));
+      Object.assign(m.stats, { alcance: v.reach || 0, guardados: v.saved || 0, compartidos: v.shares || 0 });
+    } catch (e) {
+      log(`Sin estadísticas de alcance para «${item.draft.title}» (${e.message.slice(0, 80)}).`);
+    }
     saveState(item);
-    log(`Medido «${item.draft.title}»: ${m.stats.likes} me gusta, ${m.stats.comentarios} comentarios.`);
+    log(`Medido «${item.draft.title}»: ${JSON.stringify(m.stats)}`);
     n++;
   }
   return n;
