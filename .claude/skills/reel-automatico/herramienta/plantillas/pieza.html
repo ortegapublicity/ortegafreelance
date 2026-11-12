@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Pieza animada del reel</title>
+<!--
+  Piezas animadas de un reel vertical (1080×1920). La abre hacer-reel.mjs una
+  vez por fotograma:  pieza.html?t=<segundos>#<JSON>
+    JSON = { tipo: "intro"|"outro"|"texto", tema, marca, ...datos de la pieza }
+  Cada animación CSS se congela en el instante t con un retraso negativo y
+  pausa (ver el script del final), así cada fotograma es exacto.
+  El generador sustituye los marcadores del logo y de las fuentes por data
+  URIs. No escribir aquí los marcadores literales: también se sustituirían
+  dentro de este comentario y romperían los estilos (pasó el 2026-11-12).
+  Zonas seguras de Reels: nada importante en los 250 px de arriba ni en los
+  ~420 px de abajo.
+-->
+<style>
+  __FUENTES__
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+
+  /* Fondo: degradado de la marca con zoom lento + efecto (nieve, brillos, confeti) */
+  .fondo { position: absolute; inset: -60px; overflow: hidden; animation: fondoZoom 4s linear both;
+    background: radial-gradient(ellipse at 50% 35%, var(--f1) 0%, var(--f2) 45%, var(--f3) 100%); }
+  @keyframes fondoZoom { from { transform: scale(1); } to { transform: scale(1.06); } }
+  .bokeh { position: absolute; border-radius: 50%; background: radial-gradient(circle, var(--luz) 0%, transparent 70%);
+    animation: respira 2.4s ease-in-out infinite alternate; }
+  @keyframes respira { from { opacity: .15; transform: scale(.85); } to { opacity: .6; transform: scale(1.1); } }
+  .copo { position: absolute; top: -20px; border-radius: 50%; background: #fff; animation: cae linear infinite; }
+  .confeti { position: absolute; top: -20px; border-radius: 3px; animation: caeGira linear infinite; }
+  @keyframes cae { from { transform: translate(0, -40px); } to { transform: translate(60px, 2000px); } }
+  @keyframes caeGira { from { transform: translate(0, -40px) rotate(0); } to { transform: translate(-80px, 2000px) rotate(720deg); } }
+  .chispa { position: absolute; width: 10px; height: 10px; background: #fff; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    animation: titila 1.6s ease-in-out infinite alternate; }
+  @keyframes titila { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1.4); } }
+
+  /* Logo: entra con rebote, brillo que lo cruza y flota */
+  .logo-wrap { position: absolute; left: 50%; width: 0; }
+  .logo { position: relative; display: block; transform: translateX(-50%); filter: drop-shadow(0 30px 60px rgba(0,0,0,.6));
+    animation: logoEntra .9s cubic-bezier(.34,1.56,.64,1) both, flota 2.2s ease-in-out .9s infinite alternate; }
+  @keyframes logoEntra { from { opacity: 0; transform: translateX(-50%) scale(.25) rotate(-14deg); } to { opacity: 1; transform: translateX(-50%) scale(1) rotate(0); } }
+  @keyframes flota { from { translate: 0 0; } to { translate: 0 -14px; } }
+  .brillo { position: absolute; inset: 0; transform: translateX(-50%); -webkit-mask: var(--logo) center/contain no-repeat; mask: var(--logo) center/contain no-repeat;
+    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.85) 50%, transparent 65%) no-repeat; background-size: 300% 100%;
+    animation: brilla 1s ease-in-out 1s both, flota 2.2s ease-in-out .9s infinite alternate; }
+  @keyframes brilla { from { background-position: 120% 0; } to { background-position: -20% 0; } }
+
+  /* Título manuscrito que se «escribe». Margen amplio: las mayúsculas con
+     adornos (L, E, T…) se salen de su caja y se cortaban. El efecto de
+     escribir va en el contenedor y el degradado en el hijo: juntos, el texto
+     con background-clip desaparecía. */
+  .script-wrap { position: absolute; left: 0; right: 0; animation: escribe 1s ease-out both; }
+  .script-sombra { filter: drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
+  .script { padding: 60px 120px; text-align: center; font-family: var(--fuente-titulo), cursive; line-height: 1.25;
+    background: linear-gradient(180deg, var(--acento-claro) 0%, var(--acento) 45%, var(--acento2) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  @keyframes escribe { from { clip-path: inset(0 100% 0 0); transform: translateY(16px); } to { clip-path: inset(0 0 0 0); transform: translateY(0); } }
+  .sans { position: absolute; left: 0; right: 0; text-align: center; font-family: var(--fuente-texto), sans-serif; color: #fff; }
+  .linea { font-weight: 600; font-size: 38px; letter-spacing: .06em; color: var(--texto-suave); }
+  .sube { animation: sube .6s ease-out both; }
+  @keyframes sube { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .pill { display: inline-block; padding: 18px 36px; border-radius: 999px; background: var(--etiqueta); color: var(--texto-etiqueta);
+    font-weight: 800; font-size: 40px; font-family: var(--fuente-texto), sans-serif; animation: pop .6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+
+  /* Texto sobre el video: rebote de entrada, subrayado que se dibuja, icono que gira */
+  .cap { position: absolute; left: 70px; right: 70px; top: 1300px; display: flex; justify-content: center; }
+  .cap > div { position: relative; padding: 26px 40px 30px; border-radius: 34px; background: var(--caja); border: 3px solid var(--acento);
+    color: #fff; font-weight: 800; font-size: 58px; line-height: 1.15; font-family: var(--fuente-texto), sans-serif; text-align: center; text-wrap: balance;
+    box-shadow: 0 18px 40px rgba(0,0,0,.45); animation: capEntra .55s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes capEntra { from { opacity: 0; transform: translateY(60px) scale(.82); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .cap b { color: var(--acento); }
+  .cap i { position: absolute; left: 40px; right: 40px; bottom: 14px; height: 6px; border-radius: 3px; background: var(--acento); transform-origin: left;
+    animation: raya .45s ease-out .35s both; }
+  @keyframes raya { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .icono { position: absolute; top: -34px; right: -20px; font-size: 64px; animation: gira 1s ease-out .2s both; }
+  @keyframes gira { from { opacity: 0; transform: rotate(-120deg) scale(.2); } to { opacity: 1; transform: rotate(0) scale(1); } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const P = new URLSearchParams(location.search);
+const T = Number(P.get("t") || 0);
+const S = JSON.parse(decodeURIComponent(location.hash.slice(1) || "%7B%7D"));
+const tema = S.tema || {};
+const marca = S.marca || {};
+const LOGO = "__LOGO__";
+const esc = (t) => String(t || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+// Colores y fuentes del guion → variables CSS.
+const vars = {
+  "--f1": tema.fondo?.[0] || "#1b4a8f", "--f2": tema.fondo?.[1] || "#14346b", "--f3": tema.fondo?.[2] || "#0a1e3f",
+  "--acento": tema.acento || "#f4c95d", "--acento2": tema.acento2 || "#b8860b", "--acento-claro": tema.acentoClaro || "#fff1c1",
+  "--etiqueta": tema.etiqueta || "#ffd400", "--texto-etiqueta": tema.textoEtiqueta || "#1a1a1a",
+  "--caja": tema.cajaTexto || "rgba(10,10,20,.8)", "--texto-suave": tema.textoSuave || "#f6e7c8",
+  "--luz": tema.luz || "rgba(255,214,120,.6)",
+  "--fuente-titulo": `"${tema.fuenteTitulo || "Great Vibes"}"`, "--fuente-texto": `"${tema.fuenteTexto || "Montserrat"}"`,
+  "--logo": `url("${LOGO}")`,
+};
+for (const [k, v] of Object.entries(vars)) document.documentElement.style.setProperty(k, v);
+
+let seed = 7; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+const efecto = tema.efecto || "nieve";
+const deco = () => {
+  let h = "";
+  for (let i = 0; i < 26; i++) { const s = 60 + rnd() * 220; h += `<div class="bokeh" style="left:${rnd() * 1180 - s / 2}px;top:${rnd() * 2040 - s / 2}px;width:${s}px;height:${s}px;animation-delay:${-rnd() * 2.4}s"></div>`; }
+  if (efecto === "nieve") for (let i = 0; i < 110; i++) { const s = 3 + rnd() * 8; const d = 5 + rnd() * 6; h += `<div class="copo" style="left:${rnd() * 1180 - 60}px;width:${s}px;height:${s}px;opacity:${0.3 + rnd() * 0.6};animation-duration:${d}s;animation-delay:${-rnd() * d}s"></div>`; }
+  if (efecto === "confeti") { const cols = tema.confeti || [tema.acento || "#f4c95d", tema.etiqueta || "#ffd400", "#ffffff"]; for (let i = 0; i < 90; i++) { const d = 4 + rnd() * 5; h += `<div class="confeti" style="left:${rnd() * 1180}px;width:${10 + rnd() * 10}px;height:${6 + rnd() * 8}px;background:${cols[i % cols.length]};animation-duration:${d}s;animation-delay:${-rnd() * d}s"></div>`; } }
+  if (efecto === "brillos") for (let i = 0; i < 60; i++) { const s = 8 + rnd() * 22; h += `<div class="chispa" style="left:${rnd() * 1180}px;top:${rnd() * 2040}px;width:${s}px;height:${s}px;animation-delay:${-rnd() * 1.6}s"></div>`; }
+  return h;
+};
+const delay = (s) => `animation-delay:${s}s`;
+const logo = (top, width) => `<div class="logo-wrap" style="top:${top}px"><img class="logo" src="${LOGO}" style="width:${width}px"><div class="brillo" style="width:${width}px;height:${width}px"></div></div>`;
+const script = (top, size, d, txt) => `<div class="script-wrap" style="top:${top}px;${delay(d)}"><div class="script-sombra"><div class="script" style="font-size:${size}px">${esc(txt)}</div></div></div>`;
+const root = document.getElementById("root");
+if (S.tipo === "intro") {
+  root.innerHTML = `<div class="fondo">${deco()}</div>
+    ${logo(260, 760)}
+    ${script(990, S.tamTitulo || 190, 0.55, S.titulo)}
+    ${S.subtitulo ? script(1200, S.tamSubtitulo || 112, 1.05, S.subtitulo) : ""}
+    <div class="sans linea sube" style="top:1480px;${delay(1.5)}">${esc(S.linea ?? marca.linea)}</div>`;
+} else if (S.tipo === "outro") {
+  root.innerHTML = `<div class="fondo">${deco()}</div>
+    ${logo(300, 620)}
+    ${script(900, S.tamTitulo || 150, 0.5, S.titulo)}
+    <div class="sans" style="top:1230px"><span class="pill" style="${delay(1.0)}">${esc(S.usuario ?? marca.usuario)}</span></div>
+    <div class="sans linea sube" style="top:1360px;${delay(1.35)}">${esc(S.linea ?? marca.linea)}</div>`;
+} else {
+  const t = esc(S.texto).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  root.innerHTML = `<div class="cap"><div>${t}<i></i>${tema.icono === "" ? "" : `<span class="icono">${esc(tema.icono || "⭐")}</span>`}</div></div>`;
+}
+// Congela cada animación en el instante T: retraso negativo (retraso original
+// − T) y pausa. Así el fotograma no depende de cuánto tarde Chrome en pintar.
+for (const el of document.querySelectorAll("*")) {
+  const cs = getComputedStyle(el);
+  if (!cs.animationName || cs.animationName === "none") continue;
+  const delays = cs.animationDelay.split(",").map((d) => parseFloat(d) || 0);
+  const n = cs.animationName.split(",").length;
+  el.style.animationDelay = Array.from({ length: n }, (_, i) => `${(delays[i % delays.length] - T).toFixed(4)}s`).join(", ");
+  el.style.animationPlayState = "paused";
+}
+document.fonts.ready.then(() => (document.body.dataset.ready = "1"));
+</script>
+</body>
+</html>

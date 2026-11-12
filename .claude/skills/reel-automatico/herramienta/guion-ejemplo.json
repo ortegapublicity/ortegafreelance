@@ -1,0 +1,30 @@
+{
+  "_como_se_usa": "Ejemplo con una marca ficticia. Rutas relativas a este archivo. **palabra** sale en el color de acento. node hacer-reel.mjs guion-ejemplo.json --prueba para revisar; sin --prueba, el reel completo.",
+  "nombre": "reel-aniversario-cafe-ejemplo",
+  "concepto": "Aniversario: un día en la cafetería, del primer café al letrero; invitación a celebrar.",
+  "carpetaVideos": "videos",
+  "salida": "salida",
+  "marca": {
+    "nombre": "Café Ejemplo",
+    "logo": "marca/logo.png",
+    "usuario": "@cafe_ejemplo",
+    "linea": "CAFÉ DE ESPECIALIDAD · DESDE 2015"
+  },
+  "tema": {
+    "fondo": ["#3b2a20", "#24170f", "#0d0805"],
+    "acento": "#e8b86d", "acento2": "#a8742f", "acentoClaro": "#fff0d6",
+    "etiqueta": "#e8b86d", "textoEtiqueta": "#1a1209",
+    "cajaTexto": "rgba(20,12,6,.8)", "textoSuave": "#f3e5d0",
+    "fuenteTitulo": "Dancing Script", "fuenteTexto": "Poppins",
+    "efecto": "brillos", "icono": "☕"
+  },
+  "intro": { "titulo": "10 años", "subtitulo": "de Café Ejemplo", "segundos": 3.0 },
+  "clips": [
+    { "archivo": "barra.MOV", "desde": 0.5, "hasta": 4.0, "texto": "El **primer café** del día" },
+    { "archivo": "latte.MOV", "desde": 1.0, "hasta": 4.4, "texto": "Arte en **cada taza**" },
+    { "archivo": "mesas.MOV", "desde": 0.0, "hasta": 3.4, "texto": "Un lugar para **quedarse**" },
+    { "archivo": "letrero.MOV", "desde": 0.2, "hasta": 4.5, "texto": "Celebra **con nosotros**" }
+  ],
+  "outro": { "titulo": "¡Gracias!", "segundos": 3.2 },
+  "logoFlotante": true
+}
