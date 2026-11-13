@@ -385,11 +385,28 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   «Historias Instagram» (imagen + `.txt` con el enlace con UTM
   `utm_medium=historia`), el enlace en el portapapeles y un aviso; Raúl la
   sube desde el iPhone con el sticker «Enlace». Con `true` vuelve a
-  publicarse sola, sin enlace. **Dos días después sale su reel** (`renderReel`: las
-  diapositivas sin contador, zoom lento y fundidos sobre `reel-fondo.html`,
-  15 s, MP4 con ffmpeg de Homebrew; subida reanudable a rupload.facebook.com,
-  sin alojar el video), como mucho uno al día, a la hora del día si hay token (`instagram-publicar.mjs`); si no, se publica a
-  mano con `meta.html`.
+  publicarse sola, sin enlace.
+- **Formato por estadísticas (2026-11-13, pedido de Raúl: variar como las
+  cuentas de alto tráfico).** La pieza principal de cada post es carrusel,
+  reel o **imagen sola** (el gancho sin contador, `renderImagen`), según
+  `formatoDelDia` de `redes-agenda.mjs`: misma regla que la hora (rota hasta
+  2 de cada formato, luego el mejor promedio y explora 1 día de cada 5). Cada
+  pieza se mide aparte (`state.meta` con `formato`, `state.reel`).
+  `--estado` muestra el resumen por formato. Si la principal no fue reel,
+  **dos días después sale su reel** como pieza extra, como mucho uno al día.
+- **Reel animado** (`renderReel`, async): las diapositivas en modo
+  `?reel=1&t=` de `carrusel-meta.html` (titular palabra a palabra, textos que
+  suben, número y botón con rebote), un fotograma por instante a 30 fps con
+  varios Chrome a la vez (~4–5 min), transiciones distintas entre
+  diapositivas, ~17 s, sobre `reel-fondo.html`; subida reanudable a
+  rupload.facebook.com. **Música:** la API no pone música de Instagram (ni a
+  carruseles ni a reels). Si hay pistas sin derechos (mp3/m4a) en
+  `instagram.musica` (iCloud › «Música redes»), el reel lleva una (rotando,
+  con fundidos y volumen normalizado; queda en `meta/reel.json`) y sale solo.
+  Sin pistas, el reel no se publica solo: `prepararReelManual` lo deja en
+  iCloud › «Para subir a redes» › `<fecha> <post>` con `TEXTOS.txt` (texto y
+  pasos para elegir canción en Instagram) y avisa. Los carruseles salen sin
+  música.
 - **API de Instagram** (@ortegafreelance es cuenta de empresa):
   «Instagram API with Instagram Login», `graph.instagram.com/v27.0`. Flujo:
   sube cada imagen a Contentful con `/api/blog-asset` (devuelve la URL
@@ -455,6 +472,7 @@ Hay dos tokens que caducan y el usuario los olvida; el sistema avisa solo.
 |---|---|---|---|
 | LinkedIn (`w_member_social`) | Llavero de macOS, servicio `ortegafreelance-linkedin` | 60 días | `linkedin-publicar.mjs` |
 | Instagram (`instagram_business_content_publish`) | Llavero de macOS, servicio `ortegafreelance-instagram` | 60 días, **se renueva solo** cada semana | `instagram-publicar.mjs` |
+| LinkedIn estadísticas (`r_member_postAnalytics`, app «Ortega Freelance Stats», Community Management API) | Llavero, servicio `ortegafreelance-linkedin-stats` (`guardar-token.mjs linkedin-stats`) | 60 días | `linkedin-stats.mjs` (mide cada post a las 48 h, desde la tarea diaria) |
 | Contentful CMA (se llamó «claude-post») | Netlify, `CONTENTFUL_MANAGEMENT_TOKEN` | lo que se elija al crearlo | `/api/blog-draft`, `/api/blog-asset`, `/api/blog-posts` |
 
 - `.claude/scripts/tokens.mjs` lo revisa cada mañana (lo llama la tarea de
