@@ -115,7 +115,7 @@ export const caseStudies = [
     id: "brandtop",
     clientName: "BrandTop",
     contactName: "Jorge Polo",
-    date: "2018-07-01",
+    date: "2025-07-01",
     category: "Branding y Marketing",
     location: "Delaware, Estados Unidos",
     url: "/client-brandtop",
@@ -131,7 +131,7 @@ export const caseStudies = [
     narrative: [
       "Cuando comencé a trabajar con BrandTop, el reto fue claro: transformar un servicio altamente técnico en un mensaje que la gente pudiera entender fácilmente, conectar y aceptar. La empresa, originalmente parte de SAEES.tech, ofrecía servicios avanzados de optimización de e-commerce para vendedores en Amazon, Walmart y Etsy. Mi primer paso fue observar su flujo de trabajo durante una semana, escuchar las llamadas con clientes, comprender su lenguaje e identificar lo que realmente hacía valioso su servicio.",
       "A través de este análisis, me di cuenta de que la esencia de BrandTop era la transformación visual, mejorando cómo los productos se ven y funcionan en los marketplaces digitales. Esta idea se convirtió en la base de su nuevo branding. Redefiní su misión y visión, conectándolas con la idea central de convertir listados online en experiencias que venden. A partir de ahí, construí su identidad visual, editando videos promocionales y reels en CapCut, creando animaciones de logos en After Effects y estructurando la estrategia de contenido que llevaría la marca adelante.",
-      "Aunque mi rol original fue como Media Buyer, la experiencia demostró que los medios pagados solo funcionan cuando están respaldados por contenido estratégico. Una campaña necesita una voz, una historia y un propósito. Al construir primero la base digital de BrandTop, convertimos anuncios en narrativas y clics en comprensión. Este proyecto se convirtió en un ejemplo de cómo una narración sólida y el branding transforman no solo las ventas, sino también la forma en que una empresa se ve a sí misma.",
+      "Aunque mi rol original fue como Media Buyer, la experiencia demostró que los medios pagados solo funcionan cuando están respaldados por contenido estratégico. Una campaña necesita una voz, una historia y un propósito. Al construir primero la base digital de BrandTop, convertimos anuncios en narrativas y clics en comprensión. Las campañas de pago dejaron estas cifras: en Meta Ads, más de 16.600 personas alcanzadas en dos semanas; en LinkedIn Ads, 292 clics con un CTR del 3,61 % y un CPC de $0,65; y en LinkedIn Ads en video, 1.300 reproducciones con una tasa de visualización del 16,8 %. Este proyecto se convirtió en un ejemplo de cómo una narración sólida y el branding transforman no solo las ventas, sino también la forma en que una empresa se ve a sí misma.",
     ],
     quote: "Como dijo Marty Neumeier: «Branding es el proceso de conectar buena estrategia con buena creatividad».",
     metrics: [],
