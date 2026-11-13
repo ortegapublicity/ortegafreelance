@@ -178,7 +178,7 @@ con la suscripción del usuario; no hay API key de Anthropic ni Gemini.
   «Pegar artículo de Claude».
 - Permiso de clientes: se nombra solo a los de `src/data/caseStudies.js` o ya
   publicados en el blog; si no, borrador anónimo y se pregunta.
-- **Automático cada noche (23:00)**: launchd
+- **Automático cada día a las 17:00** (antes 23:00; desde 2026-11-13, porque de noche la Mac entra en reposo de mantenimiento y Claude se cortaba por tiempo): launchd
   (`~/Library/LaunchAgents/com.ortegafreelance.bitacora.plist`, copia en
   `.claude/scripts/`) ejecuta `.claude/scripts/bitacora-nocturna.mjs` a través
   de `bitacora-arranque.mjs` (ver «iCloud» en §9):
