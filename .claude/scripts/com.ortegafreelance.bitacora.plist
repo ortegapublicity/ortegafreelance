@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  Bitácora nocturna (23:00): escribe como mucho un borrador del blog con el trabajo reciente.
+  Bitácora diaria (17:00): escribe como mucho un borrador del blog con el trabajo reciente.
+  Antes corría a las 23:00, pero la Mac entra en reposo de mantenimiento de noche (aunque
+  caffeinate -i esté activo) y Claude se cortaba por tiempo (10, 11 y 13-nov-2026). A las
+  17:00 la Mac está en uso.
   Ver .claude/docs/03-CONTEXTO-PROYECTO.md §7b. Se lanza a través de
   bitacora-arranque.mjs, que vive en una COPIA fuera de iCloud y pide a iCloud
   los archivos desalojados antes de ejecutar el script del repo.
@@ -40,7 +43,7 @@
   <key>StartCalendarInterval</key>
   <dict>
     <key>Hour</key>
-    <integer>23</integer>
+    <integer>17</integer>
     <key>Minute</key>
     <integer>0</integer>
   </dict>
