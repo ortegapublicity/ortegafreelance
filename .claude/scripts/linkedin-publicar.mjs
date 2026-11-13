@@ -40,8 +40,10 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { COMANDO_LINKEDIN, revisarTokens } from "./tokens.mjs";
 import { renderCarousel, renderStory } from "./carrusel-meta.mjs";
-import { medirPublicaciones, publishIfPossible as publishInstagram, publishReelIfPossible, publishStoryIfPossible } from "./instagram-publicar.mjs";
-import { CONFIG, aLaHora, dia, horaDelDia, resumen } from "./redes-agenda.mjs";
+import { medirPublicaciones, prepararReelManual, publishIfPossible as publishInstagram, publishReelIfPossible, publishStoryIfPossible } from "./instagram-publicar.mjs";
+import { pistasMusica } from "./carrusel-meta.mjs";
+import { medirLinkedIn } from "./linkedin-stats.mjs";
+import { CONFIG, aLaHora, dia, formatoDelDia, horaDelDia, resumen, resumenFormatos } from "./redes-agenda.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 // BITACORA_DATOS cambia la carpeta de datos (borradores y portadas); solo se
@@ -442,13 +444,20 @@ async function publishItem(item, token) {
   return result;
 }
 
-// El día que sale el LinkedIn de un post, sale también su carrusel de
-// Instagram (si hay token de Instagram; si no, ya se avisó al prepararlo).
+// El día que sale el LinkedIn de un post, sale también su pieza de Instagram
+// (si hay token de Instagram; si no, ya se avisó al prepararlo), en el formato
+// que eligen las estadísticas: carrusel, reel o imagen sola. Reel solo si hay
+// música en la carpeta (sin música, el reel va a mano: prepararReelManual).
+const formatosDisponibles = () => CONFIG.instagram.formatos.filter((f) => f !== "reel" || pistasMusica().length);
 async function publicarPendiente() {
   fijarHoraDeHoy();
   const due = await publicarLinkedInPendiente();
   if (due) {
-    if (due.draft.meta) await publishInstagram(due.file);
+    if (due.draft.meta) {
+      const { formato, motivo } = formatoDelDia(loadItems(), new Date(), CONFIG, formatosDisponibles());
+      log(`Instagram de «${due.draft.title}»: ${formato} (${motivo}).`);
+      await publishInstagram(due.file, formato);
+    }
     if (CONFIG.instagram.historia === "enlace") historiaConEnlace(due);
     else if (CONFIG.instagram.historia) await publishStoryIfPossible(due.file);
   }
@@ -486,7 +495,7 @@ function historiaConEnlace(item) {
 async function publicarReelPendiente() {
   const items = loadItems();
   const hoy = dia(new Date());
-  if (items.some((i) => i.state.reel?.publicadoEn && dia(i.state.reel.publicadoEn) === hoy)) return;
+  if (items.some((i) => dia(i.state.reel?.publicadoEn || i.state.reel?.avisadoEn || 0) === hoy)) return;
   const deHoy = items.find((i) => i.state.linkedin?.horaFijada && dia(i.state.linkedin.para) === hoy);
   const hora = deHoy ? new Date(deHoy.state.linkedin.para) : aLaHora(new Date(), horaDelDia(items, new Date()).hora);
   if (Date.now() < hora.getTime()) return;
@@ -494,9 +503,13 @@ async function publicarReelPendiente() {
   limite.setDate(limite.getDate() - (CONFIG.instagram.reelTrasDias ?? 2));
   const candidato = items
     .filter((i) => i.draft.meta && i.state.meta?.estado === "publicado" && i.state.meta.publicadoEn && dia(i.state.meta.publicadoEn) <= dia(limite))
-    .filter((i) => !["publicado", "publicando", "cancelado", "error"].includes(i.state.reel?.estado))
+    .filter((i) => i.state.meta.formato !== "reel")
+    .filter((i) => !["publicado", "publicando", "cancelado", "error", "aviso-manual"].includes(i.state.reel?.estado))
     .sort((a, b) => b.state.meta.publicadoEn.localeCompare(a.state.meta.publicadoEn))[0];
-  if (candidato) await publishReelIfPossible(candidato.file);
+  if (!candidato) return;
+  // Con música en la carpeta sale solo; sin música, se deja para subirlo a mano.
+  if (pistasMusica().length) await publishReelIfPossible(candidato.file);
+  else await prepararReelManual(candidato.file);
 }
 
 // El día que toca, la hora se recalcula con las estadísticas más nuevas (al
@@ -544,6 +557,11 @@ async function tareasDelDia(problemas) {
     await medirPublicaciones();
   } catch (e) {
     log(`No pude medir las publicaciones de Instagram: ${e.message}`);
+  }
+  try {
+    await medirLinkedIn();
+  } catch (e) {
+    log(`No pude medir los posts de LinkedIn: ${e.message}`);
   }
   await avisarCaducidad(problemas);
   writeFileSync(marca, hoy + "\n");
@@ -637,6 +655,12 @@ if (isMain) {
       const h = horaDelDia(items, new Date());
       console.log(`Agenda: días ${DIAS.join(",")} (0 = domingo) · horas ${CONFIG.horas.join(", ")} · hoy tocaría ${h.hora}: ${h.motivo}`);
       console.log("Instagram por hora: " + CONFIG.horas.map((x) => `${x} → ${r[x].n} medidas, ${r[x].promedio.toFixed(1)} pts`).join(" · "));
+      const rf = resumenFormatos(items);
+      const f = formatoDelDia(items, new Date(), CONFIG, formatosDisponibles());
+      console.log("Instagram por formato: " + CONFIG.instagram.formatos.map((x) => `${x} → ${rf[x].intentos} publicados, ${rf[x].n} medidos, ${rf[x].promedio.toFixed(1)} pts`).join(" · "));
+      console.log(`Hoy tocaría ${f.formato}: ${f.motivo}.`);
+      const pistas = pistasMusica();
+      console.log(`Música para reels: ${pistas.length ? `${pistas.length} pistas` : "ninguna → los reels se dejan para subir a mano"} (${CONFIG.instagram.musica})`);
     } else if (args.includes("--simular")) {
       const item = findItem();
       const errors = validateLinkedin(item.draft.linkedin);

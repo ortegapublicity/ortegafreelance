@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Guarda un token (LinkedIn o Instagram) en el Llavero de macOS y lo comprueba.
 //
-//   node .claude/scripts/guardar-token.mjs linkedin|instagram
+//   node .claude/scripts/guardar-token.mjs linkedin|instagram|linkedin-stats
 //   (atajos: linkedin-token.mjs e instagram-token.mjs)
 //
 // Por qué existe (2026-11-11): las dos formas «rápidas» fallaron.
@@ -20,10 +20,12 @@ import { fileURLToPath } from "node:url";
 const TARGETS = {
   linkedin: { service: "ortegafreelance-linkedin", label: "LinkedIn", verify: "linkedin-publicar.mjs", minLen: 150 },
   instagram: { service: "ortegafreelance-instagram", label: "Instagram", verify: "instagram-publicar.mjs", minLen: 100 },
+  // App aparte «Ortega Freelance Stats» (Community Management API): estadísticas de LinkedIn.
+  "linkedin-stats": { service: "ortegafreelance-linkedin-stats", label: "LinkedIn (estadísticas)", verify: "linkedin-stats.mjs", minLen: 150 },
 };
 const target = TARGETS[process.argv[2]];
 if (!target) {
-  console.error("Uso: node .claude/scripts/guardar-token.mjs linkedin|instagram");
+  console.error("Uso: node .claude/scripts/guardar-token.mjs linkedin|instagram|linkedin-stats");
   process.exit(64);
 }
 const SERVICE = target.service;

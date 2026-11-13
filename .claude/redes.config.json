@@ -1,15 +1,35 @@
 {
   "_historia": "true = la publica sola por API (sin enlace); \"enlace\" = la deja lista en iCloud Drive › Historias Instagram para subirla a mano con el sticker de enlace (la API no publica stickers).",
   "_que_es": "Agenda de redes de la bitácora (linkedin-publicar.mjs + redes-agenda.mjs). Para instalarlo a un cliente, solo cambia este archivo.",
-  "dias": [0, 1, 2, 3, 4, 5, 6],
-  "horas": ["08:10", "12:10", "19:10"],
+  "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "horas": [
+    "08:10",
+    "12:10",
+    "19:10"
+  ],
   "postsPorDia": 1,
   "medirTrasHoras": 48,
   "minMuestrasPorHora": 2,
   "explorar": 0.2,
   "instagram": {
+    "_formatos": "Pieza principal de cada post: la agenda elige entre estos formatos con las estadísticas (rota hasta tener 2 de cada uno, luego el mejor y explora 1 día de cada 5). reel solo si hay música en la carpeta.",
     "historia": "enlace",
     "reel": true,
-    "reelTrasDias": 2
+    "reelTrasDias": 2,
+    "formatos": [
+      "carrusel",
+      "reel",
+      "imagen"
+    ],
+    "_musica": "Carpeta con pistas sin derechos (mp3/m4a). Con pistas, los reels salen solos con música; sin pistas, el reel se deja en iCloud › Para subir a redes con indicaciones para ponerle música de Instagram.",
+    "musica": "~/Library/Mobile Documents/com~apple~CloudDocs/Música redes"
   }
 }

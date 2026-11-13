@@ -9,6 +9,7 @@
 //   node .claude/scripts/instagram-publicar.mjs --marcar <borrador.json> publicado|listo|cancelado
 //   node .claude/scripts/instagram-publicar.mjs --historia <borrador.json>  publica su historia ya
 //   node .claude/scripts/instagram-publicar.mjs --reel <borrador.json>      publica su reel ya
+//   node .claude/scripts/instagram-publicar.mjs --imagen <borrador.json>    publica la imagen sola ya
 //   node .claude/scripts/instagram-publicar.mjs --medir      guarda me gusta y comentarios (la agenda los usa)
 //
 // Lo llama la tarea diaria (linkedin-publicar.mjs --diario) el mismo día que
@@ -31,10 +32,10 @@
 // instagram-token.mjs). Dura 60 días y se renueva por API sin intervención.
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { metaCaption, renderCarousel, renderReel, renderStory } from "./carrusel-meta.mjs";
+import { carpetaMusica, metaCaption, pistasMusica, renderCarousel, renderImagen, renderReel, renderStory } from "./carrusel-meta.mjs";
 
 const BLOG_REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const DATA = process.env.BITACORA_DATOS || BLOG_REPO;
@@ -246,10 +247,10 @@ async function waitFinished(id, token, intentos = 20) {
   for (let i = 0; i < intentos; i++) {
     const { status_code } = await ig(`/${id}`, { token, params: { fields: "status_code" } });
     if (status_code === "FINISHED") return;
-    if (status_code === "ERROR" || status_code === "EXPIRED") throw new InstagramError(0, `Instagram no pudo procesar el carrusel (${status_code}).`);
+    if (status_code === "ERROR" || status_code === "EXPIRED") throw new InstagramError(0, `Instagram no pudo procesar la publicación (${status_code}).`);
     await sleep(POLL_MS);
   }
-  throw new InstagramError(0, "Instagram tardó demasiado en procesar el carrusel.");
+  throw new InstagramError(0, "Instagram tardó demasiado en procesar la publicación.");
 }
 
 /** Publica el carrusel de un borrador. Devuelve { id, permalink }. */
@@ -301,16 +302,74 @@ export async function publishCarousel(item, token) {
   return { id: published.id, permalink };
 }
 
-/** Para la tarea diaria: publica si hay token; si no, no hace nada (ya se avisó al preparar). */
-export async function publishIfPossible(file) {
+/**
+ * Imagen sola (publicación simple): la diapositiva del gancho sin contador.
+ * Se guarda en state.meta con formato "imagen".
+ */
+export async function publishImage(item, token) {
+  const { draft, state } = item;
+  if (!draft.meta) throw new InstagramError(0, "El borrador no tiene bloque meta.");
+  const m = (state.meta ||= {});
+  if (["publicado", "publicando"].includes(m.estado)) throw new InstagramError(0, `Instagram ya está en estado «${m.estado}».`);
+  const me = await whoAmI(token);
+  if (!m.urlImagen) {
+    const jpg = renderImagen(item.file);
+    m.urlImagen = await uploadPublic(jpg, `Instagram · ${draft.title} · imagen`, `${item.name.replace(/[^a-z0-9-]/gi, "-").slice(0, 70)}-ig-imagen.jpg`);
+    saveState(item);
+  }
+  const params = { image_url: m.urlImagen, caption: metaCaption(draft.meta) };
+  if (draft.meta.alt?.[0]) params.alt_text = draft.meta.alt[0];
+  const container = await ig(`/${me.id}/media`, { method: "POST", token, params });
+  await waitFinished(container.id, token);
+  const previous = m.estado;
+  m.estado = "publicando";
+  saveState(item);
+  let published;
+  try {
+    published = await ig(`/${me.id}/media_publish`, { method: "POST", token, params: { creation_id: container.id } });
+  } catch (e) {
+    if (e.status >= 400 && e.status < 500) {
+      m.estado = previous;
+      saveState(item);
+    }
+    throw e;
+  }
+  let permalink = "";
+  try {
+    permalink = (await ig(`/${published.id}`, { token, params: { fields: "permalink" } })).permalink || "";
+  } catch {
+    /* opcional */
+  }
+  Object.assign(m, { estado: "publicado", formato: "imagen", publicadoEn: new Date().toISOString(), id: published.id, permalink });
+  saveState(item);
+  return { id: published.id, permalink };
+}
+
+/**
+ * Para la tarea diaria: publica la pieza principal del post en el formato que
+ * eligió la agenda (carrusel, reel o imagen). Sin token no hace nada (ya se
+ * avisó al preparar). Un reel sin música no se publica solo: se deja para
+ * subirlo a mano con música de Instagram (prepararReelManual).
+ */
+export async function publishIfPossible(file, formato = "carrusel") {
   const token = readToken();
   if (!token) return null;
   const item = loadItem(file);
   if (!item.draft.meta || ["publicado", "publicando", "cancelado"].includes(item.state.meta?.estado)) return null;
+  if (formato === "reel" && !pistasMusica().length) formato = "carrusel";
   try {
-    const r = await publishCarousel(item, token);
-    log(`Publicado en Instagram: «${item.draft.title}» ${r.permalink}`);
-    notify("Publicado en Instagram", item.draft.title);
+    const r =
+      formato === "reel"
+        ? await publishReel(item, token, { clave: "meta" })
+        : formato === "imagen"
+          ? await publishImage(item, token)
+          : await publishCarousel(item, token);
+    if (formato === "carrusel") {
+      item.state.meta.formato = "carrusel";
+      saveState(item);
+    }
+    log(`Publicado en Instagram (${formato}): «${item.draft.title}» ${r.permalink}`);
+    notify(`Publicado en Instagram (${formato})`, item.draft.title);
     return r;
   } catch (e) {
     log(`No se pudo publicar en Instagram «${item.draft.title}»: ${e.message}`);
@@ -391,14 +450,13 @@ function reelCaption(draft) {
  * del archivo a rupload con offset y file_size → esperar FINISHED →
  * media_publish. Solo con el token del inicio de sesión unificado.
  */
-export async function publishReel(item, token) {
-  const r = (item.state.reel ||= {});
+export async function publishReel(item, token, { clave = "reel" } = {}) {
+  const r = (item.state[clave] ||= {});
   if (["publicado", "publicando"].includes(r.estado)) throw new InstagramError(0, `El reel ya está en estado «${r.estado}».`);
   if (!item.draft.meta) throw new InstagramError(0, "El borrador no tiene carrusel: el reel se hace con sus diapositivas.");
   const me = await whoAmI(token);
   if (MODE !== "unificado") throw new InstagramError(0, "La subida de reels solo está implementada con el token del inicio de sesión unificado.");
-  const mp4 = join(OUT_ROOT, item.name, "meta", "reel.mp4");
-  if (!existsSync(mp4)) renderReel(item.file);
+  const mp4 = await reelConMusica(item);
   const container = await ig(`/${me.id}/media`, {
     method: "POST",
     token,
@@ -432,9 +490,69 @@ export async function publishReel(item, token) {
   } catch {
     /* opcional */
   }
-  Object.assign(r, { estado: "publicado", publicadoEn: new Date().toISOString(), id: published.id, permalink });
+  Object.assign(r, { estado: "publicado", formato: "reel", publicadoEn: new Date().toISOString(), id: published.id, permalink });
   saveState(item);
   return { id: published.id, permalink };
+}
+
+/**
+ * meta/reel.mp4 con música si hay pistas (lo vuelve a generar si el que hay
+ * salió en silencio y ahora sí hay música). La pista usada queda en
+ * meta/reel.json y no se repite la del último reel publicado.
+ */
+async function reelConMusica(item) {
+  const dir = join(OUT_ROOT, item.name, "meta");
+  const mp4 = join(dir, "reel.mp4");
+  const info = join(dir, "reel.json");
+  const hay = pistasMusica().length > 0;
+  const previo = existsSync(info) ? JSON.parse(readFileSync(info, "utf8")) : null;
+  if (existsSync(mp4) && previo && (previo.pista || !hay)) return mp4;
+  const { pista } = await renderReel(item.file, { pista: undefined });
+  writeFileSync(info, JSON.stringify({ pista, generadoEn: new Date().toISOString() }, null, 2) + "\n");
+  return mp4;
+}
+
+/**
+ * Reel sin música: la API no puede poner la música de Instagram, así que se
+ * deja listo para subirlo a mano desde el teléfono eligiendo una canción.
+ * Carpeta: iCloud Drive › Para subir a redes › <fecha> <post>, con el video y
+ * TEXTOS.txt (texto del reel y pasos). Estado reel = "aviso-manual".
+ */
+const PARA_SUBIR = process.env.PARA_SUBIR_DIR || join(process.env.HOME || "", "Library/Mobile Documents/com~apple~CloudDocs/Para subir a redes");
+export async function prepararReelManual(file) {
+  const item = loadItem(file);
+  if (!item.draft.meta || ["publicado", "publicando", "cancelado", "aviso-manual"].includes(item.state.reel?.estado)) return null;
+  try {
+    const mp4 = await reelConMusica(item);
+    const carpeta = join(PARA_SUBIR, `${new Date().toLocaleDateString("sv-SE")} ${item.name.replace(/^\d{4}-\d{2}-\d{2}-/, "").slice(0, 60)}`);
+    mkdirSync(carpeta, { recursive: true });
+    writeFileSync(join(carpeta, "reel (súbelo con música).mp4"), readFileSync(mp4));
+    writeFileSync(
+      join(carpeta, "TEXTOS.txt"),
+      [
+        "REEL PARA INSTAGRAM — súbelo a mano para ponerle música",
+        "",
+        "1. En el iPhone: Archivos › iCloud Drive › Para subir a redes › esta carpeta › el video › Compartir › Instagram › Reel.",
+        "2. Toca «Audio» y elige una canción en tendencia (la API no puede poner música de Instagram).",
+        "3. Pega este texto:",
+        "",
+        reelCaption(item.draft),
+        "",
+        "---",
+        `Para que la próxima vez salga solo y con música, deja pistas sin derechos (mp3/m4a) en: ${carpetaMusica()}`,
+        "(por ejemplo, de la Biblioteca de audio de YouTube o Pixabay Music, que permiten usarlas en redes sin atribución).",
+        "",
+      ].join("\n")
+    );
+    item.state.reel = { estado: "aviso-manual", avisadoEn: new Date().toISOString(), carpeta };
+    saveState(item);
+    log(`Reel sin música listo para subir a mano: ${carpeta}`);
+    notify("Reel listo para subir con música", "iCloud Drive › Para subir a redes");
+    return carpeta;
+  } catch (e) {
+    log(`No pude preparar el reel de «${item.draft.title}»: ${e.message}`);
+    return null;
+  }
 }
 
 /** Para la tarea diaria. Devuelve null si no hay token, ya salió o falla (y avisa). */
@@ -471,7 +589,8 @@ export async function medirPublicaciones(horas = Number(process.env.MEDIR_TRAS_H
   let n = 0;
   for (const f of readdirSync(DRAFTS).filter((x) => x.endsWith(".json") && !x.endsWith(".contentful.json"))) {
     const item = loadItem(join(DRAFTS, f));
-    const m = item.state.meta;
+    for (const clave of ["meta", "reel"]) {
+    const m = item.state[clave];
     if (m?.estado !== "publicado" || !m.id || !m.publicadoEn || m.stats) continue;
     if (Date.now() - new Date(m.publicadoEn).getTime() < horas * 3600e3) continue;
     const d = await ig(`/${m.id}`, { token, params: { fields: "like_count,comments_count" } });
@@ -486,8 +605,9 @@ export async function medirPublicaciones(horas = Number(process.env.MEDIR_TRAS_H
       log(`Sin estadísticas de alcance para «${item.draft.title}» (${e.message.slice(0, 80)}).`);
     }
     saveState(item);
-    log(`Medido «${item.draft.title}»: ${JSON.stringify(m.stats)}`);
+    log(`Medido «${item.draft.title}» (${m.formato || (clave === "reel" ? "reel" : "carrusel")}): ${JSON.stringify(m.stats)}`);
     n++;
+    }
   }
   return n;
 }
@@ -511,6 +631,12 @@ if (isMain) {
       if (!token) throw new Error("No hay token de Instagram en el Llavero.");
       const r = await publishReel(loadItem(resolve(fileArg)), token);
       console.log(`Reel publicado: ${r.permalink || r.id}`);
+    } else if (args.includes("--imagen")) {
+      if (!fileArg) throw new Error("Uso: --imagen <borrador.json>");
+      const token = readToken();
+      if (!token) throw new Error("No hay token de Instagram en el Llavero.");
+      const r = await publishImage(loadItem(resolve(fileArg)), token);
+      console.log(`Imagen publicada: ${r.permalink || r.id}`);
     } else if (args.includes("--medir")) {
       console.log(`Publicaciones medidas: ${await medirPublicaciones()}`);
     } else if (args.includes("--verificar")) {
